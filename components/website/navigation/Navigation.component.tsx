@@ -72,7 +72,8 @@ const Navigation = ({ user }: Props) => {
                       <FaTachometerAlt className="inline-block mr-2 text-primary hover:text-slate-950" />{" "}
                       Tableau de Bord
                       <p className="text-sm text-gray-500">
-                        Vue d'ensemble du projet, tâches et indicateurs clés.
+                        Vue d&apos;ensemble du projet, tâches et indicateurs
+                        clés.
                       </p>
                     </NavigationMenuLink>
                     <NavigationMenuLink
@@ -100,7 +101,7 @@ const Navigation = ({ user }: Props) => {
                       href="#team"
                     >
                       <FaUsers className="inline-block mr-2 text-primary hover:text-slate-950" />{" "}
-                      Gestion de l'Équipe
+                      Gestion de l&apos;Équipe
                       <p className="text-sm text-gray-500">
                         Gérez les équipes, leurs rôles et performances.
                       </p>
