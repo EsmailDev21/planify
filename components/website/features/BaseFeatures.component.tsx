@@ -8,13 +8,9 @@ import {
   FaUsers,
   FaToolbox,
   FaClock,
-  FaChartBar,
-  FaCalendarAlt,
-  FaFileAlt,
-  FaCog,
-  FaBell,
 } from "react-icons/fa";
 
+// Main Features Section Component
 const BaseFeatures = () => {
   return (
     <section id="base-features" className="py-10 bg-gray-100 dark:bg-gray-900">
@@ -23,6 +19,7 @@ const BaseFeatures = () => {
           Pilier de la Gestion de Projets : Nos Fonctionnalités
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Feature Cards */}
           <FeatureCard
             icon={<FaTachometerAlt className="text-primary text-3xl" />}
             title="Tableau de Bord"
@@ -59,6 +56,7 @@ const BaseFeatures = () => {
   );
 };
 
+// Feature Card Component
 const FeatureCard = ({ icon, title, description }: any) => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg border hover:scale-105 border-slate-300 dark:border-slate-300 p-4 text-center hover:border-slate-950 dark:hover:border-gray-600 transition-all duration-300">

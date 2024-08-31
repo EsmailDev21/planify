@@ -7,15 +7,10 @@ import {
   FaTimes,
   FaTachometerAlt,
   FaProjectDiagram,
-  FaTasks,
   FaUsers,
   FaToolbox,
-  FaClock,
   FaChartBar,
   FaCalendarAlt,
-  FaFileAlt,
-  FaCog,
-  FaBell,
 } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +21,25 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+  DropdownMenuSub,
+  DropdownMenuPortal,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"; // Import Shadcn Dropdown Menu components
+
+import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
+
 import PlanifyLogo from "@/components/logo/PlanifyLogo";
 import { Separator } from "@/components/ui/separator";
 
@@ -34,7 +48,7 @@ type Props = {
 };
 
 const Navigation = ({ user }: Props) => {
-  const [isOpen, setIsOpen] = useState(false); // État pour gérer la visibilité du menu
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -45,148 +59,189 @@ const Navigation = ({ user }: Props) => {
       <div className="flex items-center gap-4">
         <PlanifyLogo />
 
-        {/* Icône Hamburger pour la vue mobile */}
-        <Button
-          onClick={toggleMenu}
-          variant="ghost"
-          className="md:hidden rounded"
-          size="icon"
-        >
-          {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-        </Button>
+        {/* Hamburger Icon for Mobile View */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="md:hidden rounded"
+              size="icon"
+              onClick={toggleMenu}
+            >
+              {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-64">
+            <Collapsible>
+              <CollapsibleTrigger>
+                <span>Fonctionnalités</span>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <Link href="#dashboard" className="flex items-center gap-2">
+                  <FaTachometerAlt className="text-primary" />
+                  Tableau de Bord
+                </Link>
 
-        {/* Liens de navigation pour le bureau */}
+                <Link href="#projects" className="flex items-center gap-2">
+                  <FaProjectDiagram className="text-primary" />
+                  Projets et Tâches
+                </Link>
+
+                <Link href="#team" className="flex items-center gap-2">
+                  <FaUsers className="text-primary" />
+                  Gestion de l'Équipe
+                </Link>
+
+                <Link href="#resources" className="flex items-center gap-2">
+                  <FaToolbox className="text-primary" />
+                  Ressources et Temps
+                </Link>
+
+                <Link href="#reports" className="flex items-center gap-2">
+                  <FaChartBar className="text-primary" />
+                  Rapports et Documents
+                </Link>
+
+                <Link href="#calendar" className="flex items-center gap-2">
+                  <FaCalendarAlt className="text-primary" />
+                  Calendrier et Notifications
+                </Link>
+              </CollapsibleContent>
+            </Collapsible>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Link href="#tarifs">Tarifs</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href="#about-us" className="flex items-center gap-2">
+                A propos de nous
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Link href="/app" className="font-semibold">
+                Connexion
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                href="/app"
+                className="bg-primary border border-slate-950 text-slate-900 font-semibold py-2 px-4 rounded hover:bg-primary-300 transition-transform transform duration-300"
+              >
+                Essayer maintenant
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* Desktop Navigation Links */}
         <nav className={`hidden md:flex space-x-8`}>
           <NavigationMenu>
             <NavigationMenuList className="gap-2">
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="hover:text-slate-950">
-                  Features
+                  Fonctionnalités
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                    <NavigationMenuLink
-                      className="bg-white dark:bg-gray-800 rounded-lg border hover:scale-105 border-slate-300 dark:border-slate-300 p-4 text-center hover:border-slate-950 dark:hover:border-gray-600 transition-all duration-300"
-                      href="#dashboard"
-                    >
-                      <FaTachometerAlt className="inline-block mr-2 text-primary hover:text-slate-950" />{" "}
-                      Tableau de Bord
-                      <p className="text-sm text-gray-500">
-                        Vue d&apos;ensemble du projet, tâches et indicateurs
-                        clés.
-                      </p>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink
-                      className="bg-white dark:bg-gray-800 rounded-lg border hover:scale-105 border-slate-300 dark:border-slate-300 p-4 text-center hover:border-slate-950 dark:hover:border-gray-600 transition-all duration-300"
-                      href="#projects"
-                    >
-                      <FaProjectDiagram className="inline-block mr-2 text-primary hover:text-slate-950" />{" "}
-                      Projets
-                      <p className="text-sm text-gray-500">
-                        Gérez tous les projets en cours et terminés.
-                      </p>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink
-                      className="bg-white dark:bg-gray-800 rounded-lg border hover:scale-105 border-slate-300 dark:border-slate-300 p-4 text-center hover:border-slate-950 dark:hover:border-gray-600 transition-all duration-300"
-                      href="#tasks"
-                    >
-                      <FaTasks className="inline-block mr-2 text-primary hover:text-slate-950" />{" "}
-                      Tâches
-                      <p className="text-sm text-gray-500">
-                        Créez, assignez et suivez les tâches des projets.
-                      </p>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink
-                      className="bg-white dark:bg-gray-800 rounded-lg border hover:scale-105 border-slate-300 dark:border-slate-300 p-4 text-center hover:border-slate-950 dark:hover:border-gray-600 transition-all duration-300"
-                      href="#team"
-                    >
-                      <FaUsers className="inline-block mr-2 text-primary hover:text-slate-950" />{" "}
-                      Gestion de l&apos;Équipe
-                      <p className="text-sm text-gray-500">
-                        Gérez les équipes, leurs rôles et performances.
-                      </p>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink
-                      className="bg-white dark:bg-gray-800 rounded-lg border hover:scale-105 border-slate-300 dark:border-slate-300 p-4 text-center hover:border-slate-950 dark:hover:border-gray-600 transition-all duration-300"
-                      href="#resources"
-                    >
-                      <FaToolbox className="inline-block mr-2 text-primary hover:text-slate-950" />{" "}
-                      Ressources
-                      <p className="text-sm text-gray-500">
-                        Gérez les équipements et matériaux du chantier.
-                      </p>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink
-                      className="bg-white dark:bg-gray-800 rounded-lg border hover:scale-105 border-slate-300 dark:border-slate-300 p-4 text-center hover:border-slate-950 dark:hover:border-gray-600 transition-all duration-300"
-                      href="#timesheets"
-                    >
-                      <FaClock className="inline-block mr-2 text-primary hover:text-slate-950" />{" "}
-                      Feuilles de Temps
-                      <p className="text-sm text-gray-500">
-                        Suivi des heures de travail et des présences.
-                      </p>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink
-                      className="bg-white dark:bg-gray-800 rounded-lg border hover:scale-105 border-slate-300 dark:border-slate-300 p-4 text-center hover:border-slate-950 dark:hover:border-gray-600 transition-all duration-300"
-                      href="#reports"
-                    >
-                      <FaChartBar className="inline-block mr-2 text-primary hover:text-slate-950" />{" "}
-                      Rapports
-                      <p className="text-sm text-gray-500">
-                        Générez des rapports sur les projets et les
-                        performances.
-                      </p>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink
-                      className="bg-white dark:bg-gray-800 rounded-lg border hover:scale-105 border-slate-300 dark:border-slate-300 p-4 text-center hover:border-slate-950 dark:hover:border-gray-600 transition-all duration-300"
-                      href="#calendar"
-                    >
-                      <FaCalendarAlt className="inline-block mr-2 text-primary hover:text-slate-950" />{" "}
-                      Calendrier
-                      <p className="text-sm text-gray-500">
-                        Gérer le calendrier du projet et les échéances.
-                      </p>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink
-                      className="bg-white dark:bg-gray-800 rounded-lg border hover:scale-105 border-slate-300 dark:border-slate-300 p-4 text-center hover:border-slate-950 dark:hover:border-gray-600 transition-all duration-300"
-                      href="#documents"
-                    >
-                      <FaFileAlt className="inline-block mr-2 text-primary hover:text-slate-950" />{" "}
-                      Documents
-                      <p className="text-sm text-gray-500">
-                        Stockez et gérez tous les documents du projet.
-                      </p>
-                    </NavigationMenuLink>
-
-                    <NavigationMenuLink
-                      className="bg-white dark:bg-gray-800 rounded-lg border hover:scale-105 border-slate-300 dark:border-slate-300 p-4 text-center hover:border-slate-950 dark:hover:border-gray-600 transition-all duration-300"
-                      href="#notifications"
-                    >
-                      <FaBell className="inline-block mr-2 text-primary hover:text-slate-950" />{" "}
-                      Notifications
-                      <p className="text-sm text-gray-500">
-                        Recevez des notifications en temps réel sur les mises à
-                        jour.
-                      </p>
-                    </NavigationMenuLink>
+                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                    {/* Navigation Links */}
+                    {[
+                      {
+                        icon: (
+                          <FaTachometerAlt className="inline-block mr-2 text-primary hover:text-slate-950" />
+                        ),
+                        title: "Tableau de Bord",
+                        description:
+                          "Vue d'ensemble du projet, gestion des tâches et des équipes.",
+                        href: "#dashboard",
+                      },
+                      {
+                        icon: (
+                          <FaProjectDiagram className="inline-block mr-2 text-primary hover:text-slate-950" />
+                        ),
+                        title: "Projets et Tâches",
+                        description:
+                          "Créez, assignez et suivez les projets et tâches en temps réel.",
+                        href: "#projects",
+                      },
+                      {
+                        icon: (
+                          <FaUsers className="inline-block mr-2 text-primary hover:text-slate-950" />
+                        ),
+                        title: "Gestion de l'Équipe",
+                        description:
+                          "Gérez les membres, rôles et performances de votre équipe.",
+                        href: "#team",
+                      },
+                      {
+                        icon: (
+                          <FaToolbox className="inline-block mr-2 text-primary hover:text-slate-950" />
+                        ),
+                        title: "Ressources et Temps",
+                        description:
+                          "Suivi des équipements, feuilles de temps et disponibilités.",
+                        href: "#resources",
+                      },
+                      {
+                        icon: (
+                          <FaChartBar className="inline-block mr-2 text-primary hover:text-slate-950" />
+                        ),
+                        title: "Rapports et Documents",
+                        description:
+                          "Générez des rapports complets et gérez vos documents.",
+                        href: "#reports",
+                      },
+                      {
+                        icon: (
+                          <FaCalendarAlt className="inline-block mr-2 text-primary hover:text-slate-950" />
+                        ),
+                        title: "Calendrier et Notifications",
+                        description:
+                          "Planifiez les échéances et recevez des notifications en temps réel.",
+                        href: "#calendar",
+                      },
+                    ].map((item, index) => (
+                      <NavigationMenuLink
+                        key={index}
+                        className="bg-white dark:bg-gray-800 rounded-lg border hover:scale-105 border-slate-300 dark:border-slate-300 p-4 text-center hover:border-slate-950 dark:hover:border-gray-600 transition-all duration-300"
+                        href={item.href}
+                      >
+                        {item.icon} {item.title}
+                        <p className="text-sm text-gray-500">
+                          {item.description}
+                        </p>
+                      </NavigationMenuLink>
+                    ))}
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
+
               <Separator orientation="vertical" />
+
+              {/* Direct Links for Tarifs and À propos de nous */}
               <NavigationMenuItem>
-                <Link
-                  href="#pricing"
-                  className="text-gray-700 text-md hover:text-primary dark:text-gray-300 dark:hover:text-primary"
-                >
-                  <NavigationMenuLink>Tarifs</NavigationMenuLink>
+                <Link href="#tarifs">
+                  <NavigationMenuLink
+                    className={
+                      navigationMenuTriggerStyle() + " hover:text-slate-950"
+                    }
+                  >
+                    Tarifs
+                  </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
+
+              <Separator orientation="vertical" />
+
               <NavigationMenuItem>
-                <Link
-                  href="#about"
-                  className="text-gray-700 text-md hover:text-primary dark:text-gray-300 dark:hover:text-primary"
-                >
-                  <NavigationMenuLink>A propos de nous</NavigationMenuLink>
+                <Link href="#about-us">
+                  <NavigationMenuLink
+                    className={
+                      navigationMenuTriggerStyle() + " hover:text-slate-950"
+                    }
+                  >
+                    A propos de nous
+                  </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
@@ -194,29 +249,22 @@ const Navigation = ({ user }: Props) => {
         </nav>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="hidden md:flex items-center gap-4">
         <Link
-          href="/auth/sign-in"
-          className=" text-slate-900 font-semibold py-2 px-4 rounded transition-transform transform duration-300 hover:scale-x-110 hover:text-primary-300"
+          href="/app"
+          className="text-slate-900 font-semibold py-2 px-4 rounded transition-transform transform duration-300 hover:scale-x-110 hover:text-primary-300"
         >
           Connexion
         </Link>
         <Link
-          href="/auth/sign-up"
+          href="/app"
           className="bg-primary border border-slate-950 text-slate-900 font-semibold py-2 px-4 rounded transition-transform transform duration-300 hover:scale-x-110 hover:bg-primary-300"
         >
           Essayer maintenant
         </Link>
       </div>
 
-      {/* Menu Mobile */}
-      {isOpen && (
-        <nav className="absolute top-16 left-0 w-full bg-white dark:bg-slate-950 p-4 md:hidden shadow-lg z-20">
-          <ul className="space-y-4">
-            {/* Répétez les mêmes liens pour le menu mobile avec la même structure */}
-          </ul>
-        </nav>
-      )}
+      {/* Mobile Menu */}
     </header>
   );
 };

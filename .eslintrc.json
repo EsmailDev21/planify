@@ -1,3 +1,10 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "quotes": "off"
+    // Or set specific style:
+    // "quotes": ["error", "single"], // Enforces single quotes
+    // "quotes": ["error", "double"], // Enforces double quotes
+  }
+
 }
