@@ -21,13 +21,13 @@ const FAQSection = () => {
           </h2>
           <p className="text-base text-slate-800 dark:text-slate-400 mb-6">
             Découvrez les réponses aux questions les plus courantes concernant
-            notre service. Si vous avez des questions supplémentaires, n'hésitez
-            pas à nous contacter.
+            notre service. Si vous avez des questions supplémentaires,
+            n&apos;hésitez pas à nous contacter.
           </p>
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
               <AccordionTrigger className="text-lg font-semibold text-slate-900 dark:text-slate-200">
-                Qu'est-ce que votre service propose ?
+                Qu&apos;est-ce que votre service propose ?
               </AccordionTrigger>
               <AccordionContent className="text-slate-700 dark:text-slate-400">
                 Notre service offre une solution complète pour gérer vos projets
@@ -37,12 +37,13 @@ const FAQSection = () => {
             </AccordionItem>
             <AccordionItem value="item-2">
               <AccordionTrigger className="text-lg font-semibold text-slate-900 dark:text-slate-200">
-                Comment puis-je m'inscrire ?
+                Comment puis-je m&apos;inscrire ?
               </AccordionTrigger>
               <AccordionContent className="text-slate-700 dark:text-slate-400">
-                Vous pouvez vous inscrire en visitant notre page d'inscription
-                et en remplissant le formulaire. Vous recevrez ensuite un email
-                de confirmation pour activer votre compte.
+                Vous pouvez vous inscrire en visitant notre page
+                d&apos;inscription et en remplissant le formulaire. Vous
+                recevrez ensuite un email de confirmation pour activer votre
+                compte.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">
@@ -56,10 +57,10 @@ const FAQSection = () => {
             </AccordionItem>
             <AccordionItem value="item-4">
               <AccordionTrigger className="text-lg font-semibold text-slate-900 dark:text-slate-200">
-                Puis-je essayer le service avant de m'abonner ?
+                Puis-je essayer le service avant de m&apos;abonner ?
               </AccordionTrigger>
               <AccordionContent className="text-slate-700 dark:text-slate-400">
-                Oui, nous proposons une période d'essai gratuite pendant
+                Oui, nous proposons une période d&apos;essai gratuite pendant
                 laquelle vous pouvez explorer toutes les fonctionnalités du
                 service avant de vous abonner.
               </AccordionContent>

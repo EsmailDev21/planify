@@ -72,7 +72,7 @@ export default function Footer() {
             </a>
           </p>
           <p className="text-base text-slate-400 dark:text-slate-400">
-            Adresse: 123 Rue de l'Innovation, Paris, France
+            Adresse: 123 Rue de l&apos;Innovation, Paris, France
           </p>
         </div>
 

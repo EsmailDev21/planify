@@ -89,7 +89,7 @@ const Navigation = ({ user }: Props) => {
 
                 <Link href="#team" className="flex items-center gap-2">
                   <FaUsers className="text-primary" />
-                  Gestion de l'Équipe
+                  Gestion de l&apos;Équipe
                 </Link>
 
                 <Link href="#resources" className="flex items-center gap-2">

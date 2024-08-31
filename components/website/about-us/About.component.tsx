@@ -21,9 +21,9 @@ const AboutSection = () => {
             gestion des tâches, suivre les progrès et coordonner les équipes.
           </p>
           <p className="text-lg text-slate-800 dark:text-slate-400 mb-6 leading-relaxed">
-            Avec des années d'expérience dans le secteur, notre mission est de
-            fournir des solutions robustes qui répondent aux besoins uniques de
-            chaque projet. Nous nous engageons à offrir une interface
+            Avec des années d&apos;expérience dans le secteur, notre mission est
+            de fournir des solutions robustes qui répondent aux besoins uniques
+            de chaque projet. Nous nous engageons à offrir une interface
             utilisateur intuitive et un support exceptionnel pour vous aider à
             réussir vos projets.
           </p>
