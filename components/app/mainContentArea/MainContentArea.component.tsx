@@ -8,10 +8,11 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"; // Make sure to adjust the import path based on your project structure
+} from "@/components/ui/breadcrumb"; // Adjust the import path as per your project structure
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { PiHouseDuotone } from "react-icons/pi";
+import { CiMenuKebab } from "react-icons/ci";
 
 interface BreadcrumbItem {
   label: string;
@@ -30,15 +31,15 @@ const MainContentArea: React.FC<MainContentAreaProps> = ({
   children,
 }) => {
   return (
-    <div className="flex border h-full  border-slate-200 flex-col flex-1 p-5 mt-3 ml-14 transition-all duration-300 bg-white dark:bg-slate-800 rounded-xl">
+    <div className="flex border h-full shadow-lg border-slate-200 flex-col flex-1 p-4 sm:p-5 mt-3 sm:ml-14 transition-all duration-300 bg-white dark:bg-slate-800 rounded-xl">
       {/* Header */}
-      <header className="flex items-center justify-between py-2">
-        <h1 className="text-lg font-bold text-slate-700 dark:text-white">
+      <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-2">
+        <h1 className="text-base sm:text-lg font-bold text-slate-700 dark:text-white">
           {title}
         </h1>
-        <div className="flex items-center space-x-3">
-          <Button variant="outline" size="sm">
-            Ajouter
+        <div className="flex items-center mt-2 sm:mt-0 space-x-2 sm:space-x-3">
+          <Button variant="outline" size="sm" className="text-xs sm:text-sm">
+            <CiMenuKebab size={18} />
           </Button>
         </div>
       </header>
@@ -47,8 +48,8 @@ const MainContentArea: React.FC<MainContentAreaProps> = ({
       <Separator className="my-2 border-slate-300 dark:border-slate-700" />
 
       {/* Breadcrumb */}
-      <Breadcrumb className="text-xs font-light text-slate-600 dark:text-slate-400">
-        <BreadcrumbList>
+      <Breadcrumb className="text-[0.65rem] sm:text-xs font-light text-slate-600 dark:text-slate-400">
+        <BreadcrumbList className="flex flex-wrap">
           <BreadcrumbItem>
             <Link href="/" className="text-slate-700 dark:text-slate-300">
               <PiHouseDuotone />
@@ -56,8 +57,8 @@ const MainContentArea: React.FC<MainContentAreaProps> = ({
           </BreadcrumbItem>
           {breadcrumbs.map((breadcrumb, index) => (
             <React.Fragment key={index}>
-              <BreadcrumbSeparator></BreadcrumbSeparator>
-              {index != breadcrumbs.length ? (
+              <BreadcrumbSeparator />
+              {index !== breadcrumbs.length - 1 ? (
                 <BreadcrumbItem>
                   <Link href={breadcrumb.href} className="hover:underline">
                     {breadcrumb.label}
@@ -76,11 +77,11 @@ const MainContentArea: React.FC<MainContentAreaProps> = ({
       </Breadcrumb>
 
       {/* Main Content */}
-      <main className="flex-1 p-4 overflow-y-auto bg-white dark:bg-slate-900 rounded-lg shadow-sm">
+      <main className="flex-1 p-3 sm:p-4 overflow-y-auto bg-white dark:bg-slate-900 rounded-lg shadow-sm">
         {children ? (
           children
         ) : (
-          <p className="text-sm text-slate-600 dark:text-slate-400">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
             Ici, vous pouvez afficher le contenu principal de la page en
             fonction de la navigation.
           </p>

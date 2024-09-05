@@ -15,6 +15,8 @@ import {
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import PlanifyLogo from "@/components/logo/PlanifyLogo";
 import { Button } from "@/components/ui/button";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"; // Assuming Shadcn Drawer
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 type SidebarProps = {
   isCollapsed: boolean;
@@ -22,28 +24,34 @@ type SidebarProps = {
 };
 
 const Sidebar = ({ isCollapsed, setIsCollapsed }: SidebarProps) => {
-  const pathname = usePathname(); // Get current route
+  const pathname = usePathname();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Get current route
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
+  console.log(pathname);
 
   // Helper function to determine if a route is active
-  const isActive = (route: string) => pathname === route;
+  const isActive = (route: string) => pathname.slice(4) === route;
 
   const navItems = [
     { href: "#dashboard", label: "Tableau de Bord", icon: PiChartBarDuotone },
-    { href: "#projects", label: "Projets", icon: PiHouseDuotone },
-    { href: "#tasks", label: "Tâches", icon: PiListChecksDuotone },
+    { href: "/app/projects", label: "Projets", icon: PiHouseDuotone },
+    { href: "/app/tasks", label: "Tâches", icon: PiListChecksDuotone },
     { href: "#team", label: "Équipe", icon: PiUserListDuotone },
     { href: "#equipment", label: "Équipement", icon: PiToolboxDuotone },
     { href: "#reports", label: "Rapports", icon: PiClipboardDuotone },
     { href: "#settings", label: "Paramètres", icon: PiGearSixDuotone },
   ];
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
-  return (
+  return isMobile ? null : (
     <aside
       className={`fixed top-3 left-3 h-screen ${
-        isCollapsed ? "w-12" : "w-52"
+        isCollapsed ? "md:w-12 md:flex hidden " : "w-52"
       } transition-all p-1 duration-300 rounded-lg text-xs bg-white dark:bg-slate-900 shadow-lg backdrop-blur-md backdrop-brightness-90 border border-slate-200 dark:border-slate-700`}
     >
       <div className="flex flex-col h-full">

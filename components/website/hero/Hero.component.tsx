@@ -21,7 +21,7 @@ export default function Hero() {
             facilement.
           </p>
           <Link
-            href="/app"
+            href="/app/projects"
             className="bg-primary border hover:bg-primary-300 border-slate-950 hover:text-slate-950 hover:shadow-md shadow-green-950 hover:bg-opacity-50 text-slate-900 font-semibold py-3 px-4 rounded transition-transform transform duration-300 hover:scale-110"
           >
             Commencez Maintenant

@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,24 +10,32 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Separator } from "@/components/ui/separator"; // Assume custom icons
 import { CiSearch } from "react-icons/ci";
 import { PiBellRingingLight } from "react-icons/pi";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useSidebar } from "@/hooks/use-sidebar";
+import MobileDrawer from "../sidebar/MobileDrawer";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 export default function Header() {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   return (
-    <header className="flex items-center justify-between p-4 mt-3 ml-14 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+    <header className="sticky top-4 z-50 backdrop-blur-md bg-opacity-70 transition-all duration-300 flex flex-col-reverse shadow-lg sm:flex-row items-center justify-between p-3 sm:p-4 mt-3 sm:ml-14 rounded-xl bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
       {/* Left Side: Search Bar */}
-      <div className="flex w-full max-w-sm items-center space-x-2">
-        <Input type="text" placeholder="Rechercher..." />
-        <Button type="submit" className="text-lg">
+      {isMobile && <MobileDrawer />}
+      <div className="flex w-full max-w-full sm:max-w-sm items-center space-x-2 mb-2 sm:mb-0">
+        <Input
+          type="text"
+          placeholder="Rechercher..."
+          className="w-full text-sm sm:text-base"
+        />
+        <Button type="submit" className="text-lg p-2">
           <CiSearch size={18} />
         </Button>
       </div>
 
       {/* Center: Notifications and User Profile */}
-      <div className="flex items-center space-x-4">
+      <div className="flex md:items-center items-start justify-items-center space-x-3 sm:space-x-4">
         {/* Notifications */}
         <TooltipProvider>
           <Tooltip>
@@ -49,7 +56,7 @@ export default function Header() {
           <Tooltip>
             <TooltipTrigger>
               <Link href="/profile">
-                <Avatar>
+                <Avatar className="w-8 h-8 sm:w-10 sm:h-10">
                   <AvatarImage src="https://github.com/shadcn.png" />
                   <AvatarFallback>EK</AvatarFallback>
                 </Avatar>
