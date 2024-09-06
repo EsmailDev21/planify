@@ -23,7 +23,7 @@ const ProjectDetailsIndex = () => {
       {/* Message when no projects match the filters */}
       {!projectData ? (
         <p className="text-center text-slate-600 dark:text-slate-400">
-          Cet projet n'existe pas plus, peut etre supprimé.
+          Cet projet n&apos;existe pas plus, il peut etre supprimé.
         </p>
       ) : (
         <ProjectCard {...projectData} />
