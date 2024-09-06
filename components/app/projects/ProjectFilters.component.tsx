@@ -25,6 +25,8 @@ import {
   PiWarningCircleLight,
   PiXLight,
 } from "react-icons/pi";
+import { Priority, Status } from "@/lib/types/models";
+import { ProjectAddCard } from "./AddProjectDialog";
 // Icons for visual effect
 
 type ProjectFiltersProps = {
@@ -32,8 +34,8 @@ type ProjectFiltersProps = {
 };
 
 type Filters = {
-  status: string;
-  priority: string;
+  status: Status | null;
+  priority: Priority | null;
   tags: string[];
   dueDate: Date | null;
   search: string;
@@ -41,8 +43,8 @@ type Filters = {
 
 const ProjectFilters: React.FC<ProjectFiltersProps> = ({ onFilterChange }) => {
   const [filters, setFilters] = useState<Filters>({
-    status: "",
-    priority: "",
+    status: null,
+    priority: null,
     tags: [],
     dueDate: null,
     search: "",
@@ -169,15 +171,15 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ onFilterChange }) => {
         variant="ghost"
         onClick={() => {
           setFilters({
-            status: "",
-            priority: "",
+            status: null,
+            priority: null,
             tags: [],
             dueDate: null,
             search: "",
           });
           onFilterChange({
-            status: "",
-            priority: "",
+            status: null,
+            priority: null,
             tags: [],
             dueDate: null,
             search: "",
@@ -188,6 +190,7 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ onFilterChange }) => {
         <PiXLight className="mr-2" />
         <span>Réinitialiser</span>
       </Button>
+      <ProjectAddCard />
     </div>
   );
 };

@@ -16,24 +16,60 @@ import Link from "next/link";
 import {
   PiCalendarCheckLight,
   PiEyeLight,
+  PiPenLight,
   PiStarLight,
   PiTagLight,
   PiUserPlusLight,
 } from "react-icons/pi";
 import { ProjectUpdateCard } from "./UpdateProjectDialog.component";
+import { ClientModel, Priority, Status } from "@/lib/types/models";
+import Image from "next/image";
 
 type ProjectCardProps = {
+  id: string;
   title: string;
-  status: string; // e.g., "En cours", "Terminé"
+  status: Status;
   description: string;
   dueDate: Date;
-  progress: number; // value from 0 to 100
-  priority: string; // e.g., "Haute", "Moyenne", "Basse"
-  tags: string[]; // Array of tags
-  teamMembers: { name: string; imageUrl?: string }[]; // Array of team members
+  progress: number;
+  priority: Priority;
+  tags: string[];
+  teamMembers: { fullName: string; profilePhoto?: string }[];
+  thumbnail: string;
+  address: string;
+  createdAt: Date;
+  updatedAt?: Date;
+  client: ClientModel;
+};
+
+export const transFormPriority = (priority: Priority) => {
+  switch (priority) {
+    case Priority.HIGH:
+      return "Haute";
+    case Priority.MEDIUM:
+      return "Moyenne";
+    case Priority.LOW:
+      return "Basse";
+    default:
+      return "Non définie";
+  }
+};
+
+export const transFormStatus = (status: Status) => {
+  switch (status) {
+    case Status.TODO:
+      return "À Faire";
+    case Status.IN_PROGRESS:
+      return "En cours";
+    case Status.DONE:
+      return "Terminé";
+    default:
+      return "Non définie";
+  }
 };
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
+  id,
   title,
   status,
   description,
@@ -42,45 +78,72 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   priority,
   tags,
   teamMembers,
+  thumbnail,
+  address,
+  createdAt,
+  updatedAt,
+  client,
 }) => {
   return (
-    <Card className="w-full max-w-lg border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm bg-white dark:bg-slate-800 hover:shadow-md transition-transform duration-300 transform hover:scale-105 focus-within:scale-105 active:scale-95">
+    <Card className="w-full max-w-3xl border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm bg-white dark:bg-slate-800 hover:shadow-md transition-transform duration-300 transform">
       {/* Card Header */}
-      <CardHeader className="flex items-center justify-between p-4 space-x-4">
-        <div className="flex-1 flex items-center space-x-4">
-          <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white overflow-hidden text-ellipsis">
-            {title}
-          </CardTitle>
-          <ProjectUpdateCard
-            initialTitle={title}
-            initialStatus={status}
-            initialDescription={description}
-            initialDueDate={dueDate}
-            initialProgress={progress}
-            initialPriority={priority}
-            initialTags={tags}
-            initialTeamMembers={teamMembers}
-          />
-        </div>
-        <div className="flex space-x-2">
-          <Badge
-            variant="outline"
-            className="text-xs font-medium capitalize text-primary-700 dark:text-primary-300 whitespace-nowrap"
-          >
-            {status}
-          </Badge>
-          <Badge
-            variant="outline"
-            className={`text-xs font-medium capitalize whitespace-nowrap ${
-              priority === "Haute"
-                ? "text-red-600 dark:text-red-400"
-                : priority === "Moyenne"
-                ? "text-yellow-600 dark:text-yellow-400"
-                : "text-green-600 dark:text-green-400"
-            }`}
-          >
-            {priority}
-          </Badge>
+      <CardHeader className="flex flex-col md:flex-row items-start p-4 md:space-x-4 space-y-4 md:space-y-0">
+        <Image
+          height={300}
+          width={500}
+          src={thumbnail}
+          alt={`${title} Thumbnail`}
+          className="object-cover rounded-lg flex-shrink-0 w-full md:w-40 lg:w-60"
+        />
+
+        <div className="flex flex-col space-y-4 flex-1">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white overflow-hidden text-ellipsis">
+              {title}
+            </CardTitle>
+          </div>
+          {/* Badges */}
+          <div className="flex flex-wrap space-x-2">
+            <Badge
+              variant="outline"
+              className="text-xs font-medium capitalize dark:bg-slate-200 text-primary-600 dark:text-primary-300 whitespace-nowrap"
+            >
+              {transFormStatus(status)}
+            </Badge>
+            <Badge
+              variant="default"
+              className={`text-xs font-medium capitalize whitespace-nowrap ${
+                priority === Priority.HIGH
+                  ? "bg-red-400 hover:bg-red-300"
+                  : priority === Priority.MEDIUM
+                  ? "bg-yellow-400 hover:bg-yellow-300"
+                  : "bg-green-400 hover:bg-green-300"
+              }`}
+            >
+              {transFormPriority(priority)}
+            </Badge>
+          </div>
+          {/* Client Information */}
+          <div className="flex items-center space-x-2 mt-2">
+            <span className="font-medium text-sm h-full border-r px-2 border-slate-400 text-slate-700">
+              Client
+            </span>
+            <Avatar className="w-8 h-8">
+              {client.profilePhoto ? (
+                <AvatarImage src={client.profilePhoto} alt={client.fullName} />
+              ) : (
+                <AvatarFallback>
+                  {client.fullName ? client.fullName[0] : ""}
+                </AvatarFallback>
+              )}
+            </Avatar>
+            <div className="text-xs">
+              <span className="font-medium">{client.fullName}</span>
+              <div className="text-slate-500 dark:text-slate-400">
+                {client.phoneNumber}
+              </div>
+            </div>
+          </div>
         </div>
       </CardHeader>
 
@@ -89,6 +152,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         <CardDescription className="text-sm text-slate-600 dark:text-slate-400 mb-2 line-clamp-2">
           {description}
         </CardDescription>
+
+        {/* Address */}
+        <div className="text-xs text-slate-500 dark:text-slate-400">
+          <strong>Adresse :</strong> {address}
+        </div>
 
         {/* Tags */}
         <div className="flex flex-wrap gap-2 mb-3">
@@ -119,10 +187,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               key={index}
               className="w-8 h-8 hover:scale-110 transition-transform duration-200"
             >
-              {member.imageUrl ? (
-                <AvatarImage src={member.imageUrl} alt={member.name} />
+              {member.profilePhoto ? (
+                <AvatarImage src={member.profilePhoto} alt={member.fullName} />
               ) : (
-                <AvatarFallback>{member.name[0]}</AvatarFallback>
+                <AvatarFallback>{member.fullName[0]}</AvatarFallback>
               )}
             </Avatar>
           ))}
@@ -131,26 +199,25 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
       {/* Card Footer */}
       <CardFooter className="flex flex-col space-y-2 items-start justify-between p-4">
+        <div className="text-xs text-slate-500 dark:text-slate-400">
+          <div>Créé le : {createdAt.toLocaleDateString()}</div>
+          {updatedAt && (
+            <div>Dernier Mise à jour : {updatedAt.toLocaleDateString()}</div>
+          )}
+        </div>
         <div className="flex space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-sm flex items-center space-x-2 hover:bg-primary-100 dark:hover:bg-primary-700 focus:ring focus:ring-primary-200 dark:focus:ring-primary-700"
-          >
-            <PiStarLight className="w-4 h-4" />
-            <span>Prioriser</span>
-          </Button>
-
-          <Link href={`/projets/${title.toLowerCase().replace(/ /g, "-")}`}>
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-sm flex items-center space-x-2 hover:bg-primary-100 dark:hover:bg-primary-700 focus:ring focus:ring-primary-200 dark:focus:ring-primary-700"
-            >
-              <PiEyeLight className="w-4 h-4" />
-              <span>Voir Détails</span>
-            </Button>
-          </Link>
+          <ProjectUpdateCard
+            initialaddress={address}
+            id={id}
+            initialTitle={title}
+            initialStatus={status}
+            initialDescription={description}
+            initialDueDate={dueDate}
+            initialProgress={progress}
+            initialPriority={priority}
+            initialTags={tags}
+            initialTeamMembers={teamMembers}
+          />
         </div>
         <Button
           variant="outline"
@@ -158,7 +225,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           className="text-sm flex items-center space-x-2 hover:bg-primary-100 dark:hover:bg-primary-700 focus:ring focus:ring-primary-200 dark:focus:ring-primary-700"
         >
           <PiUserPlusLight className="w-4 h-4" />
-          <span>Inviter des membres</span>
+          <span>Inviter des collaborateurs</span>
         </Button>
       </CardFooter>
     </Card>

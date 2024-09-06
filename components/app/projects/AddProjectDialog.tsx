@@ -38,7 +38,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   PiCalendarCheckLight,
-  PiPenLight,
+  PiPlusLight,
   PiStarLight,
   PiUserPlusLight,
 } from "react-icons/pi";
@@ -46,74 +46,46 @@ import { format } from "date-fns";
 import { CiEdit } from "react-icons/ci";
 import { DatePicker } from "@/components/ui/date-picker";
 import { useDispatch, useSelector } from "react-redux";
-import { selectProjects, updateProject } from "@/lib/redux/slices/projectSlice";
+import { addProject, selectProjects } from "@/lib/redux/slices/projectSlice";
 import { Priority, Status } from "@/lib/types/models";
 import { Form } from "@/components/ui/form";
-import { transFormPriority, transFormStatus } from "./ProjectCard.component";
 
-type ProjectUpdateCardProps = {
-  id: string;
-  initialTitle: string;
-  initialStatus: Status;
-  initialDescription: string;
-  initialDueDate: Date;
-  initialProgress: number;
-  initialPriority: Priority;
-  initialTags: string[];
-  initialTeamMembers: { fullName: string; profilePhoto?: string }[];
-  initialaddress: string;
-};
-
-export function ProjectUpdateCard({
-  id,
-  initialTitle,
-  initialStatus,
-  initialDescription,
-  initialDueDate,
-  initialProgress,
-  initialPriority,
-  initialTags,
-  initialTeamMembers,
-  initialaddress,
-}: ProjectUpdateCardProps) {
+export function ProjectAddCard() {
   const [open, setOpen] = React.useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   // State for handling input fields
-  const [title, setTitle] = React.useState(initialTitle);
-  const [status, setStatus] = React.useState(initialStatus);
-  const [description, setDescription] = React.useState(initialDescription);
-  const [dueDate, setDueDate] = React.useState(initialDueDate);
-  const [progress, setProgress] = React.useState(initialProgress);
-  const [priority, setPriority] = React.useState(initialPriority);
-  const [tags, setTags] = React.useState(initialTags);
+  const [title, setTitle] = React.useState("");
+  const [status, setStatus] = React.useState(Status.IN_PROGRESS);
+  const [description, setDescription] = React.useState("");
+  const [dueDate, setDueDate] = React.useState(new Date());
+  const [progress, setProgress] = React.useState(0);
+  const [priority, setPriority] = React.useState(Priority.MEDIUM);
+  const [tags, setTags] = React.useState<string[]>([]);
   const [newTag, setNewTag] = React.useState("");
-  const [teamMembers, setTeamMembers] = React.useState(initialTeamMembers);
-  const [address, setaddress] = React.useState(initialaddress);
+  const [teamMembers, setTeamMembers] = React.useState<
+    { fullName: string; profilePhoto?: string }[]
+  >([]);
   const dispatch = useDispatch();
-  const project = useSelector(selectProjects).projects.find((p) => p.id === id);
+  const { projects } = useSelector(selectProjects);
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    project != undefined &&
-      dispatch(
-        updateProject({
-          id,
-          title,
-          status,
-          description,
-          dueDate,
-          priority,
-          progress,
-          tags,
-          teamMembers,
-          address,
-          client: project.client,
-          thumbnail: project.thumbnail,
-          createdAt: project.createdAt,
-          updatedAt: new Date(),
-        })
-      );
+    dispatch(
+      addProject({
+        id: projects.length.toString(),
+        title,
+        status,
+        description,
+        dueDate,
+        priority,
+        progress,
+        tags,
+        teamMembers,
+      })
+    );
+    setOpen(false); // Close dialog or drawer after adding the project
   };
+
   const handleAddTag = () => {
     if (newTag.trim()) {
       setTags([...tags, newTag.trim()]);
@@ -153,7 +125,7 @@ export function ProjectUpdateCard({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="default" className="capitalize">
-              {transFormPriority(priority)}
+              {priority}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -176,7 +148,7 @@ export function ProjectUpdateCard({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm" className="w-full capitalize">
-            {transFormStatus(status)}
+            {status}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -202,16 +174,6 @@ export function ProjectUpdateCard({
           className="resize-none"
           rows={4}
           placeholder="Description du projet"
-        />
-      </div>
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          addresse
-        </label>
-        <Input
-          value={address}
-          onChange={(e) => setaddress(e.target.value)}
-          placeholder="addresse du projet"
         />
       </div>
 
@@ -295,37 +257,23 @@ export function ProjectUpdateCard({
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-sm flex items-center space-x-2 hover:bg-primary-100 dark:hover:bg-primary-700 focus:ring focus:ring-primary-200 dark:focus:ring-primary-700"
-          >
-            <PiPenLight className="w-4 h-4" />
-            <span>Mise à jour</span>
+          <Button variant="ghost">
+            <PiPlusLight size={18} />
+            Nouveau projet
           </Button>
         </DialogTrigger>
         <DialogContent className="max-w-2xl w-full h-full overflow-scroll my-2 bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg">
           <form onSubmit={handleSubmit}>
             <DialogHeader>
-              <DialogTitle>Mettre à jour le projet</DialogTitle>
+              <DialogTitle>Nouveau projet</DialogTitle>
               <DialogDescription>
-                Apportez des modifications aux détails de votre projet et
-                cliquez sur enregistrer lorsque vous avez terminé.
+                Remplissez les détails de votre nouveau projet et cliquez sur
+                &quot;Enregistrer&quot;.
               </DialogDescription>
             </DialogHeader>
             {content}
-            <DialogFooter className="flex justify-between space-x-2 mt-4">
-              <Button
-                type="submit"
-                variant="outline"
-                size="sm"
-                onClick={() => setOpen(false)}
-              >
-                Enregistrer les modifications
-              </Button>
-              <Button variant="outline" size="sm">
-                Inviter des membres
-              </Button>
+            <DialogFooter>
+              <Button type="submit">Enregistrer</Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -334,36 +282,28 @@ export function ProjectUpdateCard({
   }
 
   return (
-    <Drawer direction="left" open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="text-sm flex items-center space-x-2 hover:bg-primary-100 dark:hover:bg-primary-700 focus:ring focus:ring-primary-200 dark:focus:ring-primary-700"
-        >
-          <PiPenLight className="w-4 h-4" />
-          <span>Mise à jour</span>
+        <Button variant="ghost">
+          <PiPlusLight size={18} />
+          Nouveau projet
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="max-w-lg w-full h-full overflow-y-scroll bg-white dark:bg-slate-800 p-4 rounded-lg  shadow-lg">
+      <DrawerContent className="w-[85%]">
         <form onSubmit={handleSubmit}>
           <DrawerHeader>
-            <DrawerTitle>Mettre à jour le projet</DrawerTitle>
+            <DrawerTitle>Nouveau projet</DrawerTitle>
             <DrawerDescription>
-              Apportez des modifications aux détails de votre projet et cliquez
-              sur enregistrer lorsque vous avez terminé.
+              Remplissez les détails de votre nouveau projet et cliquez sur
+              &quot;Enregistrer&quot;.
             </DrawerDescription>
           </DrawerHeader>
           {content}
-          <DrawerFooter className="flex justify-between space-x-2 mt-4">
-            <DrawerClose asChild>
-              <Button type="submit" variant="outline" size="sm">
-                Enregistrer les modifications
-              </Button>
+          <DrawerFooter>
+            <DrawerClose>
+              <Button variant="outline">Annuler</Button>
             </DrawerClose>
-            <Button variant="outline" size="sm" onClick={handleAddTeamMember}>
-              Inviter des collaborateurs
-            </Button>
+            <Button type="submit">Enregistrer</Button>
           </DrawerFooter>
         </form>
       </DrawerContent>

@@ -2,22 +2,13 @@
 
 import React from "react"; // Adjust the import path based on your project structure
 import ProjectCard from "./ProjectCard.component";
+import { Priority, ProjectModel, Status } from "@/lib/types/models";
+import ProjectCardResumed from "./ProjectCardResumed.component";
 
 // Example project data type
-type Project = {
-  id: number;
-  title: string;
-  status: string;
-  description: string;
-  dueDate: Date;
-  progress: number;
-  priority: string;
-  tags: string[];
-  teamMembers: { name: string; imageUrl?: string }[];
-};
 
 type ProjectListProps = {
-  projects: Project[];
+  projects: ProjectModel[];
 };
 
 const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
@@ -25,16 +16,13 @@ const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
     <div className="grid gap-6 mt-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
       {projects.length > 0 ? (
         projects.map((project) => (
-          <ProjectCard
+          <ProjectCardResumed
+            id={project.id}
             key={project.id}
             title={project.title}
-            status={project.status}
-            description={project.description}
             dueDate={project.dueDate}
-            progress={project.progress}
-            priority={project.priority}
-            tags={project.tags}
-            teamMembers={project.teamMembers}
+            client={project.client}
+            thumbnail={project.thumbnail}
           />
         ))
       ) : (

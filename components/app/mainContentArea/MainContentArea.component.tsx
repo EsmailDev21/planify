@@ -60,7 +60,10 @@ const MainContentArea: React.FC<MainContentAreaProps> = ({
               <BreadcrumbSeparator />
               {index !== breadcrumbs.length - 1 ? (
                 <BreadcrumbItem>
-                  <Link href={breadcrumb.href} className="hover:underline">
+                  <Link
+                    href={"/app" + breadcrumb.href}
+                    className="hover:underline"
+                  >
                     {breadcrumb.label}
                   </Link>
                 </BreadcrumbItem>

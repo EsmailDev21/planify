@@ -13,47 +13,38 @@ const TasksIndex = () => {
   const selectFilters = (state: RootState) => state.tasks.filters;
   const tasks = useSelector(selectAllTasks);
   const filters = useSelector(selectFilters);
-  const selectFilteredTasks = createSelector(
-    [selectAllTasks, selectFilters],
-    (tasks: GanttTaskProps[], filters: any) => {
-      return tasks.filter((task) => {
-        const matchesStatus = !filters.status || task.status === filters.status;
-        const matchesPriority =
-          !filters.priority || task.priority === filters.priority;
-        const matchesTags =
-          filters.tags.length === 0 ||
-          filters.tags.some((tag: string) => task.tags.includes(tag));
-        const matchesSearch =
-          !filters.search ||
-          task.title.toLowerCase().includes(filters.search.toLowerCase());
-        const matchesStartDate =
-          !filters.startDate ||
-          new Date(task.startDate) >= new Date(filters.startDate);
-        const matchesEndDate =
-          !filters.endDate ||
-          new Date(task.endDate) <= new Date(filters.endDate);
 
-        return (
-          matchesStatus &&
-          matchesPriority &&
-          matchesTags &&
-          matchesSearch &&
-          matchesStartDate &&
-          matchesEndDate
-        );
-      });
-    }
-  );
-  const filteredTasks = selectFilteredTasks({
-    tasks: {
-      tasks,
-      filters,
-    },
-  });
+  const filteredTasks = (tasks: GanttTaskProps[], filters: any) => {
+    return tasks.filter((task) => {
+      const matchesStatus = !filters.status || task.status === filters.status;
+      const matchesPriority =
+        !filters.priority || task.priority === filters.priority;
+      const matchesTags =
+        filters.tags.length === 0 ||
+        filters.tags.some((tag: string) => task.tags.includes(tag));
+      const matchesSearch =
+        !filters.search ||
+        task.title.toLowerCase().includes(filters.search.toLowerCase());
+      const matchesStartDate =
+        !filters.startDate ||
+        new Date(task.startDate) >= new Date(filters.startDate);
+      const matchesEndDate =
+        !filters.endDate || new Date(task.endDate) <= new Date(filters.endDate);
+
+      return (
+        matchesStatus &&
+        matchesPriority &&
+        matchesTags &&
+        matchesSearch &&
+        matchesStartDate &&
+        matchesEndDate
+      );
+    });
+  };
   return (
     <div>
       <TaskTopBar />
-      <GanttView tasks={filteredTasks} zoomLevel={6} />
+      <GanttView tasks={filteredTasks(tasks, filters)} zoomLevel={6} />
     </div>
   );
 };
