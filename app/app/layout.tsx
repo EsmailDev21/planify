@@ -8,13 +8,14 @@ import { usePathname } from "next/navigation";
 import ScrollToTopButton from "@/components/website/utilityComponents/ScrollToTopButton";
 import { Provider } from "react-redux";
 import store from "@/lib/redux/store";
+import { useMediaQuery } from "@/hooks/use-media-query";
 type AppLayoutProps = {
   children: React.ReactNode;
 };
 
 const AppLayout = ({ children }: AppLayoutProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false); // State to manage sidebar collapse
-
+  const isMobile = useMediaQuery("(max-width: 768px)");
   // Example title and breadcrumbs; replace with your logic
   // Example title
 
@@ -52,14 +53,18 @@ const AppLayout = ({ children }: AppLayoutProps) => {
 
   return (
     <Provider store={store}>
-      <div className="flex h-screen pb-4 bg-gray-100 dark:bg-slate-950">
+      <div
+        className={`flex h-screen  pb-4 bg-gray-100 dark:bg-slate-950 ${
+          isMobile && "overflow-x-hidden"
+        }`}
+      >
         {/* Sidebar */}
         <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
 
         {/* Main content area */}
         <div
-          className={`flex-1 flex flex-col transition-all duration-300 mr-4 ${
-            isCollapsed ? "ml-4" : "ml-44"
+          className={`flex-1 flex flex-col transition-all duration-300  ${
+            isCollapsed && !isMobile ? "ml-4 mr-4" : !isMobile && "ml-44 mr-4"
           }`}
         >
           {/* Header */}

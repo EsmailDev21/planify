@@ -57,8 +57,9 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-4 p-4 bg-white dark:bg-slate-800 rounded-lg shadow-md mb-4">
+    <div className="flex flex-wrap w-full items-center gap-4 p-4 bg-white dark:bg-slate-800 rounded-lg shadow-md mb-4">
       {/* Search Filter */}
+      <ProjectAddCard />
       <div className="relative flex items-center w-full max-w-xs">
         <Input
           placeholder="Rechercher..."
@@ -68,7 +69,6 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ onFilterChange }) => {
         />
         <CiSearch className="absolute right-3 text-slate-500 dark:text-slate-400" />
       </div>
-
       {/* Status Filter using Menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -190,7 +190,6 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ onFilterChange }) => {
         <PiXLight className="mr-2" />
         <span>Réinitialiser</span>
       </Button>
-      <ProjectAddCard />
     </div>
   );
 };

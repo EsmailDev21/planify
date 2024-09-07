@@ -56,5 +56,40 @@ enum UserRole {
 export type TeamMember = Pick<UserModel, "fullName" | "profilePhoto">;
 
 export type ClientModel = Partial<
-  Pick<UserModel, "fullName" | "profilePhoto" | "phoneNumber">
+  Pick<UserModel, "fullName" | "profilePhoto" | "phoneNumber"> & {
+    role: UserRole.CUSTOMER;
+  }
 >;
+
+export type QuoteModel = {
+  id: string;
+  projectId: string; // Reference to the ProjectModel
+  sender: AutoEntrepreneur | BusinessOwner; // The person who sends the quote
+  client: ClientModel; // The recipient of the quote
+  amount: number; // Quoted price
+  description: string; // Description of the quote
+  status: QuoteStatus; // Status of the quote (e.g., PENDING, ACCEPTED, REJECTED)
+  createdAt: Date;
+  updatedAt?: Date;
+};
+
+export enum QuoteStatus {
+  PENDING,
+  ACCEPTED,
+  REJECTED,
+}
+
+// Define AutoEntrepreneur as a specific type of UserModel, highlighting their role
+export type AutoEntrepreneur = Pick<
+  UserModel,
+  "id" | "fullName" | "email" | "profilePhoto" | "phoneNumber"
+> & {
+  role: UserRole.AUTO_ENTERPRENEUR;
+};
+
+export type BusinessOwner = Pick<
+  UserModel,
+  "id" | "fullName" | "email" | "profilePhoto" | "phoneNumber"
+> & {
+  role: UserRole.BUSINESS_OWNER;
+};

@@ -37,7 +37,7 @@ const MobileDrawer = () => {
     { href: "#settings", label: "Paramètres", icon: PiGearSixDuotone },
   ];
   return (
-    <Drawer direction="left" open={isDrawerOpen} onOpenChange={toggleDrawer}>
+    <Drawer direction="bottom" open={isDrawerOpen} onOpenChange={toggleDrawer}>
       <DrawerTrigger>
         <Button variant="outline" onClick={toggleDrawer}>
           <PiHamburgerLight size={18} />
