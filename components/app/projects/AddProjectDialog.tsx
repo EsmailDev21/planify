@@ -292,7 +292,7 @@ export function ProjectAddCard() {
       {/* Team Members */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          Membres de l'équipe
+          Membres de l&apos;équipe
         </label>
         {teamMembers.map((member, index) => (
           <div
