@@ -35,6 +35,7 @@ export type TaskModel = {
   startDate: Date;
   endDate: Date;
   progress: number;
+  color: string;
   teamMembers: TeamMember[];
 };
 export type UserModel = {

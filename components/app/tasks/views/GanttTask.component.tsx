@@ -27,19 +27,20 @@ export type GanttTaskProps = {
   gridRow?: number;
   status: string;
   progress: number;
+  color: string;
 };
-const generateRandomColor = () => {
+
+export const generateRandomColor = () => {
   const colors = [
-    "#FFB6C1", // Light Pink
-    "#FFD700", // Gold
-    "#87CEFA", // Light Sky Blue
-    "#90EE90", // Light Green
-    "#FFA07A", // Light Salmon
-    "#ADD8E6", // Light Blue
-    "#E6E6FA", // Lavender
-    "#FFFACD", // Lemon Chiffon
-    "#D3D3D3", // Light Gray
-    "#FFC0CB", // Pink
+    "pink.500", // Light Pink
+    "primary", // Gold
+    "blue.500", // Light Sky Blue
+    "green.500", // Light Green
+    "red.500", // Light Salmon
+    "purple.500", // Light Purple
+    "teal.500", // Light Teal
+    "orange.500", // Light Orange
+    "indigo.500", // Light Indigo
   ];
   return colors[Math.floor(Math.random() * colors.length)];
 };
@@ -47,28 +48,26 @@ const generateRandomColor = () => {
 // Function to get a lighter shade of the given color
 const getLighterColor = (color: string) => {
   switch (color) {
-    case "#FFB6C1": // Light Pink
-      return "#FFE4E9"; // Lighter Light Pink
-    case "#FFD700": // Gold
-      return "#FFECB3"; // Lighter Gold
-    case "#87CEFA": // Light Sky Blue
-      return "#BFEFFF"; // Lighter Light Sky Blue
-    case "#90EE90": // Light Green
-      return "#D0FFD0"; // Lighter Light Green
-    case "#FFA07A": // Light Salmon
-      return "#FFD5C2"; // Lighter Light Salmon
-    case "#ADD8E6": // Light Blue
-      return "#DDEFFF"; // Lighter Light Blue
-    case "#E6E6FA": // Lavender
-      return "#F5F5FF"; // Lighter Lavender
-    case "#FFFACD": // Lemon Chiffon
-      return "#FFFDEB"; // Lighter Lemon Chiffon
-    case "#D3D3D3": // Light Gray
-      return "#EDEDED"; // Lighter Light Gray
-    case "#FFC0CB": // Pink
-      return "#FFEBF0"; // Lighter Pink
+    case "pink.500":
+      return "pink.400";
+    case "primary":
+      return "primary.400";
+    case "blue.500":
+      return "blue.400";
+    case "green.500":
+      return "green.400";
+    case "red.500":
+      return "red.400";
+    case "purple.500":
+      return "purple.400";
+    case "teal.500":
+      return "teal.400";
+    case "orange.500":
+      return "orange.400";
+    case "indigo.500":
+      return "indigo.400";
     default:
-      return "#E0E0E0"; // Default light gray if color not matched
+      return "gray.400"; // Fallback color
   }
 };
 
@@ -95,17 +94,12 @@ const GanttTask: React.FC<
   priority,
   progress,
   status,
+  color,
 }) => {
-  const backgroundColor = useMemo(() => generateRandomColor(), []);
-
-  // Calculate progress styling
-  // Helper function to lighten the color
-
-  const progressStyle = {
-    background: `linear-gradient(to right, ${backgroundColor} ${progress}%, ${getLighterColor(
-      backgroundColor
-    )} ${progress}%)`,
-  };
+  const gradientColor = useMemo(
+    () => `from-${color} to-${getLighterColor(color)}`,
+    [color]
+  );
 
   return (
     <HoverCard>
@@ -124,6 +118,7 @@ const GanttTask: React.FC<
               tags,
               status,
               progress,
+              color,
             })
           }
           onDragStart={(event, info) =>
@@ -137,6 +132,7 @@ const GanttTask: React.FC<
               tags,
               status,
               progress,
+              color,
             })
           }
           onDragEnd={(event, info) =>
@@ -150,11 +146,11 @@ const GanttTask: React.FC<
               tags,
               status,
               progress,
+              color,
             })
           }
-          className="rounded-full my-1 p-2 text-white cursor-pointer flex items-center justify-between"
+          className={`rounded-full my-1 p-2 text-white cursor-pointer flex items-center justify-between bg-gradient-to-r ${gradientColor}`}
           style={{
-            ...progressStyle,
             gridRow: gridRow,
             gridColumnStart: gridColStart,
             gridColumnEnd: gridColEnd,

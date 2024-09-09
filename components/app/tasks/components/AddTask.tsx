@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DatePicker } from "@/components/ui/date-picker";
 import { format } from "date-fns";
+import { generateRandomColor } from "../views/GanttTask.component";
 
 type AddTaskDialogProps = {
   isOpen: boolean;
@@ -63,6 +64,7 @@ export type GanttTaskProps = {
   gridRow?: number;
   status: string;
   progress: number;
+  color: string;
 };
 
 export function AddTaskDialog({
@@ -119,6 +121,7 @@ export function AddTaskDialog({
       assignee,
       status,
       progress,
+      color: generateRandomColor(),
     };
     onSubmit(newTask);
     onClose();
