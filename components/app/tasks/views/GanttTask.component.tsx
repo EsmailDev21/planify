@@ -161,7 +161,18 @@ const GanttTask: React.FC<
             <AvatarFallback>{assignee.name[0]}</AvatarFallback>
           </Avatar>
           <span>{title}</span>
-          <CalendarDays className="h-4 w-4 opacity-70" />
+          <Badge
+            variant="outline"
+            className={`text-xs font-medium capitalize ${
+              priority === "Haute"
+                ? "text-red-600 dark:text-red-400"
+                : priority === "Moyenne"
+                ? "text-yellow-600 dark:text-yellow-400"
+                : "text-green-600 dark:text-green-400"
+            }`}
+          >
+            {priority}
+          </Badge>
         </motion.div>
       </HoverCardTrigger>
       <HoverCardContent className="w-80">
