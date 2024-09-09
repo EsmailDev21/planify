@@ -306,6 +306,7 @@ const GanttChart: React.FC<GanttChartProps> = ({
                 tags={task.tags}
                 status={task.status}
                 progress={task.progress}
+                color={task.color}
               />
             );
           })}
