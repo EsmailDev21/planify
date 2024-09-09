@@ -32,15 +32,15 @@ export type GanttTaskProps = {
 
 export const generateRandomColor = () => {
   const colors = [
-    "pink.500", // Light Pink
+    "pink-500", // Light Pink
     "primary", // Gold
-    "blue.500", // Light Sky Blue
-    "green.500", // Light Green
-    "red.500", // Light Salmon
-    "purple.500", // Light Purple
-    "teal.500", // Light Teal
-    "orange.500", // Light Orange
-    "indigo.500", // Light Indigo
+    "blue-500", // Light Sky Blue
+    "green-500", // Light Green
+    "red-500", // Light Salmon
+    "purple-500", // Light Purple
+    "teal-500", // Light Teal
+    "orange-500", // Light Orange
+    "indigo-500", // Light Indigo
   ];
   return colors[Math.floor(Math.random() * colors.length)];
 };
@@ -48,26 +48,26 @@ export const generateRandomColor = () => {
 // Function to get a lighter shade of the given color
 const getLighterColor = (color: string) => {
   switch (color) {
-    case "pink.500":
-      return "pink.400";
+    case "pink-500":
+      return "pink-400";
     case "primary":
-      return "primary.400";
-    case "blue.500":
-      return "blue.400";
-    case "green.500":
-      return "green.400";
-    case "red.500":
-      return "red.400";
-    case "purple.500":
-      return "purple.400";
-    case "teal.500":
-      return "teal.400";
-    case "orange.500":
-      return "orange.400";
-    case "indigo.500":
-      return "indigo.400";
+      return "primary-400";
+    case "blue-500":
+      return "blue-400";
+    case "green-500":
+      return "green-400";
+    case "red-500":
+      return "red-400";
+    case "purple-500":
+      return "purple-400";
+    case "teal-500":
+      return "teal-400";
+    case "orange-500":
+      return "orange-400";
+    case "indigo-500":
+      return "indigo-400";
     default:
-      return "gray.400"; // Fallback color
+      return "gray-400"; // Fallback color
   }
 };
 
@@ -149,7 +149,7 @@ const GanttTask: React.FC<
               color,
             })
           }
-          className={`rounded-full my-1 p-2 text-white cursor-pointer flex items-center justify-between bg-gradient-to-r ${gradientColor}`}
+          className={`rounded-full my-1 p-2  text-white cursor-pointer flex items-center justify-between bg-gradient-to-r ${gradientColor}`}
           style={{
             gridRow: gridRow,
             gridColumnStart: gridColStart,
