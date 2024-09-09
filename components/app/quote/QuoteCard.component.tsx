@@ -23,12 +23,17 @@ type QuoteCardProps = {
   quote: QuoteModel;
   onDragStart: (event: React.DragEvent<HTMLDivElement>) => void;
   onDragEnd: (event: React.DragEvent<HTMLDivElement>) => void;
+
+  onTouchStart: (event: React.TouchEvent<HTMLDivElement>) => void;
+  onTouchEnd: (event: React.TouchEvent<HTMLDivElement>) => void;
 };
 
 const QuoteCard: React.FC<QuoteCardProps> = ({
   quote,
   onDragStart,
   onDragEnd,
+  onTouchStart,
+  onTouchEnd,
 }) => {
   return (
     <Card
@@ -36,6 +41,8 @@ const QuoteCard: React.FC<QuoteCardProps> = ({
       draggable
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
       className="shadow-sm rounded-lg border border-slate-200 dark:border-slate-700 cursor-grab"
     >
       <CardHeader className="flex items-center justify-between space-x-4">

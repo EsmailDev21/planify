@@ -8,6 +8,12 @@ body {
   width: 98vw;
 }
 
+/* Add this CSS to your global styles or a relevant stylesheet */
+.no-scroll {
+  touch-action: none; /* Prevents scrolling during drag */
+}
+
+
 *,
 *::before,
 *::after {

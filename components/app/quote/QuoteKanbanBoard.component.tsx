@@ -39,7 +39,8 @@ const KanbanBoard: React.FC = () => {
   };
 
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-    setDraggingItemId(event.currentTarget.getAttribute("data-id"));
+    setDraggingItemId(event.currentTarget.getAttribute("data-id") || null);
+    document.body.classList.add("no-scroll"); // Prevent scrolling
   };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -57,15 +58,11 @@ const KanbanBoard: React.FC = () => {
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault(); // Prevent default behavior
-    console.log("dropping");
-    const targetColumnId = event.currentTarget.getAttribute("data-id");
 
-    console.log({ targetColumnId, activeColumnId, draggingItemId });
+    const targetColumnId = event.currentTarget.getAttribute("data-id");
     if (activeColumnId && draggingItemId && targetColumnId) {
       const sourceStatus = idToStatus[activeColumnId];
       const destinationStatus = idToStatus[targetColumnId];
-
-      console.log({ sourceStatus, destinationStatus });
 
       // Find the quote being dragged
       const quote = quotes.find((q) => q.id === draggingItemId);
@@ -84,15 +81,58 @@ const KanbanBoard: React.FC = () => {
       setDraggingItemId(null);
       setActiveColumnId(null);
     }
+
+    document.body.classList.remove("no-scroll"); // Re-enable scrolling
   };
 
   const handleDragEnd = () => {
     setDraggingItemId(null);
     setActiveColumnId(null);
+    document.body.classList.remove("no-scroll"); // Re-enable scrolling
+  };
+
+  // Touch-specific handlers
+  const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    // Handle touch-specific drag start
+    setDraggingItemId(event.currentTarget.getAttribute("data-id") || null);
+    document.body.classList.add("no-scroll");
+  };
+
+  const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    // Prevent touch move from scrolling the whole view
+    //event.preventDefault();
+  };
+
+  const handleTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+    // Handle touch-specific drag end
+    const targetColumnId = event.currentTarget.getAttribute("data-id");
+    if (activeColumnId && draggingItemId && targetColumnId) {
+      const sourceStatus = idToStatus[activeColumnId];
+      const destinationStatus = idToStatus[targetColumnId];
+
+      if (sourceStatus !== destinationStatus) {
+        // Find the quote being dragged
+        const quote = quotes.find((q) => q.id === draggingItemId);
+
+        if (quote) {
+          // Update the quote's status if moved to a different column
+          dispatch(
+            updateQuote({
+              ...quote,
+              status: destinationStatus,
+            })
+          );
+        }
+      }
+    }
+
+    setDraggingItemId(null);
+    setActiveColumnId(null);
+    document.body.classList.remove("no-scroll");
   };
 
   return (
-    <div className="grid grid-cols-3 gap-2">
+    <div className="grid grid-cols-3 gap-4">
       {Object.entries(quotesByStatus).map(([status, quotes]) => (
         <DroppableColumn
           key={status}
@@ -103,6 +143,9 @@ const KanbanBoard: React.FC = () => {
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onDragEnd={handleDragEnd}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
           {quotes.map((quote) => (
             <QuoteCard
@@ -110,6 +153,8 @@ const KanbanBoard: React.FC = () => {
               quote={quote}
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
             />
           ))}
         </DroppableColumn>
