@@ -40,7 +40,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }: SidebarProps) => {
 
   const navItems = [
     { href: "#dashboard", label: "Tableau de Bord", icon: PiChartBarDuotone },
-    { href: "/app/devis", label: "Dévis", icon: PiInvoiceDuotone },
+    { href: "/app/quotes", label: "Mes Dévis", icon: PiInvoiceDuotone },
     { href: "/app/projects", label: "Projets", icon: PiHouseDuotone },
     { href: "/app/tasks", label: "Tâches", icon: PiListChecksDuotone },
     { href: "#equipment", label: "Équipement", icon: PiToolboxDuotone },
