@@ -38,7 +38,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DatePicker } from "@/components/ui/date-picker";
 import { format } from "date-fns";
-import { generateRandomColor } from "../views/GanttTask.component";
+import { generateRandomAvatar, generateRandomColor } from "../views/GanttTask.component";
 
 type AddTaskDialogProps = {
   isOpen: boolean;
@@ -118,7 +118,10 @@ export function AddTaskDialog({
       endDate,
       priority,
       tags,
-      assignee,
+      assignee:{
+        name:assignee.name,
+        avatarUrl:`/assets/images/avatars/${generateRandomAvatar()}.png`
+      },
       status,
       progress,
       color: generateRandomColor(),

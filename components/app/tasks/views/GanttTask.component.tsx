@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/hover-card";
 import { Badge } from "@/components/ui/badge";
 import { motion, PanInfo } from "framer-motion";
-import { PiTagLight } from "react-icons/pi";
+import { PiFlagBannerLight, PiTagLight } from "react-icons/pi";
 
 // Define the props for the GanttTask component
 export type GanttTaskProps = {
@@ -32,42 +32,57 @@ export type GanttTaskProps = {
 
 export const generateRandomColor = () => {
   const colors = [
-    "pink-500", // Light Pink
-    "primary", // Gold
-    "blue-500", // Light Sky Blue
-    "green-500", // Light Green
-    "red-500", // Light Salmon
-    "purple-500", // Light Purple
-    "teal-500", // Light Teal
-    "orange-500", // Light Orange
-    "indigo-500", // Light Indigo
+    "#f43f5e", // Light Pink
+    "#fbbf24", // Gold
+    "#3b82f6", // Light Sky Blue
+    "#22c55e", // Light Green
+    "#ef4444", // Light Salmon
+    "#8b5cf6", // Light Purple
+    "#2dd4bf", // Light Teal
+    "#fb923c", // Light Orange
+    "#d946ef", // Light Indigo
   ];
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
+export const generateRandomAvatar = () => {
+  const avatars = [
+    "avatar1", // Light Pink
+    "avatar2", // Gold
+    "avatar3", // Light Sky Blue
+    "avatar4", // Light Green
+    "avatar5", // Light Salmon
+    "avatar6", // Light Purple
+    "avatar7", // Light Teal
+    "avatar8", // Light Orange
+    "avatar9",
+    "avatar10", // Light Indigo
+  ];
+  return avatars[Math.floor(Math.random() * avatars.length)];
+};
 // Function to get a lighter shade of the given color
 const getLighterColor = (color: string) => {
   switch (color) {
-    case "pink-500":
-      return "pink-400";
-    case "primary":
-      return "primary-400";
-    case "blue-500":
-      return "blue-400";
-    case "green-500":
-      return "green-400";
-    case "red-500":
-      return "red-400";
-    case "purple-500":
-      return "purple-400";
-    case "teal-500":
-      return "teal-400";
-    case "orange-500":
-      return "orange-400";
-    case "indigo-500":
-      return "indigo-400";
+    case "#f43f5e":
+      return "#fb7185";
+    case "#fbbf24":
+      return "#fcd34d";
+    case "#3b82f6":
+      return "#60a5fa";
+    case "#22c55e":
+      return "#4ade80";
+    case "#ef4444":
+      return "#f87171";
+    case "#8b5cf6":
+      return "#a78bfa";
+    case "#2dd4bf":
+      return "#5eead4";
+    case "#fb923c":
+      return "#fdba74";
+    case "#d946ef":
+      return "#e879f9";
     default:
-      return "gray-400"; // Fallback color
+      return "#94a3b8"; // Fallback color
   }
 };
 
@@ -96,10 +111,11 @@ const GanttTask: React.FC<
   status,
   color,
 }) => {
-  const gradientColor = useMemo(
-    () => `from-${color} to-${getLighterColor(color)}`,
-    [color]
-  );
+  const progressStyle = {
+    background: `linear-gradient(to right, ${color} ${progress}%, ${getLighterColor(
+      color
+    )} ${progress}%)`,
+  };
 
   return (
     <HoverCard>
@@ -149,11 +165,12 @@ const GanttTask: React.FC<
               color,
             })
           }
-          className={`rounded-full my-1 p-2  text-white cursor-pointer flex items-center justify-between bg-gradient-to-r to-${progress}% ${gradientColor}`}
+          className={`rounded-full my-1 p-2  text-white cursor-pointer flex items-center justify-between  `}
           style={{
             gridRow: gridRow,
             gridColumnStart: gridColStart,
             gridColumnEnd: gridColEnd,
+            ...progressStyle,
           }}
         >
           <Avatar className="h-7 rounded-full w-7">
@@ -162,15 +179,16 @@ const GanttTask: React.FC<
           </Avatar>
           <span>{title}</span>
           <Badge
-            variant="outline"
-            className={`text-xs font-medium capitalize ${
+            variant="default"
+            className={`text-xs flex space-x-2 justify-around items-center flex-row text-white font-medium capitalize ${
               priority === "Haute"
-                ? "text-red-600 dark:text-red-400"
+                ? "bg-red-600 dark:text-red-400"
                 : priority === "Moyenne"
-                ? "text-yellow-600 dark:text-yellow-400"
-                : "text-green-600 dark:text-green-400"
+                ? "bg-amber-400 dark:text-yellow-400"
+                : "bg-green-600 dark:text-green-400"
             }`}
           >
+            <PiFlagBannerLight className="mr-2" />
             {priority}
           </Badge>
         </motion.div>
