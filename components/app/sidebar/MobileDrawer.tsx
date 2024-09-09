@@ -12,6 +12,7 @@ import {
   PiChartBarDuotone,
   PiGearSixDuotone,
   PiHamburgerLight,
+  PiInvoiceDuotone,
 } from "react-icons/pi"; // Phosphor duotone icons
 import PlanifyLogo from "@/components/logo/PlanifyLogo";
 import { Button } from "@/components/ui/button";
@@ -29,9 +30,9 @@ const MobileDrawer = () => {
 
   const navItems = [
     { href: "#dashboard", label: "Tableau de Bord", icon: PiChartBarDuotone },
-    { href: "/projects", label: "Projets", icon: PiHouseDuotone },
-    { href: "#tasks", label: "Tâches", icon: PiListChecksDuotone },
-    { href: "#team", label: "Équipe", icon: PiUserListDuotone },
+    { href: "/app/devis", label: "Dévis", icon: PiInvoiceDuotone },
+    { href: "/app/projects", label: "Projets", icon: PiHouseDuotone },
+    { href: "/app/tasks", label: "Tâches", icon: PiListChecksDuotone },
     { href: "#equipment", label: "Équipement", icon: PiToolboxDuotone },
     { href: "#reports", label: "Rapports", icon: PiClipboardDuotone },
     { href: "#settings", label: "Paramètres", icon: PiGearSixDuotone },

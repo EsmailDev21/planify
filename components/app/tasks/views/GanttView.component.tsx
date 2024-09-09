@@ -5,11 +5,8 @@ import {
   format,
   addDays,
   addMonths,
-  addWeeks,
   differenceInDays,
   endOfMonth,
-  startOfMonth,
-  differenceInWeeks,
   isBefore,
   differenceInHours,
 } from "date-fns";
@@ -18,19 +15,26 @@ import { Button } from "@/components/ui/button"; // Adjust if using different Sh
 import GanttTask, { GanttTaskProps } from "./GanttTask.component"; // Adjust the import path if necessary
 import { useDispatch, useSelector } from "react-redux";
 import { selectTasks, updateTask } from "@/lib/redux/slices/taskSlice";
+import {
+  generateWeeksForMonth,
+  generateDays,
+  generateMonths,
+  generateWeeks,
+} from "@/lib/utils";
 
 interface GanttChartProps {
   zoomLevel: number;
   tasks: GanttTaskProps[];
+  onForceRerender: () => void;
 }
 
-interface TaskCategory {
-  name: string;
-  tasks: GanttTaskProps[];
-}
 const AnimatedDiv = motion.div;
 
-const GanttChart: React.FC<GanttChartProps> = ({ zoomLevel, tasks }) => {
+const GanttChart: React.FC<GanttChartProps> = ({
+  zoomLevel,
+  tasks,
+  onForceRerender,
+}) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -38,9 +42,11 @@ const GanttChart: React.FC<GanttChartProps> = ({ zoomLevel, tasks }) => {
   const [scrollStartX, setScrollStartX] = useState(0);
   const [startDragColumn, setStartDragColumn] = useState(0);
   const [endDragColumn, setEndDragColumn] = useState(0);
-  const initialDragPos = useRef(0);
-  const finalDragPos = useRef(0);
-
+  const [draggedTask, setDraggedTask] = useState<GanttTaskProps | null>(null);
+  const [draggedTaskPosition, setDraggedTaskPosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const [isOver, setIsOver] = useState<number>(0);
 
   // horizontal scroll logic
@@ -63,6 +69,14 @@ const GanttChart: React.FC<GanttChartProps> = ({ zoomLevel, tasks }) => {
       const deltaX = scrollStartX - event.clientX;
       bodyRef.current.scrollLeft += deltaX;
       setScrollStartX(event.clientX);
+
+      // Update the position of the dragged task
+      if (draggedTask) {
+        setDraggedTaskPosition({
+          x: event.clientX,
+          y: event.clientY,
+        });
+      }
     }
   };
 
@@ -88,77 +102,40 @@ const GanttChart: React.FC<GanttChartProps> = ({ zoomLevel, tasks }) => {
     };
   }, [isDragging, scrollStartX]);
   //gantt params
-  const startDate = new Date();
+  const startDate = addDays(new Date(), -30);
   const totalDays = 365;
   const dayColumnWidth = zoomLevel * 10;
-  const topRow = [];
+  const topRow: any[] = [];
   const bottomRow: { label: string; width: number; date: Date }[] = [];
   const gridTemplateRows = `repeat(${7}, auto)`;
-  //gantt task categories
-
-  //task update on drag
-
   const handleMouseEnterGridItem = (index: number) => {
-    console.log(index);
     setIsOver(index);
   };
-
-  // Handles the start of dragging.
-  console.log(tasks);
   const onDragStart = useCallback(
     (
       event: MouseEvent | PointerEvent | TouchEvent,
       info: PanInfo,
       task: GanttTaskProps
     ) => {
-      // Prevent the default behavior and prevent conflicts with other elements.
       event.preventDefault();
       setIsDraggingTask(true);
+      setDraggedTask(task);
       setStartDragColumn(
         Math.trunc(differenceInHours(task.startDate, startDate) / 24) + 1
       );
       setEndDragColumn(
         Math.trunc(differenceInHours(task.endDate, startDate) / 24) + 1
       );
-
-      /* // Set dragging state to true.
-      initialDragPos.current = info.offset.x;
-      console.log({ initialDragPos, offset: info.offset.x }); */ // Set the initial position when dragging starts.
     },
-    [] // No dependencies are needed here unless you update more variables inside this function.
+    [startDate]
   );
 
-  const getGridItemEquivalentDate = (index: number) => {
-    console.log(new Date(bottomRow[index].date));
-    return new Date(bottomRow[index].date);
-  };
+  const [tasksUpdated, setTasksUpdated] = useState<boolean>(false);
 
-  const onDrag = useCallback(
-    (
-      event: MouseEvent | PointerEvent | TouchEvent,
-      info: PanInfo,
-      task: Partial<GanttTaskProps>
-    ) => {
-      // Find the index of the grid cell currently hovered
-      if (info.offset.x < 0) {
-        setStartDragColumn((prev) => prev - 1);
-        setEndDragColumn((prev) => prev - 1);
-      } else {
-        setEndDragColumn((prev) => prev + 1);
-        setStartDragColumn((prev) => prev + 1);
-      }
-    },
-    [dayColumnWidth]
-  );
-  const dispatch = useDispatch();
   const onDragEnd = (event: any, info: PanInfo, task: GanttTaskProps) => {
     event.preventDefault();
-
     const offsetX = info.offset.x;
-
-    // Convert the drag distance to days
     const daysMoved = Math.round(offsetX / dayColumnWidth);
-
     if (Math.abs(daysMoved) > 0) {
       dispatch(
         updateTask({
@@ -168,71 +145,24 @@ const GanttChart: React.FC<GanttChartProps> = ({ zoomLevel, tasks }) => {
         })
       );
     }
-  }; //month weeks generator
-  const generateWeeksForMonth = (currentMonth: Date) => {
-    const daysInMonth =
-      differenceInDays(endOfMonth(currentMonth), startOfMonth(currentMonth)) +
-      1;
-    const weekWidth = Math.round(daysInMonth / 4) * dayColumnWidth;
+    onForceRerender();
+    setDraggedTask(null);
+    setDraggedTaskPosition(null);
+  };
 
-    for (let i = 0; i < 4; i++) {
-      topRow.push({
-        label: `${format(currentMonth, "MMMM yyyy")} - Week ${i + 1}`,
-        width: weekWidth,
-      });
-    }
-  };
-  //months generator
-  const generateMonths = () => {
-    let currentMonth = startDate;
-    while (isBefore(currentMonth, addDays(startDate, totalDays))) {
-      topRow.push({
-        label: format(currentMonth, "MMMM yyyy"),
-        width:
-          differenceInDays(endOfMonth(currentMonth), currentMonth) *
-          dayColumnWidth,
-      });
-      currentMonth = addMonths(currentMonth, 1);
-    }
-  };
-  //weeks generator
-  const generateWeeks = () => {
-    let currentWeek = startDate;
-    for (
-      let i = 0;
-      i < differenceInWeeks(addDays(startDate, totalDays), startDate);
-      i++
-    ) {
-      bottomRow.push({
-        label: `Week ${format(currentWeek, "w")}`,
-        width: 7 * dayColumnWidth,
-        date: currentWeek,
-      });
-      currentWeek = addWeeks(currentWeek, 1);
-    }
-  };
-  //days generator
-  const generateDays = () => {
-    for (let i = 0; i < totalDays; i++) {
-      const date = addDays(startDate, i);
-      bottomRow.push({
-        label: `${format(date, "dd")} ${format(date, "EEE")}`,
-        width: dayColumnWidth,
-        date: date,
-      });
-    }
-  };
+  const dispatch = useDispatch();
+
   //zoom logic
   if (zoomLevel > 5) {
     let currentMonth = startDate;
     while (isBefore(currentMonth, addDays(startDate, totalDays))) {
-      generateWeeksForMonth(currentMonth);
+      generateWeeksForMonth(currentMonth, topRow, dayColumnWidth);
       currentMonth = addMonths(currentMonth, 1);
     }
-    generateDays();
+    generateDays(startDate, totalDays, bottomRow, dayColumnWidth);
   } else if (zoomLevel > 2 && zoomLevel <= 5) {
-    generateMonths();
-    generateWeeks();
+    generateMonths(startDate, totalDays, topRow, dayColumnWidth);
+    generateWeeks(startDate, totalDays, bottomRow, dayColumnWidth);
   } else {
     let currentYear = startDate;
     for (
@@ -260,8 +190,14 @@ const GanttChart: React.FC<GanttChartProps> = ({ zoomLevel, tasks }) => {
     }
   }
 
+  useEffect(() => {
+    if (tasksUpdated) {
+      setTasksUpdated(false); // Reset the state
+    }
+  }, [tasksUpdated]);
+
   return (
-    <div className="max-w-6xl">
+    <div className="max-w-xl">
       <div
         ref={headerRef}
         className="whitespace-nowrap border-b border-gray-300  w-full bg-gray-50"
@@ -314,15 +250,15 @@ const GanttChart: React.FC<GanttChartProps> = ({ zoomLevel, tasks }) => {
         >
           {bottomRow.map((i, index) => (
             <div
-              key={index + 1}
+              key={index}
               style={{
-                gridRow: index + 1,
-                gridColumn: index + 1,
+                gridRow: index,
+                gridColumn: index,
                 width: `${i.width}px`,
               }}
             ></div>
           ))}
-          {Array(15)
+          {Array(7)
             .fill("1")
             .map((i, rowIndex) =>
               bottomRow.map((_, colIndex) => (
@@ -338,18 +274,16 @@ const GanttChart: React.FC<GanttChartProps> = ({ zoomLevel, tasks }) => {
                     gridRow: rowIndex + 1,
                     height: "50px",
                   }}
-                >
-                  {colIndex + 1}
-                </div>
+                ></div>
               ))
             )}
 
           {tasks.map((task, index) => {
             const gridColStart =
               // Math.trunc(differenceInHours(task.startDate, startDate)/24)
-              Math.trunc(differenceInHours(task.startDate, startDate) / 24) + 1;
+              differenceInDays(task.startDate, bottomRow[0].date) + 2;
             const gridColEnd =
-              Math.trunc(differenceInHours(task.endDate, startDate) / 24) + 2;
+              differenceInDays(task.endDate, bottomRow[0].date) + 3;
             console.log({ gridColEnd, gridColStart });
 
             return (
@@ -363,7 +297,9 @@ const GanttChart: React.FC<GanttChartProps> = ({ zoomLevel, tasks }) => {
                 id={task.id}
                 title={task.title}
                 gridRow={index + 1}
-                onDragEnd={(e, info, task) => onDragEnd(e, info, task)}
+                onDragEnd={(e: any, info: PanInfo, task: GanttTaskProps) =>
+                  onDragEnd(e, info, task)
+                }
                 gridColStart={gridColStart}
                 gridColEnd={gridColEnd}
                 priority={task.priority}

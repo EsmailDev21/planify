@@ -29,8 +29,13 @@ import {
 import { AppDispatch } from "@/lib/redux/store";
 import { addTask, selectTasks, setFilters } from "@/lib/redux/slices/taskSlice";
 import { AddTaskDialog, GanttTaskProps } from "./AddTask";
+import VerticalZoomSlider from "../views/GanttZoomSlider";
 
-const TaskTopBar: React.FC = () => {
+const TaskTopBar = ({
+  onZoomChange,
+}: {
+  onZoomChange: (zoomLevel: number) => void;
+}) => {
   const dispatch: AppDispatch = useDispatch();
   const { filters, tasks } = useSelector(selectTasks);
   const [isOpen, setOpen] = useState(false);
@@ -52,7 +57,7 @@ const TaskTopBar: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-4 p-4 bg-white dark:bg-slate-800 rounded-lg shadow-md mb-4">
+    <div className="flex flex-wrap  items-center gap-4 p-4 bg-white dark:bg-slate-800 rounded-lg shadow-md mb-4">
       {/* New Task Button */}
       <AddTaskDialog
         id={tasks.length.toString()}
@@ -183,6 +188,7 @@ const TaskTopBar: React.FC = () => {
         </PopoverContent>
       </Popover>
 
+      <VerticalZoomSlider onZoomChange={onZoomChange} />
       {/* Clear Filters Button */}
       <Button
         variant="ghost"

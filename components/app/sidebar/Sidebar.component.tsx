@@ -11,6 +11,7 @@ import {
   PiClipboardDuotone,
   PiChartBarDuotone,
   PiGearSixDuotone,
+  PiInvoiceDuotone,
 } from "react-icons/pi"; // Phosphor duotone icons
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import PlanifyLogo from "@/components/logo/PlanifyLogo";
@@ -39,9 +40,9 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }: SidebarProps) => {
 
   const navItems = [
     { href: "#dashboard", label: "Tableau de Bord", icon: PiChartBarDuotone },
+    { href: "/app/devis", label: "Dévis", icon: PiInvoiceDuotone },
     { href: "/app/projects", label: "Projets", icon: PiHouseDuotone },
     { href: "/app/tasks", label: "Tâches", icon: PiListChecksDuotone },
-    { href: "#team", label: "Équipe", icon: PiUserListDuotone },
     { href: "#equipment", label: "Équipement", icon: PiToolboxDuotone },
     { href: "#reports", label: "Rapports", icon: PiClipboardDuotone },
     { href: "#settings", label: "Paramètres", icon: PiGearSixDuotone },

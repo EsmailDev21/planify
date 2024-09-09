@@ -2,10 +2,11 @@
 import TaskTopBar from "@/components/app/tasks/components/TaskTopBar";
 import { GanttTaskProps } from "@/components/app/tasks/views/GanttTask.component";
 import GanttView from "@/components/app/tasks/views/GanttView.component";
+import VerticalZoomSlider from "@/components/app/tasks/views/GanttZoomSlider";
 import { selectTasks } from "@/lib/redux/slices/taskSlice";
 import { RootState } from "@/lib/redux/store";
 import { createSelector } from "@reduxjs/toolkit";
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 
 const TasksIndex = () => {
@@ -14,6 +15,11 @@ const TasksIndex = () => {
   const tasks = useSelector(selectAllTasks);
   const filters = useSelector(selectFilters);
 
+  const [rerenderFlag, setRerenderFlag] = useState(0);
+
+  const forceRerender = useCallback(() => {
+    setRerenderFlag((prev) => prev + 1);
+  }, []);
   const filteredTasks = (tasks: GanttTaskProps[], filters: any) => {
     return tasks.filter((task) => {
       const matchesStatus = !filters.status || task.status === filters.status;
@@ -41,10 +47,22 @@ const TasksIndex = () => {
       );
     });
   };
+  const [zoomLevel, setZoomLevel] = useState(6); // Initial zoom level
+
+  const handleZoomChange = (newZoomLevel: number) => {
+    setZoomLevel(newZoomLevel);
+  };
   return (
-    <div>
-      <TaskTopBar />
-      <GanttView tasks={filteredTasks(tasks, filters)} zoomLevel={6} />
+    <div className="flex flex-col">
+      <TaskTopBar onZoomChange={handleZoomChange} />
+      <div className="overflow-x-auto flex-grow flex">
+        <GanttView
+          onForceRerender={forceRerender}
+          key={rerenderFlag}
+          tasks={filteredTasks(tasks, filters)}
+          zoomLevel={zoomLevel}
+        />
+      </div>
     </div>
   );
 };

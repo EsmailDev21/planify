@@ -46,7 +46,7 @@ export type UserModel = {
   role: UserRole;
 };
 
-enum UserRole {
+export enum UserRole {
   CUSTOMER,
   ADMIN,
   BUSINESS_OWNER,
