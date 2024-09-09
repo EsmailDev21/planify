@@ -149,7 +149,7 @@ const GanttTask: React.FC<
               color,
             })
           }
-          className={`rounded-full my-1 p-2  text-white cursor-pointer flex items-center justify-between bg-gradient-to-r ${gradientColor}`}
+          className={`rounded-full my-1 p-2  text-white cursor-pointer flex items-center justify-between bg-gradient-to-r to-${progress}% ${gradientColor}`}
           style={{
             gridRow: gridRow,
             gridColumnStart: gridColStart,
