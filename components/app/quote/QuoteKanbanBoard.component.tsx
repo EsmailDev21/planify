@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { QuoteModel, QuoteStatus } from "@/lib/types/models";
+import { Priority, QuoteModel, QuoteStatus, Status } from "@/lib/types/models";
 import { DroppableColumn } from "./KanbanDroppableColumn.component";
 import QuoteCard from "./QuoteCard.component";
 import { selectQuotes, updateQuote } from "@/lib/redux/slices/quoteSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { addProject, selectProjects } from "@/lib/redux/slices/projectSlice";
 
 // Define status labels for the Kanban columns
 const statusLabels: Record<QuoteStatus, string> = {
@@ -24,7 +25,7 @@ const KanbanBoard: React.FC = () => {
   const [activeColumnId, setActiveColumnId] = useState<string | null>(null);
   const { quotes } = useSelector(selectQuotes);
   const dispatch = useDispatch();
-
+  const { projects } = useSelector(selectProjects);
   // Group quotes by status
   const quotesByStatus = {
     [QuoteStatus.PENDING]: quotes.filter(
@@ -75,6 +76,25 @@ const KanbanBoard: React.FC = () => {
             status: destinationStatus,
           })
         );
+        if (destinationStatus === idToStatus[QuoteStatus.ACCEPTED]) {
+          dispatch(
+            addProject({
+              address: "",
+              id: projects.length.toString(),
+              title: "Projet associé au devis " + quote.id,
+              description: "",
+              thumbnail: "",
+              client: quote.client,
+              tags: [],
+              priority: Priority.HIGH,
+              status: Status.TODO,
+              dueDate: new Date(),
+              progress: 0,
+              createdAt: new Date(),
+              teamMembers: [],
+            })
+          );
+        }
       }
 
       // Reset dragging state
