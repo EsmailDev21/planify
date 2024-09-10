@@ -10,7 +10,7 @@ import {
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { PiCalendarCheckLight, PiEyeLight } from "react-icons/pi";
+import { PiCalendarCheckLight, PiCalendarSlashLight, PiEyeLight, PiUserCircleGearLight, PiUserCircleLight } from "react-icons/pi";
 import { ClientModel } from "@/lib/types/models";
 
 type ProjectCardProps = {
@@ -36,7 +36,7 @@ const ProjectCardResumed: React.FC<ProjectCardProps> = ({
           {title}
         </CardTitle>
         <p className="text-sm text-slate-600 dark:text-slate-400">
-          Client: {client.fullName}
+          <PiUserCircleLight /> {client.fullName}
         </p>
       </CardHeader>
 
@@ -52,8 +52,8 @@ const ProjectCardResumed: React.FC<ProjectCardProps> = ({
 
         {/* Due Date */}
         <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400 mt-4">
-          <PiCalendarCheckLight className="w-4 h-4" />
-          <span>Date limite : {dueDate.toLocaleDateString()}</span>
+          <PiCalendarSlashLight  className="w-4 h-4" />
+          <span>{dueDate.toLocaleDateString()}</span>
         </div>
       </CardContent>
 

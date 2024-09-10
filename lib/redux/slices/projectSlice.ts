@@ -16,7 +16,7 @@ type ProjectState = {
 
 // Initial state
 const initialState: ProjectState = {
-  projects: sampleProjects,
+  projects: [],
   filters: {
     status: "",
     priority: "",

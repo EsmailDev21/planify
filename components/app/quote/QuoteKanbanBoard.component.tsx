@@ -4,13 +4,18 @@ import { DroppableColumn } from "./KanbanDroppableColumn.component";
 import QuoteCard from "./QuoteCard.component";
 import { selectQuotes, updateQuote } from "@/lib/redux/slices/quoteSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { addProject, selectProjects } from "@/lib/redux/slices/projectSlice";
+import {
+  addProject,
+  deleteProject,
+  selectProjects,
+} from "@/lib/redux/slices/projectSlice";
+import { generateRandomAvatar } from "../tasks/views/GanttTask.component";
 
 // Define status labels for the Kanban columns
 const statusLabels: Record<QuoteStatus, string> = {
-  [QuoteStatus.PENDING]: "Pending",
-  [QuoteStatus.ACCEPTED]: "Accepted",
-  [QuoteStatus.REJECTED]: "Rejected",
+  [QuoteStatus.PENDING]: "En Attente",
+  [QuoteStatus.ACCEPTED]: "Accepté",
+  [QuoteStatus.REJECTED]: "Réjeté",
 };
 
 // Mapping from sortable IDs to statuses
@@ -76,24 +81,47 @@ const KanbanBoard: React.FC = () => {
             status: destinationStatus,
           })
         );
-        if (destinationStatus === idToStatus[QuoteStatus.ACCEPTED]) {
-          dispatch(
-            addProject({
-              address: "",
-              id: projects.length.toString(),
-              title: "Projet associé au devis " + quote.id,
-              description: "",
-              thumbnail: "",
-              client: quote.client,
-              tags: [],
-              priority: Priority.HIGH,
-              status: Status.TODO,
-              dueDate: new Date(),
-              progress: 0,
-              createdAt: new Date(),
-              teamMembers: [],
-            })
-          );
+        console.log({ destinationStatus, status: idToStatus["Sortable-1"] });
+        if (destinationStatus === idToStatus["Sortable-1"]) {
+          if (!projects.find((i) => i.title === quote.title)) {
+            dispatch(
+              addProject({
+                address: quote.address,
+                id: projects.length.toString(),
+                title: quote.title,
+                description: quote.description,
+                thumbnail: quote.thumbnail,
+                client: quote.client,
+                tags: [],
+                priority: Priority.HIGH,
+                status: Status.TODO,
+                dueDate: quote.dueDate,
+                progress: 0,
+                createdAt: new Date(),
+                teamMembers: [
+                  {
+                    fullName: quote.sender.fullName,
+                    profilePhoto:
+                      "/assets/images/avatars/" +
+                      generateRandomAvatar() +
+                      ".png",
+                  },
+                ],
+              })
+            );
+          }
+        }
+        if (destinationStatus === idToStatus["Sortable-0"]) {
+          const id = projects.find((i) => i.title === quote.title)?.id;
+          if (id) {
+            dispatch(deleteProject(id));
+          }
+        }
+        if (destinationStatus === idToStatus["Sortable-2"]) {
+          const id = projects.find((i) => i.title === quote.title)?.id;
+          if (id) {
+            dispatch(deleteProject(id));
+          }
         }
       }
 

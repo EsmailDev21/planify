@@ -14,11 +14,13 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
+  PiAddressBookLight,
   PiCalendarCheckLight,
   PiEyeLight,
   PiPenLight,
   PiStarLight,
   PiTagLight,
+  PiUserCheckLight,
   PiUserPlusLight,
 } from "react-icons/pi";
 import { ProjectUpdateCard } from "./UpdateProjectDialog.component";
@@ -125,8 +127,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </div>
           {/* Client Information */}
           <div className="flex items-center space-x-2 mt-2">
-            <span className="font-medium text-sm h-full border-r px-2 border-slate-400 text-slate-700">
-              Client
+            <span className="font-medium text-sm h-full border-r px-2 border-slate-400 text-slate-500">
+              <PiUserCheckLight className="w-4 h-4" />
             </span>
             <Avatar className="w-8 h-8">
               {client.profilePhoto ? (
@@ -154,8 +156,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </CardDescription>
 
         {/* Address */}
-        <div className="text-xs text-slate-500 dark:text-slate-400">
-          <strong>Adresse :</strong> {address}
+        <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400 mb-4">
+          <PiAddressBookLight className="w-4 h-4" />
+          <span> {address}</span>
         </div>
 
         {/* Tags */}

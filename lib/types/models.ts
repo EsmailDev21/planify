@@ -65,13 +65,17 @@ export type ClientModel = Partial<
 export type QuoteModel = {
   id: string;
   projectId: string; // Reference to the ProjectModel
+  title:string;
   sender: AutoEntrepreneur | BusinessOwner; // The person who sends the quote
   client: ClientModel; // The recipient of the quote
   amount: number; // Quoted price
   description: string; // Description of the quote
   status: QuoteStatus; // Status of the quote (e.g., PENDING, ACCEPTED, REJECTED)
   createdAt: Date;
+  dueDate:Date;
   updatedAt?: Date;
+  thumbnail:string;
+  address:string
 };
 
 export enum QuoteStatus {
