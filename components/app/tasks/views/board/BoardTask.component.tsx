@@ -1,19 +1,26 @@
 import React from "react";
 import { CalendarDays } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { Badge } from "@/components/ui/badge";
 import { motion, PanInfo } from "framer-motion";
 import { PiFlagBannerLight, PiTagLight } from "react-icons/pi";
 import { Priority, TaskModel, TeamMember } from "@/lib/types/models";
-import { transFormPriority, transFormStatus } from "@/components/app/projects/ProjectCard.component";
+import {
+  transFormPriority,
+  transFormStatus,
+} from "@/components/app/projects/ProjectCard.component";
 
 // Define the props for the BoardTask component
 export type BoardTaskProps = TaskModel & {
-    onDragStart: (event: React.DragEvent<HTMLDivElement>) => void;
-    onDragEnd: (event: React.DragEvent<HTMLDivElement>) => void;
-    onTouchStart: (event: React.TouchEvent<HTMLDivElement>) => void;
-    onTouchEnd: (event: React.TouchEvent<HTMLDivElement>) => void;
+  onDragStart: (event: React.DragEvent<HTMLDivElement>) => void;
+  onDragEnd: (event: React.DragEvent<HTMLDivElement>) => void;
+  onTouchStart: (event: React.TouchEvent<HTMLDivElement>) => void;
+  onTouchEnd: (event: React.TouchEvent<HTMLDivElement>) => void;
 };
 
 // BoardTask component
@@ -36,9 +43,10 @@ const BoardTask: React.FC<BoardTaskProps> = ({
     <HoverCard>
       <HoverCardTrigger asChild>
         <div
-            
+          data-id={id}
+          draggable
           onDragStart={onDragStart}
-          onDragEnd={onDragEnd          }
+          onDragEnd={onDragEnd}
           className={`p-4 bg-white shadow-md rounded-lg mb-4 cursor-pointer border-l-4`}
           style={{ borderLeftColor: color }}
         >
@@ -58,12 +66,20 @@ const BoardTask: React.FC<BoardTaskProps> = ({
               {transFormPriority(priority)}
             </Badge>
           </div>
-          <div className="text-sm text-muted-foreground mb-2">{description || "No description available"}</div>
+          <div className="text-sm text-muted-foreground mb-2">
+            {description || "No description available"}
+          </div>
           <div className="flex -space-x-2 overflow-hidden mb-2">
             {teamMembers.map((member: TeamMember, index: number) => (
-              <Avatar key={index} className="w-8 h-8 hover:scale-110 transition-transform duration-200">
+              <Avatar
+                key={index}
+                className="w-8 h-8 hover:scale-110 transition-transform duration-200"
+              >
                 {member.profilePhoto ? (
-                  <AvatarImage src={member.profilePhoto} alt={member.fullName} />
+                  <AvatarImage
+                    src={member.profilePhoto}
+                    alt={member.fullName}
+                  />
                 ) : (
                   <AvatarFallback>{member.fullName[0]}</AvatarFallback>
                 )}
@@ -79,7 +95,9 @@ const BoardTask: React.FC<BoardTaskProps> = ({
       <HoverCardContent className="w-80">
         <div className="space-y-2">
           <h4 className="text-sm font-semibold">{title}</h4>
-          <p className="text-sm text-muted-foreground">{description || "No description available"}</p>
+          <p className="text-sm text-muted-foreground">
+            {description || "No description available"}
+          </p>
           <div className="flex space-x-2">
             <Badge
               variant="outline"
@@ -99,7 +117,11 @@ const BoardTask: React.FC<BoardTaskProps> = ({
           </div>
           <div className="flex flex-wrap gap-1 mt-2">
             {tags.map((tag, index) => (
-              <Badge key={index} variant="secondary" className="text-xs flex items-center space-x-1">
+              <Badge
+                key={index}
+                variant="secondary"
+                className="text-xs flex items-center space-x-1"
+              >
                 <PiTagLight className="w-3 h-3" /> <span>{tag}</span>
               </Badge>
             ))}

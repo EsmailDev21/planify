@@ -7,9 +7,9 @@ import BoardTask from "./BoardTask.component";
 
 // Define status labels for the Task columns
 const statusLabels: Record<Status, string> = {
-  [Status.TODO]: "To Do",
-  [Status.IN_PROGRESS]: "In Progress",
-  [Status.DONE]: "Done",
+  [Status.TODO]: "à Faire",
+  [Status.IN_PROGRESS]: "En cours",
+  [Status.DONE]: "Terminé",
 };
 
 // Mapping from sortable IDs to statuses
