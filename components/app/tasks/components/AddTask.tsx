@@ -39,7 +39,7 @@ import {
 import { DatePicker } from "@/components/ui/date-picker";
 import { format } from "date-fns";
 import { generateRandomAvatar, generateRandomColor } from "../views/GanttTask.component";
-import {TaskModel} from "@/lib/types/models"
+import {TaskModel,Priority,Status} from "@/lib/types/models"
 type AddTaskDialogProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -116,14 +116,14 @@ export function AddTaskDialog({
       title,
       startDate,
       endDate,
-      priority,
+      priority:priority="Haute"?Priority.HIGH:priority="Moyenne"?Priority.MEDIUM:Priority.LOW,
       description:"",
       tags,
       teamMembers:[{
         name:assignee.name,
         avatarUrl:`/assets/images/avatars/${generateRandomAvatar()}.png`
       }],
-      status,
+      status:status="À faire"?Status.TODO:status="En cours"?Status.IN_PROGRESS:Status.DONE,
       progress,
       color: generateRandomColor(),
     };
