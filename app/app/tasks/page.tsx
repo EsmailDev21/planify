@@ -69,7 +69,7 @@ const TasksIndex = () => {
           key={"GANTT"}
           onClick={() => setView("GANTT")}
           variant={"outline"}
-          className="text-slate-900 text-sm hover:bg-slate-100 flex flex-row space-x-2"
+          className="text-slate-900 text-sm hover:bg-slate-100 flex flex-row space-x-2 cursor-pointer"
         >
           <PiAlignLeftLight />
           <span>Gantt</span>
@@ -78,7 +78,7 @@ const TasksIndex = () => {
           key={"BOARD"}
           onClick={() => setView("BOARD")}
           variant={"outline"}
-          className="text-slate-900 text-sm hover:bg-slate-100 flex flex-row space-x-2"
+          className="text-slate-900 text-sm hover:bg-slate-100 flex flex-row space-x-2 cursor-pointer"
         >
           <PiColumnsLight />
           <span>Board</span>
@@ -87,7 +87,7 @@ const TasksIndex = () => {
           key={"LIST"}
           onClick={() => setView("LIST")}
           variant={"outline"}
-          className="text-slate-900 text-sm hover:bg-slate-100 flex flex-row space-x-2"
+          className="text-slate-900 text-sm hover:bg-slate-100 flex flex-row space-x-2 cursor-pointer"
         >
           <PiListChecksLight />
           <span>List</span>
