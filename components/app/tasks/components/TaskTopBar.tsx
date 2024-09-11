@@ -30,7 +30,7 @@ import { AppDispatch } from "@/lib/redux/store";
 import { addTask, selectTasks, setFilters } from "@/lib/redux/slices/taskSlice";
 import { AddTaskDialog, GanttTaskProps } from "./AddTask";
 import VerticalZoomSlider from "../views/GanttZoomSlider";
-
+import {TaskModel} from "@/lib/types/models"
 const TaskTopBar = ({
   onZoomChange,
 }: {
@@ -66,7 +66,7 @@ const TaskTopBar = ({
         onClose={function (): void {
           setOpen(!isOpen);
         }}
-        onSubmit={function (task: GanttTaskProps): void {
+        onSubmit={function (task: TaskModel): void {
           dispatch(addTask(task));
         }}
       />
