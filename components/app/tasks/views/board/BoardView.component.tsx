@@ -61,7 +61,7 @@ const BoardView = () => {
       // Find the task being dragged
       const task = tasks.find((t) => t.id === draggingTaskId);
 
-      if (task && sourceStatus !== destinationStatus) {
+      if (task) {
         // Update the task's status if moved to a different column
         console.log({ sourceStatus, destinationStatus });
         dispatch(
