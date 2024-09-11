@@ -116,14 +116,14 @@ export function AddTaskDialog({
       title,
       startDate,
       endDate,
-      priority:priority="Haute"?Priority.HIGH:priority="Moyenne"?Priority.MEDIUM:Priority.LOW,
+      priority:priority==="Haute"?Priority.HIGH:priority==="Moyenne"?Priority.MEDIUM:Priority.LOW,
       description:"",
       tags,
       teamMembers:[{
         name:assignee.name,
         avatarUrl:`/assets/images/avatars/${generateRandomAvatar()}.png`
       }],
-      status:status="À faire"?Status.TODO:status="En cours"?Status.IN_PROGRESS:Status.DONE,
+      status:status==="À faire"?Status.TODO:status==="En cours"?Status.IN_PROGRESS:Status.DONE,
       progress,
       color: generateRandomColor(),
     };
