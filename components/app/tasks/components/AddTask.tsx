@@ -120,8 +120,8 @@ export function AddTaskDialog({
       description:"",
       tags,
       teamMembers:[{
-        name:assignee.name,
-        avatarUrl:`/assets/images/avatars/${generateRandomAvatar()}.png`
+        fullName:assignee.name,
+        profilePhoto:`/assets/images/avatars/${generateRandomAvatar()}.png`
       }],
       status:status==="À faire"?Status.TODO:status==="En cours"?Status.IN_PROGRESS:Status.DONE,
       progress,
