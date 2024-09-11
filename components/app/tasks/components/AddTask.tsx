@@ -39,12 +39,12 @@ import {
 import { DatePicker } from "@/components/ui/date-picker";
 import { format } from "date-fns";
 import { generateRandomAvatar, generateRandomColor } from "../views/GanttTask.component";
-
+import {TaskModel} from "@/lib/types/models"
 type AddTaskDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   setOpen: (p: boolean) => void;
-  onSubmit: (task: GanttTaskProps) => void;
+  onSubmit: (task: TaskModel) => void;
   id: string;
 };
 
@@ -111,17 +111,18 @@ export function AddTaskDialog({
   const taskId = React.useId();
 
   const handleSubmit = () => {
-    const newTask: GanttTaskProps = {
+    const newTask: TaskModel = {
       id,
       title,
       startDate,
       endDate,
       priority,
+      description:"",
       tags,
-      assignee:{
+      teamMembers:[{
         name:assignee.name,
         avatarUrl:`/assets/images/avatars/${generateRandomAvatar()}.png`
-      },
+      }],
       status,
       progress,
       color: generateRandomColor(),
