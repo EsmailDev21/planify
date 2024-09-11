@@ -104,8 +104,8 @@ const GanttChart: React.FC<GanttChartProps> = ({
   }, [isDragging, scrollStartX]);
 
   //gantt params
-  const startDate = addDays(new Date(), -28);
-  const totalDays = 365;
+  const startDate = addDays(new Date(), -3);
+  const totalDays = 100;
   const dayColumnWidth = zoomLevel * 10;
   const topRow: any[] = [];
   const bottomRow: { label: string; width: number; date: Date }[] = [];
