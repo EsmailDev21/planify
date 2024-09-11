@@ -29,7 +29,7 @@ export const generateWeeksForMonth = (
   // Calculate number of weeks by checking the day of the week of the start and end of the month
   const startWeek = Math.floor(startOfMonthDate.getDate() / 7);
   const endWeek = Math.floor(endOfMonthDate.getDate() / 7);
-  const numberOfWeeks = endWeek - startWeek + 1;
+  const numberOfWeeks = endWeek - startWeek;
 
   for (let i = 0; i < numberOfWeeks; i++) {
     topRow.push({

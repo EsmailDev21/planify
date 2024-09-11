@@ -9,6 +9,7 @@ import {
   endOfMonth,
   isBefore,
   differenceInHours,
+  differenceInWeeks,
 } from "date-fns";
 import { BiMove } from "react-icons/bi";
 import { Button } from "@/components/ui/button"; // Adjust if using different Shadcn components
@@ -101,13 +102,15 @@ const GanttChart: React.FC<GanttChartProps> = ({
       document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isDragging, scrollStartX]);
+
   //gantt params
-  const startDate = addDays(new Date(), -30);
+  const startDate = addDays(new Date(), -28);
   const totalDays = 365;
   const dayColumnWidth = zoomLevel * 10;
   const topRow: any[] = [];
   const bottomRow: { label: string; width: number; date: Date }[] = [];
-  const gridTemplateRows = `repeat(${7}, auto)`;
+  const gridTemplateRows = `repeat(${tasks.length + 5}, auto)`;
+
   const handleMouseEnterGridItem = (index: number) => {
     setIsOver(index);
   };
@@ -244,7 +247,9 @@ const GanttChart: React.FC<GanttChartProps> = ({
           className="grid h-screen"
           style={{
             gridTemplateRows: gridTemplateRows,
-            gridTemplateColumns: `repeat(${bottomRow.length}, auto)`,
+            gridTemplateColumns: `repeat(${
+              zoomLevel > 5 ? bottomRow.length : bottomRow.length * 7
+            }, auto)`,
             // Add border for debugging
           }}
         >
@@ -279,19 +284,24 @@ const GanttChart: React.FC<GanttChartProps> = ({
             )}
 
           {tasks.map((task, index) => {
-            const gridColStart =
+            const gridDayColStart =
               // Math.trunc(differenceInHours(task.startDate, startDate)/24)
               differenceInDays(task.startDate, bottomRow[0].date) + 2;
-            const gridColEnd =
+            const gridDayColEnd =
               differenceInDays(task.endDate, bottomRow[0].date) + 3;
-            console.log({ gridColEnd, gridColStart });
 
+            const gridWeekColStart =
+              // Math.trunc(differenceInHours(task.startDate, startDate)/24)
+              differenceInWeeks(task.startDate, bottomRow[0].date) + 2;
+            const gridWeekColEnd =
+              differenceInWeeks(task.endDate, bottomRow[0].date) + 3;
             return (
               <GanttTask
                 onDrag={() => null}
                 onDragStart={onDragStart}
                 key={task.id}
-                assignee={task.assignee}
+                teamMembers={task.teamMembers}
+                description={task.description}
                 endDate={task.endDate}
                 startDate={task.startDate}
                 id={task.id}
@@ -300,8 +310,8 @@ const GanttChart: React.FC<GanttChartProps> = ({
                 onDragEnd={(e: any, info: PanInfo, task: GanttTaskProps) =>
                   onDragEnd(e, info, task)
                 }
-                gridColStart={gridColStart}
-                gridColEnd={gridColEnd}
+                gridColStart={gridDayColStart}
+                gridColEnd={gridDayColEnd}
                 priority={task.priority}
                 tags={task.tags}
                 status={task.status}

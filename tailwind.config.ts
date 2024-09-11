@@ -13,12 +13,17 @@ module.exports = withUt({
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: "1.5rem",
       screens: {
         "2xl": "1400px",
       },
     },
     extend: {
+      fontSize: {
+        sm: "0.7rem",
+        xs: "0.6rem",
+      },
+
       colors: {
         tremor: {
           brand: {

@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Priority, QuoteModel, QuoteStatus, Status } from "@/lib/types/models";
+import {
+  Priority,
+  QuoteItemType,
+  QuoteModel,
+  QuoteStatus,
+  Status,
+} from "@/lib/types/models";
 import { DroppableColumn } from "./KanbanDroppableColumn.component";
 import QuoteCard from "./QuoteCard.component";
 import { selectQuotes, updateQuote } from "@/lib/redux/slices/quoteSlice";
@@ -10,6 +16,7 @@ import {
   selectProjects,
 } from "@/lib/redux/slices/projectSlice";
 import { generateRandomAvatar } from "../tasks/views/GanttTask.component";
+import { addTask, selectTasks } from "@/lib/redux/slices/taskSlice";
 
 // Define status labels for the Kanban columns
 const statusLabels: Record<QuoteStatus, string> = {
@@ -25,12 +32,13 @@ const idToStatus: Record<string, QuoteStatus> = {
   "Sortable-2": QuoteStatus.REJECTED,
 };
 
-const KanbanBoard: React.FC = () => {
+const KanbanBoard = () => {
   const [draggingItemId, setDraggingItemId] = useState<string | null>(null);
   const [activeColumnId, setActiveColumnId] = useState<string | null>(null);
   const { quotes } = useSelector(selectQuotes);
   const dispatch = useDispatch();
   const { projects } = useSelector(selectProjects);
+  const { tasks } = useSelector(selectTasks);
   // Group quotes by status
   const quotesByStatus = {
     [QuoteStatus.PENDING]: quotes.filter(
@@ -109,6 +117,19 @@ const KanbanBoard: React.FC = () => {
                 ],
               })
             );
+          }
+          if (true) {
+            quote.items
+              .filter((i) => i.type === QuoteItemType.TASK)
+              .forEach((i) =>
+                i.task != undefined
+                  ? dispatch(
+                      addTask({
+                        ...i.task,
+                      })
+                    )
+                  : null
+              );
           }
         }
         if (destinationStatus === idToStatus["Sortable-0"]) {

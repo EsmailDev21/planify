@@ -24,12 +24,12 @@ const VerticalZoomSlider: React.FC<VerticalZoomSliderProps> = ({
       <Slider
         value={[zoomLevel]}
         onValueChange={handleZoomChange}
-        min={1}
+        min={6}
         max={10}
         step={1}
         className="w-48" // Adjust the height as needed
       />
-      <span className="text-sm ">{zoomLevel}</span>
+      <span className="text-sm ">{zoomLevel - 5}</span>
     </div>
   );
 };

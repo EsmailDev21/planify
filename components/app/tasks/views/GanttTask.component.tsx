@@ -9,25 +9,17 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { motion, PanInfo } from "framer-motion";
 import { PiFlagBannerLight, PiTagLight } from "react-icons/pi";
+import { Priority, TaskModel, TeamMember } from "@/lib/types/models";
+import {
+  transFormPriority,
+  transFormStatus,
+} from "../../projects/ProjectCard.component";
 
 // Define the props for the GanttTask component
-export type GanttTaskProps = {
-  id: string;
-  title: string;
-  startDate: Date;
-  endDate: Date;
-  priority: string;
-  tags: string[];
-  assignee: {
-    name: string;
-    avatarUrl: string;
-  };
+export type GanttTaskProps = TaskModel & {
   gridColStart?: number;
   gridColEnd?: number;
   gridRow?: number;
-  status: string;
-  progress: number;
-  color: string;
 };
 
 export const generateRandomColor = () => {
@@ -98,7 +90,8 @@ const GanttTask: React.FC<
   title,
   startDate,
   endDate,
-  assignee,
+  teamMembers,
+  description,
   gridColStart,
   gridColEnd,
   gridRow,
@@ -125,7 +118,8 @@ const GanttTask: React.FC<
           dragMomentum={false}
           onDrag={(event, info) =>
             onDrag(event, info, {
-              assignee,
+              teamMembers,
+              description,
               id,
               title,
               endDate,
@@ -139,7 +133,8 @@ const GanttTask: React.FC<
           }
           onDragStart={(event, info) =>
             onDragStart(event, info, {
-              assignee,
+              teamMembers,
+              description,
               id,
               title,
               endDate,
@@ -153,7 +148,8 @@ const GanttTask: React.FC<
           }
           onDragEnd={(event, info) =>
             onDragEnd(event, info, {
-              assignee,
+              teamMembers,
+              description,
               id,
               title,
               endDate,
@@ -173,36 +169,65 @@ const GanttTask: React.FC<
             ...progressStyle,
           }}
         >
-          <Avatar className="h-7 rounded-full w-7">
-            <AvatarImage src={assignee.avatarUrl} alt={assignee.name} />
-            <AvatarFallback>{assignee.name[0]}</AvatarFallback>
-          </Avatar>
+          <div className="flex -space-x-2 overflow-auto">
+            {teamMembers.map((member: TeamMember, index: number) => (
+              <Avatar
+                key={index}
+                className="w-8 h-8 hover:scale-110 transition-transform duration-200"
+              >
+                {member.profilePhoto ? (
+                  <AvatarImage
+                    src={member.profilePhoto}
+                    alt={member.fullName}
+                  />
+                ) : (
+                  <AvatarFallback>{member.fullName[0]}</AvatarFallback>
+                )}
+              </Avatar>
+            ))}
+          </div>
           <span>{title}</span>
           <Badge
             variant="default"
             className={`text-xs flex space-x-2 justify-around items-center flex-row text-white font-medium capitalize ${
-              priority === "Haute"
+              priority === Priority.HIGH
                 ? "bg-red-600 dark:text-red-400"
-                : priority === "Moyenne"
+                : priority === Priority.MEDIUM
                 ? "bg-amber-400 dark:text-yellow-400"
                 : "bg-green-600 dark:text-green-400"
             }`}
           >
             <PiFlagBannerLight className="mr-2" />
-            {priority}
+            {transFormPriority(priority)}
           </Badge>
         </motion.div>
       </HoverCardTrigger>
-      <HoverCardContent className="w-80">
+      <HoverCardContent className="w-96">
         <div className="flex justify-between space-x-4">
-          <Avatar>
-            <AvatarImage src={assignee.avatarUrl} alt={assignee.name} />
-            <AvatarFallback>{assignee.name[0]}</AvatarFallback>
-          </Avatar>
+          <div className="flex -space-x-2 overflow-auto">
+            {teamMembers.map((member: TeamMember, index: number) => (
+              <Avatar
+                key={index}
+                className="w-8 h-8 hover:scale-110 transition-transform duration-200"
+              >
+                {member.profilePhoto ? (
+                  <AvatarImage
+                    src={member.profilePhoto}
+                    alt={member.fullName}
+                  />
+                ) : (
+                  <AvatarFallback>{member.fullName[0]}</AvatarFallback>
+                )}
+              </Avatar>
+            ))}
+          </div>
           <div className="space-y-1">
             <h4 className="text-sm font-semibold">{title}</h4>
-            <p className="text-sm text-muted-foreground">
-              Task assigned to {assignee.name}
+            <div className="text-sm max-w-32 text-muted-foreground truncate">
+              {description || ""}
+            </div>
+            <p className="  text-sm text-muted-foreground">
+              Tàche assigné à {teamMembers.map((i) => i.fullName).join(", ")}
             </p>
             <div className="flex items-center pt-2">
               <CalendarDays className="mr-2 h-4 w-4 opacity-70" />
@@ -215,20 +240,20 @@ const GanttTask: React.FC<
               <Badge
                 variant="outline"
                 className={`text-xs font-medium capitalize ${
-                  priority === "Haute"
+                  priority === Priority.HIGH
                     ? "text-red-600 dark:text-red-400"
-                    : priority === "Moyenne"
+                    : priority === Priority.MEDIUM
                     ? "text-yellow-600 dark:text-yellow-400"
                     : "text-green-600 dark:text-green-400"
                 }`}
               >
-                {priority}
+                {transFormPriority(priority)}
               </Badge>
               <Badge
                 variant="outline"
                 className="text-xs font-medium capitalize"
               >
-                {status}
+                {transFormStatus(status)}
               </Badge>
             </div>
             {/* Tags */}

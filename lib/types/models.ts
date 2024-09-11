@@ -76,7 +76,36 @@ export type QuoteModel = {
   updatedAt?: Date;
   thumbnail:string;
   address:string
+  items: QuoteItemModel[];
 };
+
+export enum QuoteItemType {
+  TASK,
+  EQUIPMENT,
+  PRODUCT
+}
+export type QuoteItemModel = {
+  id: string; // Unique identifier for the quote item
+  type: QuoteItemType; // Specifies the type of item: TASK, PRODUCT, or EQUIPMENT
+  task?: TaskModel; // Task details if the item is a task
+  product?: ProductModel; // Product details if the item is a product
+  equipment?: EquipmentModel; // Equipment details if the item is equipment
+  description?: string; // Optional description of the item
+  unitPrice: number; // Price per unit of the item
+  quantity: number; // Quantity of the item
+  tva: number; // Tax rate applied to the item
+  totalPrice: number; // Total price for this item (unitPrice * quantity)
+};
+
+export type ProductModel = {
+  id:string,
+  label:string,
+}
+
+export type EquipmentModel = {
+  id:string,
+  label:string,
+}
 
 export enum QuoteStatus {
   PENDING,

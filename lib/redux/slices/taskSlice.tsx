@@ -2,8 +2,9 @@
 import { GanttTaskProps } from "@/components/app/tasks/views/GanttTask.component";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { TaskModel } from "@/lib/types/models";
 type TaskState = {
-  tasks: GanttTaskProps[];
+  tasks: TaskModel[];
   filters: {
     status: string;
     priority: string;
@@ -31,10 +32,10 @@ const taskSlice = createSlice({
   name: "tasks",
   initialState,
   reducers: {
-    addTask(state, action: PayloadAction<GanttTaskProps>) {
-      state.tasks = [action.payload, ...state.tasks];
+    addTask(state, action: PayloadAction<TaskModel>) {
+      state.tasks = [...state.tasks, action.payload];
     },
-    updateTask(state, action: PayloadAction<GanttTaskProps>) {
+    updateTask(state, action: PayloadAction<TaskModel>) {
       const index = state.tasks.findIndex(
         (task) => task.id === action.payload.id
       );
