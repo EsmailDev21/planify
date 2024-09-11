@@ -1,20 +1,24 @@
 "use client";
 import TaskTopBar from "@/components/app/tasks/components/TaskTopBar";
+import BoardTask from "@/components/app/tasks/views/board/BoardTask.component";
+import BoardView from "@/components/app/tasks/views/board/BoardView.component";
 import { GanttTaskProps } from "@/components/app/tasks/views/GanttTask.component";
 import GanttView from "@/components/app/tasks/views/GanttView.component";
 import VerticalZoomSlider from "@/components/app/tasks/views/GanttZoomSlider";
+import { Badge } from "@/components/ui/badge";
 import { selectTasks } from "@/lib/redux/slices/taskSlice";
 import { RootState } from "@/lib/redux/store";
 import { createSelector } from "@reduxjs/toolkit";
 import React, { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 
+export type ViewType = "GANTT" | "BOARD" | "LIST";
 const TasksIndex = () => {
   const selectAllTasks = (state: RootState) => state.tasks.tasks;
   const selectFilters = (state: RootState) => state.tasks.filters;
   const tasks = useSelector(selectAllTasks);
   const filters = useSelector(selectFilters);
-
+  const [view, setView] = useState<ViewType>("GANTT");
   const [rerenderFlag, setRerenderFlag] = useState(0);
 
   const forceRerender = useCallback(() => {
@@ -54,15 +58,47 @@ const TasksIndex = () => {
   };
   return (
     <div className="flex flex-col">
-      <TaskTopBar onZoomChange={handleZoomChange} />
-      <div className="overflow-x-auto flex-grow flex">
-        <GanttView
-          onForceRerender={forceRerender}
-          key={rerenderFlag}
-          tasks={filteredTasks(tasks, filters)}
-          zoomLevel={zoomLevel}
-        />
+      <div className="flex flex-row space-x-2">
+        <Badge
+          key={"GANTT"}
+          onClick={() => setView("GANTT")}
+          variant={"outline"}
+          className="text-slate-900 text-sm hover:bg-slate-100"
+        >
+          Gantt
+        </Badge>
+        <Badge
+          key={"BOARD"}
+          onClick={() => setView("BOARD")}
+          variant={"outline"}
+          className="text-slate-900 text-sm hover:bg-slate-100"
+        >
+          Board
+        </Badge>
+        <Badge
+          key={"LIST"}
+          onClick={() => setView("LIST")}
+          variant={"outline"}
+          className="text-slate-900 text-sm hover:bg-slate-100"
+        >
+          List
+        </Badge>
       </div>
+      {view === "GANTT" ? (
+        <>
+          <TaskTopBar onZoomChange={handleZoomChange} />
+          <div className="overflow-x-auto flex-grow flex">
+            <GanttView
+              onForceRerender={forceRerender}
+              key={rerenderFlag}
+              tasks={filteredTasks(tasks, filters)}
+              zoomLevel={zoomLevel}
+            />
+          </div>
+        </>
+      ) : view === "BOARD" ? (
+        <BoardView />
+      ) : null}
     </div>
   );
 };
