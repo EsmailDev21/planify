@@ -10,6 +10,12 @@ import { selectTasks } from "@/lib/redux/slices/taskSlice";
 import { RootState } from "@/lib/redux/store";
 import { createSelector } from "@reduxjs/toolkit";
 import React, { useCallback, useState } from "react";
+import {
+  PiAlignLeftLight,
+  PiColumnsLight,
+  PiListChecksLight,
+  PiListLight,
+} from "react-icons/pi";
 import { useSelector } from "react-redux";
 
 export type ViewType = "GANTT" | "BOARD" | "LIST";
@@ -58,30 +64,33 @@ const TasksIndex = () => {
   };
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row space-x-2">
+      <div className="flex flex-row space-x-2 my-1">
         <Badge
           key={"GANTT"}
           onClick={() => setView("GANTT")}
           variant={"outline"}
-          className="text-slate-900 text-sm hover:bg-slate-100"
+          className="text-slate-900 text-sm hover:bg-slate-100 flex flex-row space-x-2"
         >
-          Gantt
+          <PiAlignLeftLight />
+          <span>Gantt</span>
         </Badge>
         <Badge
           key={"BOARD"}
           onClick={() => setView("BOARD")}
           variant={"outline"}
-          className="text-slate-900 text-sm hover:bg-slate-100"
+          className="text-slate-900 text-sm hover:bg-slate-100 flex flex-row space-x-2"
         >
-          Board
+          <PiColumnsLight />
+          <span>Board</span>
         </Badge>
         <Badge
           key={"LIST"}
           onClick={() => setView("LIST")}
           variant={"outline"}
-          className="text-slate-900 text-sm hover:bg-slate-100"
+          className="text-slate-900 text-sm hover:bg-slate-100 flex flex-row space-x-2"
         >
-          List
+          <PiListChecksLight />
+          <span>List</span>
         </Badge>
       </div>
       {view === "GANTT" ? (
