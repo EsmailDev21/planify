@@ -63,6 +63,7 @@ const BoardView = () => {
 
       if (task && sourceStatus !== destinationStatus) {
         // Update the task's status if moved to a different column
+        console.log({ sourceStatus, destinationStatus });
         dispatch(
           updateTask({
             ...task,
