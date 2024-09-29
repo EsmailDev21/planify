@@ -250,7 +250,7 @@ export function UpdateTaskDialog({
         <div className="space-y-2 w-1/2 flex flex-col ">
           <div>
             <label className="text-md font-medium text-slate-800 dark:text-slate-400">
-              Doonées relatifs à l'item
+              Doonées relatifs à l&apos;item
             </label>
           </div>
           <div className="space-y-2">
