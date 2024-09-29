@@ -307,17 +307,16 @@ const GanttChart: React.FC<GanttChartProps> = ({
                 id={task.id}
                 title={task.title}
                 gridRow={index + 1}
-                onDragEnd={(e: any, info: PanInfo, task: GanttTaskProps) =>
-                  onDragEnd(e, info, task)
-                }
+                onDragEnd={(e: any, info: PanInfo, task: GanttTaskProps) => onDragEnd(e, info, task)}
                 gridColStart={gridDayColStart}
                 gridColEnd={gridDayColEnd}
                 priority={task.priority}
                 tags={task.tags}
                 status={task.status}
                 progress={task.progress}
-                color={task.color}
-              />
+                color={task.color} onResize={function (dir: string, task: any): void {
+                  throw new Error("Function not implemented.");
+                } }              />
             );
           })}
         </div>
