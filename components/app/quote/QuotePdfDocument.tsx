@@ -15,20 +15,27 @@ const styles = StyleSheet.create({
     padding: 30,
     fontSize: 12,
     fontFamily: "Helvetica",
+    backgroundColor: "#f9f9f9", // Light background color
   },
   header: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
+    color: "#4a90e2", // Blue header
   },
   sectionTitle: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "bold",
     marginTop: 15,
     marginBottom: 5,
+    color: "#333", // Darker title color
   },
   section: {
     marginBottom: 10,
+    padding: 10,
+    backgroundColor: "#ffffff", // White background for sections
+    borderRadius: 5,
+    boxShadow: "0 1px 3px rgba(0,0,0,0.1)", // Subtle shadow for sections
   },
   row: {
     display: "flex",
@@ -46,9 +53,9 @@ const styles = StyleSheet.create({
   },
   itemsHeader: {
     fontWeight: "bold",
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#e1f5fe", // Light blue background for items header
     padding: 5,
-    borderBottom: "1px solid #000",
+    borderBottom: "2px solid #4a90e2", // Blue border
     display: "flex",
     flexDirection: "row",
   },
@@ -62,10 +69,12 @@ const styles = StyleSheet.create({
   itemColumn: {
     width: "15%",
     textAlign: "right",
+    color: "#4a90e2", // Blue color for item columns
   },
   itemDescription: {
     width: "40%",
     textAlign: "left",
+    color: "#333",
   },
   footer: {
     marginTop: 30,
@@ -151,7 +160,7 @@ const MyDocument = ({ quote }: { quote: QuoteModel }) => (
           <Text style={styles.itemColumn}>Prix Total (€)</Text>
         </View>
 
-        {quote.items.map((item, index) => (
+        {quote.items.map((item) => (
           <View key={item.id} style={styles.itemRow}>
             <Text style={styles.itemDescription}>
               {item.task
