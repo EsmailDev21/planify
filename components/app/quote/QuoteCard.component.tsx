@@ -20,7 +20,10 @@ import {
   PiCalendarSlashLight,
   PiCurrencyCnyLight,
   PiCurrencyDollarLight,
+  PiEyeLight,
 } from "react-icons/pi";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const statusColorMap: Record<QuoteStatus, string> = {
   [QuoteStatus.PENDING]: "bg-yellow-200 text-yellow-800",
@@ -125,6 +128,16 @@ const QuoteCard: React.FC<QuoteCardProps> = ({
                 {formatDate(quote.createdAt)}
               </span>
             </div>
+            <Link href={`/app/quotes/${quote.id}`}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-sm flex items-center space-x-2 hover:bg-primary-100 dark:hover:bg-primary-700 focus:ring focus:ring-primary-200 dark:focus:ring-primary-700"
+              >
+                <PiEyeLight className="w-4 h-4" />
+                <span>Voir Détails</span>
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </HoverCardTrigger>
