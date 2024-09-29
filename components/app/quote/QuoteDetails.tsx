@@ -20,7 +20,9 @@ import {
 import { QuoteModel, QuoteStatus } from "@/lib/types/models";
 import { formatDate } from "date-fns";
 import QuotePDFDownload from "./QuotePdfDocument";
-// Assume this utility formats the date properly
+import { updateQuote } from "@/lib/redux/slices/quoteSlice";
+import { Input } from "@/components/ui/input";
+import { useDispatch } from "react-redux";
 
 type QuoteDetailsProps = {
   quote: QuoteModel;
@@ -39,6 +41,23 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
   onUpdateClick,
   onDownloadClick,
 }) => {
+  const dispatch = useDispatch();
+  const [isUpdating, setIsUpdating] = React.useState(false);
+  const [updatedItems, setUpdatedItems] = React.useState(quote.items);
+
+  const handleUpdateItem = (index: number, field: string, value: any) => {
+    setUpdatedItems((prevItems) =>
+      prevItems.map((item, idx) =>
+        idx === index ? { ...item, [field]: value } : item
+      )
+    );
+  };
+
+  const handleSaveUpdates = () => {
+    dispatch(updateQuote({ ...quote, items: updatedItems }));
+    setIsUpdating(false);
+  };
+
   return (
     <ScrollArea className="p-6 space-y-6">
       {/* Quote Header Section */}
@@ -107,7 +126,7 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
           <>
             <Separator />
             <div className="flex justify-between">
-              <div className="text-sm text-slate-500">Date d'échéance</div>
+              <div className="text-sm text-slate-500">Date d&apos;échéance</div>
               <div className="text-sm">
                 {formatDate(quote.dueDate, "yyyy-MM-dd")}
               </div>
@@ -132,15 +151,38 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
           <CardTitle>Articles</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {quote.items.map((item, index) => (
+          {updatedItems.map((item, index) => (
             <div key={item.id} className="flex flex-col space-y-2">
               <div className="flex justify-between">
                 <div className="text-sm text-slate-500">
-                  {/* Display description or default to "Item {index}" */}
-                  {item.description || `Item ${index + 1}`}
+                  {isUpdating ? (
+                    <Input
+                      value={item.description}
+                      onChange={(e) =>
+                        handleUpdateItem(index, "description", e.target.value)
+                      }
+                    />
+                  ) : (
+                    item.description || `Item ${index + 1}`
+                  )}
                 </div>
                 <div className="text-sm font-semibold">
-                  {item.totalPrice.toFixed(2)} €
+                  {isUpdating ? (
+                    <Input
+                      type="number"
+                      value={item.totalPrice}
+                      onChange={(e) =>
+                        handleUpdateItem(
+                          index,
+                          "totalPrice",
+                          Number(e.target.value)
+                        )
+                      }
+                    />
+                  ) : (
+                    item.totalPrice.toFixed(2)
+                  )}{" "}
+                  €
                 </div>
               </div>
 
@@ -154,16 +196,56 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
                     : "Produit à utiliser"}
                 </div>
                 <div>
-                  <span className="font-semibold">Unit Price: </span>
-                  {item.unitPrice.toFixed(2)} €
+                  <span className="font-semibold">Prix Unitaire: </span>
+                  {isUpdating ? (
+                    <Input
+                      type="number"
+                      value={item.unitPrice}
+                      onChange={(e) =>
+                        handleUpdateItem(
+                          index,
+                          "unitPrice",
+                          Number(e.target.value)
+                        )
+                      }
+                    />
+                  ) : (
+                    item.unitPrice.toFixed(2)
+                  )}{" "}
+                  €
                 </div>
                 <div>
-                  <span className="font-semibold">Quantity: </span>
-                  {item.quantity}
+                  <span className="font-semibold">Quantité: </span>
+                  {isUpdating ? (
+                    <Input
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) =>
+                        handleUpdateItem(
+                          index,
+                          "quantity",
+                          Number(e.target.value)
+                        )
+                      }
+                    />
+                  ) : (
+                    item.quantity
+                  )}
                 </div>
                 <div>
                   <span className="font-semibold">TVA: </span>
-                  {item.tva.toFixed(2)} %
+                  {isUpdating ? (
+                    <Input
+                      type="number"
+                      value={item.tva}
+                      onChange={(e) =>
+                        handleUpdateItem(index, "tva", Number(e.target.value))
+                      }
+                    />
+                  ) : (
+                    item.tva.toFixed(2)
+                  )}{" "}
+                  %
                 </div>
               </div>
             </div>
@@ -173,11 +255,16 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
 
       {/* Action Buttons */}
       <div className="flex justify-end space-x-4">
-        <Button onClick={onUpdateClick} variant="secondary">
+        <Button
+          onClick={() =>
+            isUpdating ? handleSaveUpdates() : setIsUpdating(true)
+          }
+          variant="secondary"
+        >
           <PiPencilSimpleLight size={18} className="mr-2" />
-          Modifier
+          {isUpdating ? "Valider" : "Modifier"}
         </Button>
-        <Button variant="default">
+        <Button onClick={onDownloadClick} variant="default">
           <PiDownloadLight size={18} className="mr-2" />
           <QuotePDFDownload quote={quote} />
         </Button>
