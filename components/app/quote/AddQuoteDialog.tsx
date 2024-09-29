@@ -72,6 +72,8 @@ import { transFormStatus } from "../projects/ProjectCard.component";
 import { UpdateTaskDialog } from "../tasks/components/updateTask";
 import { useState } from "react";
 import { addTask, selectTasks, updateTask } from "@/lib/redux/slices/taskSlice";
+import { UpdateEquipmentDialog } from "./UpdateEquipement";
+import { UpdateProductDialog } from "./UpdateProduct";
 
 export function AddQuoteDialog() {
   const [open, setOpen] = React.useState(false);
@@ -258,7 +260,12 @@ export function AddQuoteDialog() {
           <h3>Items</h3>
           <AddQuoteItem items={items} setItems={setItems} />
           {items.map((item, index) => (
-            <RenderItem item={item} key={index} />
+            <RenderItem
+              setItems={setItems}
+              items={items}
+              item={item}
+              key={index}
+            />
           ))}
           <Button type="submit">Enregistrer</Button>
         </form>
@@ -425,12 +432,27 @@ const AddQuoteItem = ({
   );
 };
 
-const RenderItem = ({ item }: { item: QuoteItemModel }) => {
+const RenderItem = ({
+  item,
+  setItems,
+  items,
+}: {
+  item: QuoteItemModel;
+  setItems: React.Dispatch<React.SetStateAction<QuoteItemModel[]>>;
+  items: QuoteItemModel[];
+}) => {
   const [isOpen, setOpen] = useState(false);
   const dispatch = useDispatch();
   const handleSubmit = () => {
-    if (item.task === undefined) return;
-    else dispatch(updateTask(item.task));
+    if (item.task !== undefined) {
+      dispatch(updateTask(item.task));
+    }
+    if (item.product === undefined) {
+      return;
+    }
+    if (item.equipment === undefined) {
+      return;
+    }
   };
   return (
     <div
@@ -445,33 +467,73 @@ const RenderItem = ({ item }: { item: QuoteItemModel }) => {
           : item.product?.label}
       </p>
 
-      <UpdateTaskDialog
-        itemUpdater={true}
-        parentItemToUpdate={item}
-        isOpen={isOpen}
-        onClose={function (): void {
-          setOpen(false);
-        }}
-        setOpen={setOpen}
-        onSubmit={handleSubmit}
-        task={
-          item.task === undefined
-            ? {
-                id: "",
-                title: "",
-                description: undefined,
-                tags: [],
-                priority: Priority.HIGH,
-                status: Status.TODO,
-                startDate: new Date(),
-                endDate: new Date(),
-                progress: 0,
-                color: "",
-                teamMembers: [],
-              }
-            : item.task
-        }
-      ></UpdateTaskDialog>
+      {item.task ? (
+        <UpdateTaskDialog
+          itemUpdater={true}
+          parentItemToUpdate={item}
+          isOpen={isOpen}
+          onClose={function (): void {
+            setOpen(false);
+          }}
+          setOpen={setOpen}
+          onSubmit={handleSubmit}
+          task={
+            item.task === undefined
+              ? {
+                  id: "",
+                  title: "",
+                  description: undefined,
+                  tags: [],
+                  priority: Priority.HIGH,
+                  status: Status.TODO,
+                  startDate: new Date(),
+                  endDate: new Date(),
+                  progress: 0,
+                  color: "",
+                  teamMembers: [],
+                }
+              : item.task
+          }
+        ></UpdateTaskDialog>
+      ) : item.equipment ? (
+        <UpdateEquipmentDialog
+          itemUpdater={true}
+          parentItemToUpdate={item}
+          isOpen={isOpen}
+          onClose={function (): void {
+            setOpen(false);
+          }}
+          setOpen={setOpen}
+          onSubmit={handleSubmit}
+          equipment={
+            item.equipment === undefined
+              ? {
+                  id: "",
+                  label: "",
+                }
+              : item.equipment
+          }
+        ></UpdateEquipmentDialog>
+      ) : (
+        <UpdateProductDialog
+          itemUpdater={true}
+          parentItemToUpdate={item}
+          isOpen={isOpen}
+          onClose={function (): void {
+            setOpen(false);
+          }}
+          setOpen={setOpen}
+          onSubmit={handleSubmit}
+          product={
+            item.product === undefined
+              ? {
+                  id: "",
+                  label: "",
+                }
+              : item.product
+          }
+        ></UpdateProductDialog>
+      )}
     </div>
   );
 };
