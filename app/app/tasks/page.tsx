@@ -64,38 +64,13 @@ const TasksIndex = () => {
   };
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row space-x-2 my-1">
-        <Badge
-          key={"GANTT"}
-          onClick={() => setView("GANTT")}
-          variant={"outline"}
-          className="text-slate-900 text-sm hover:bg-slate-100 flex flex-row space-x-2 cursor-pointer"
-        >
-          <PiAlignLeftLight />
-          <span>Gantt</span>
-        </Badge>
-        <Badge
-          key={"BOARD"}
-          onClick={() => setView("BOARD")}
-          variant={"outline"}
-          className="text-slate-900 text-sm hover:bg-slate-100 flex flex-row space-x-2 cursor-pointer"
-        >
-          <PiColumnsLight />
-          <span>Board</span>
-        </Badge>
-        <Badge
-          key={"LIST"}
-          onClick={() => setView("LIST")}
-          variant={"outline"}
-          className="text-slate-900 text-sm hover:bg-slate-100 flex flex-row space-x-2 cursor-pointer"
-        >
-          <PiListChecksLight />
-          <span>List</span>
-        </Badge>
-      </div>
+      <TaskTopBar
+        view={view}
+        setView={setView}
+        onZoomChange={handleZoomChange}
+      />
       {view === "GANTT" ? (
         <>
-          <TaskTopBar onZoomChange={handleZoomChange} />
           <div className="overflow-x-auto flex-grow flex">
             <GanttView
               onForceRerender={forceRerender}

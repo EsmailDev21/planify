@@ -84,6 +84,7 @@ const GanttTask: React.FC<
     onDragEnd: (event: any, info: PanInfo, task: GanttTaskProps) => void;
     onDragStart: (event: any, info: PanInfo, task: GanttTaskProps) => void;
     onDrag: (event: any, info: PanInfo, task: GanttTaskProps) => void;
+    onResize: (dir: string, task: any) => void;
   }
 > = ({
   id,
@@ -98,6 +99,7 @@ const GanttTask: React.FC<
   onDragEnd,
   onDragStart,
   onDrag,
+  onResize,
   tags,
   priority,
   progress,
@@ -161,7 +163,7 @@ const GanttTask: React.FC<
               color,
             })
           }
-          className={`rounded-full my-1 p-2  text-white cursor-pointer flex items-center justify-between  `}
+          className={`rounded-full my-1 p-2  text-white cursor-pointer flex items-center justify-between relative `}
           style={{
             gridRow: gridRow,
             gridColumnStart: gridColStart,
@@ -169,12 +171,41 @@ const GanttTask: React.FC<
             ...progressStyle,
           }}
         >
-          <div className="flex -space-x-2 overflow-auto">
+          <div
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 w-2 hover:rounded-full hover:h-2 hover:bg-blue-600 hover:border-2 hover:border-slate-200 cursor-ew-resize"
+            onMouseDown={() =>
+              onResize("left", {
+                id,
+                title,
+                startDate,
+                endDate,
+                priority,
+                status,
+                progress,
+                color,
+              })
+            }
+          />
+
+          {/* Right Resize Handle */}
+          <div
+            className="absolute right-0 top-1/2 transform  -translate-y-1/2 w-2 hover:rounded-full hover:h-2 hover:bg-blue-600 hover:border-2 hover:border-slate-200 cursor-ew-resize"
+            onMouseDown={() =>
+              onResize("right", {
+                id,
+                title,
+                startDate,
+                endDate,
+                priority,
+                status,
+                progress,
+                color,
+              })
+            }
+          />
+          <div className="flex -space-x-2 flex-row ">
             {teamMembers.map((member: TeamMember, index: number) => (
-              <Avatar
-                key={index}
-                className="w-8 h-8 hover:scale-110 transition-transform duration-200"
-              >
+              <Avatar key={index} className="w-8 h-8">
                 {member.profilePhoto ? (
                   <AvatarImage
                     src={member.profilePhoto}
