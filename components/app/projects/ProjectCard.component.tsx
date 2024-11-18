@@ -87,15 +87,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   client,
 }) => {
   return (
-    <Card className="w-full max-w-3xl border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm bg-white dark:bg-slate-800 hover:shadow-md transition-transform duration-300 transform">
+    <Card className="w-full max-w-7xl border border-muted rounded-lg shadow-sm  hover:shadow-md transition-transform duration-300 transform">
       {/* Card Header */}
       <CardHeader className="flex flex-col md:flex-row items-start p-4 md:space-x-4 space-y-4 md:space-y-0">
         <Image
-          height={300}
-          width={500}
+          height={500}
+          width={700}
           src={thumbnail}
           alt={`${title} Thumbnail`}
-          className="object-cover rounded-lg flex-shrink-0 w-full md:w-40 lg:w-60"
+          className="object-cover rounded-lg flex-shrink-0 w-full md:w-60 lg:w-80"
         />
 
         <div className="flex flex-col space-y-4 flex-1">
@@ -108,7 +108,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           <div className="flex flex-wrap space-x-2">
             <Badge
               variant="outline"
-              className="text-xs font-medium capitalize dark:bg-slate-200 text-primary-600 dark:text-primary-300 whitespace-nowrap"
+              className="text-xs font-medium capitalize  dark:text-primary-300 whitespace-nowrap"
             >
               {transFormStatus(status)}
             </Badge>
@@ -208,7 +208,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             <div>Dernier Mise à jour : {updatedAt.toLocaleDateString()}</div>
           )}
         </div>
-        <div className="flex space-x-2">
+        <div className="flex flex-row space-x-2">
           <ProjectUpdateCard
             initialaddress={address}
             id={id}
@@ -221,15 +221,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             initialTags={tags}
             initialTeamMembers={teamMembers}
           />
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-sm flex items-center space-x-2 hover:bg-primary-100 dark:hover:bg-primary-700 focus:ring focus:ring-primary-200 dark:focus:ring-primary-700"
+          >
+            <PiUserPlusLight className="w-4 h-4" />
+            <span>Inviter des collaborateurs</span>
+          </Button>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          className="text-sm flex items-center space-x-2 hover:bg-primary-100 dark:hover:bg-primary-700 focus:ring focus:ring-primary-200 dark:focus:ring-primary-700"
-        >
-          <PiUserPlusLight className="w-4 h-4" />
-          <span>Inviter des collaborateurs</span>
-        </Button>
       </CardFooter>
     </Card>
   );

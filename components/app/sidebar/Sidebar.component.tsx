@@ -4,6 +4,12 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   PiHouseDuotone,
   PiListChecksDuotone,
   PiUserListDuotone,
@@ -12,107 +18,127 @@ import {
   PiChartBarDuotone,
   PiGearSixDuotone,
   PiInvoiceDuotone,
-} from "react-icons/pi"; // Phosphor duotone icons
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+  PiFilesDuotone,
+  PiUserDuotone,
+  PiUsersFourDuotone,
+  PiUsersThreeDuotone,
+} from "react-icons/pi";
 import PlanifyLogo from "@/components/logo/PlanifyLogo";
-import { Button } from "@/components/ui/button";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"; // Assuming Shadcn Drawer
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
+import { Separator } from "@/components/ui/separator";
 
-type SidebarProps = {
-  isCollapsed: boolean;
-  setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-const Sidebar = ({ isCollapsed, setIsCollapsed }: SidebarProps) => {
+const Sidebar = () => {
   const pathname = usePathname();
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Get current route
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-  };
-  const toggleDrawer = () => {
-    setIsDrawerOpen(!isDrawerOpen);
-  };
-  console.log(pathname);
-
-  // Helper function to determine if a route is active
-  const isActive = (route: string) => pathname.slice(4) === route;
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const navItems = [
     { href: "#dashboard", label: "Tableau de Bord", icon: PiChartBarDuotone },
     { href: "/app/quotes", label: "Mes Dévis", icon: PiInvoiceDuotone },
-    { href: "/app/projects", label: "Projets", icon: PiHouseDuotone },
+    { href: "/app/projects", label: "Projets", icon: PiClipboardDuotone },
+
     { href: "/app/tasks", label: "Tâches", icon: PiListChecksDuotone },
-    { href: "#equipment", label: "Équipement", icon: PiToolboxDuotone },
-    { href: "#reports", label: "Rapports", icon: PiClipboardDuotone },
-    { href: "#settings", label: "Paramètres", icon: PiGearSixDuotone },
+
+    {
+      href: "#file-manager",
+      label: "Fichiers et documents",
+      icon: PiFilesDuotone,
+    },
+    { href: "#teams", label: "Team manager", icon: PiUsersThreeDuotone },
   ];
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  console.log({ pathname });
+  const isActive = (route: any) => {
+    console.log({ pathname, route });
+    return pathname === route;
+  };
 
-  return isMobile ? null : (
+  const toggleSidebar = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  return (
     <aside
-      className={`fixed top-3 left-3 h-screen ${
-        isCollapsed ? "md:w-12 md:flex hidden " : "w-52"
-      } transition-all p-1 duration-300 rounded-lg text-xs bg-white dark:bg-slate-900 shadow-lg backdrop-blur-md backdrop-brightness-90 border border-slate-200 dark:border-slate-700`}
+      className={`fixed inset-y-0 left-0 z-10 flex flex-col border-r border-muted bg-background transition-all duration-300 ${
+        isExpanded ? "w-56" : "w-14"
+      }`}
     >
-      <div className="flex flex-col h-full">
-        {/* Sidebar Header */}
-        <div className="flex items-center justify-between px-3 h-12 border-b border-slate-300 dark:border-slate-700">
-          {!isCollapsed && <PlanifyLogo />}
-          <button
-            onClick={toggleCollapse}
-            className="text-slate-500 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300"
-          >
-            {isCollapsed ? <FiChevronRight /> : <FiChevronLeft />}
-          </button>
-        </div>
-
-        {/* User Info */}
-        <div
-          className={`flex items-center ${
-            isCollapsed ? "justify-center" : "justify-start px-3"
-          } py-2 border-b border-slate-300 dark:border-slate-700`}
+      <div className="flex items-center justify-between px-4 py-3">
+        <button
+          onClick={toggleSidebar}
+          className="flex items-center justify-center rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
         >
-          {/* UserButton */}
-          {!isCollapsed && (
-            <div className="ml-2">
-              <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">
-                Esmail Khorchani
-              </p>
-              <p className="text-[0.65rem] font-thin text-slate-400 dark:text-slate-500">
-                esmailKhorchani.dev@gmail.com
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Sidebar Navigation */}
-        <nav className="flex flex-col flex-1 py-6 space-y-1 overflow-y-auto">
-          {navItems.map((item) => (
-            <Link href={item.href} key={item.href} className="block">
-              <button
-                className={`flex items-center w-full px-2 py-2 rounded-md transition-all transform duration-300 ${
-                  isActive(item.href)
-                    ? "bg-primary text-slate-950"
-                    : "text-slate-700 dark:text-slate-300"
-                } hover:scale-x-95 hover:bg-primary hover:text-slate-950`}
-              >
-                <item.icon size={16} />
-                {!isCollapsed && <span className="ml-2">{item.label}</span>}
-              </button>
-            </Link>
-          ))}
-        </nav>
-
-        {/* Sidebar Footer */}
-        {!isCollapsed && (
-          <div className="px-3 py-3 border-t border-slate-300 dark:border-slate-700">
-            <p className="text-xs text-slate-600 dark:text-slate-400">
-              © 2024 Planify
-            </p>
-          </div>
-        )}
+          {isExpanded ? <FiChevronLeft /> : <FiChevronRight />}
+        </button>
       </div>
+      <nav className=" flex flex-col items-center gap-4 px-2 py-4">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href="#profile"
+                className={`flex items-center justify-start w-full rounded-lg text-muted-foreground transition-colors hover:text-foreground ${
+                  isExpanded ? "px-4 py-2" : "justify-center h-9 w-9"
+                }`}
+              >
+                <PiUserDuotone className="h-5 w-5" />
+                {isExpanded && <span className="ml-3">Profile</span>}
+              </Link>
+            </TooltipTrigger>
+            {!isExpanded && (
+              <TooltipContent side="right">Profile</TooltipContent>
+            )}
+          </Tooltip>
+        </TooltipProvider>
+      </nav>
+      <Separator className="w-5/6 self-center" />
+      <nav className="flex flex-col items-center gap-4 px-2 py-4">
+        <TooltipProvider>
+          {navItems.map((item) => (
+            <Tooltip key={item.href}>
+              <TooltipTrigger asChild>
+                <Link
+                  href={item.href}
+                  className={`flex items-center justify-start w-full rounded-lg transition-colors ${
+                    isActive(item.href)
+                      ? "bg-accent text-primary"
+                      : "text-muted-foreground hover:text-foreground"
+                  } ${isExpanded ? "px-4 py-2" : "justify-center h-9 w-9"}`}
+                >
+                  <item.icon
+                    className={`h-5 w-5 ${
+                      isActive(item.href) ? "text-blue-600" : null
+                    }`}
+                  />
+                  {isExpanded && <span className="ml-3">{item.label}</span>}
+                </Link>
+              </TooltipTrigger>
+              {!isExpanded && (
+                <TooltipContent side="right">{item.label}</TooltipContent>
+              )}
+            </Tooltip>
+          ))}
+        </TooltipProvider>
+      </nav>
+
+      <nav className="mt-auto flex flex-col items-center gap-4 px-2 py-4">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href="#settings"
+                className={`flex items-center justify-start w-full rounded-lg text-muted-foreground transition-colors hover:text-foreground ${
+                  isExpanded ? "px-4 py-2" : "justify-center h-9 w-9"
+                }`}
+              >
+                <PiGearSixDuotone className="h-5 w-5" />
+                {isExpanded && <span className="ml-3">Paramètres</span>}
+              </Link>
+            </TooltipTrigger>
+            {!isExpanded && (
+              <TooltipContent side="right">Paramètres</TooltipContent>
+            )}
+          </Tooltip>
+        </TooltipProvider>
+      </nav>
     </aside>
   );
 };

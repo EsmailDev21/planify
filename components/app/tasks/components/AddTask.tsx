@@ -38,8 +38,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DatePicker } from "@/components/ui/date-picker";
 import { format } from "date-fns";
-import { generateRandomAvatar, generateRandomColor } from "../views/GanttTask.component";
-import {TaskModel,Priority,Status} from "@/lib/types/models"
+import {
+  generateRandomAvatar,
+  generateRandomColor,
+} from "../views/GanttTask.component";
+import { TaskModel, Priority, Status } from "@/lib/types/models";
 type AddTaskDialogProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -116,14 +119,26 @@ export function AddTaskDialog({
       title,
       startDate,
       endDate,
-      priority:priority==="Haute"?Priority.HIGH:priority==="Moyenne"?Priority.MEDIUM:Priority.LOW,
-      description:"",
+      priority:
+        priority === "Haute"
+          ? Priority.HIGH
+          : priority === "Moyenne"
+          ? Priority.MEDIUM
+          : Priority.LOW,
+      description: "",
       tags,
-      teamMembers:[{
-        fullName:assignee.name,
-        profilePhoto:`/assets/images/avatars/${generateRandomAvatar()}.png`
-      }],
-      status:status==="À faire"?Status.TODO:status==="En cours"?Status.IN_PROGRESS:Status.DONE,
+      teamMembers: [
+        {
+          fullName: assignee.name,
+          profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
+        },
+      ],
+      status:
+        status === "À faire"
+          ? Status.TODO
+          : status === "En cours"
+          ? Status.IN_PROGRESS
+          : Status.DONE,
       progress,
       color: generateRandomColor(),
     };
@@ -132,30 +147,26 @@ export function AddTaskDialog({
   };
 
   const content = (
-    <div className="space-y-2 overflow-y-scroll">
+    <div className="space-y-2 overflow-y-auto">
       {/* ID and Title */}
       <div className="flex flex-col space-y-2 mb-2">
         <Input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="text-sm font-medium text-slate-900 dark:text-white"
+          className="text-sm font-medium"
           placeholder="Titre de la tâche"
         />
       </div>
 
       {/* Start and End Dates */}
       <div className="flex flex-col space-y-2 mb-2">
-        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          Date de début
-        </label>
+        <label className="text-sm font-medium">Date de début</label>
         <DatePicker
           date={format(startDate, "yyyy-MM-dd")}
           setDate={setStartDate}
         />
 
-        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          Date de fin
-        </label>
+        <label className="text-sm font-medium ">Date de fin</label>
         <DatePicker date={format(endDate, "yyyy-MM-dd")} setDate={setEndDate} />
       </div>
 
@@ -205,9 +216,7 @@ export function AddTaskDialog({
 
       {/* Tags */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          Tags
-        </label>
+        <label className="text-sm font-medium ">Tags</label>
         <div className="flex flex-wrap gap-2 mb-2">
           {tags.map((tag, index) => (
             <Badge
@@ -230,9 +239,7 @@ export function AddTaskDialog({
 
       {/* Assignee */}
       <div className="flex flex-col space-y-2 mb-4">
-        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          Assigné à
-        </label>
+        <label className="text-sm font-medium ">Assigné à</label>
         <div className="flex items-center space-x-2">
           <Avatar>
             <AvatarImage src={assignee.avatarUrl} alt={assignee.name} />
@@ -248,9 +255,7 @@ export function AddTaskDialog({
 
       {/* Progress */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          Progrès
-        </label>
+        <label className="text-sm font-medium ">Progrès</label>
         <Input
           type="number"
           value={progress}
@@ -270,7 +275,7 @@ export function AddTaskDialog({
           Nouveau tâche
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-slate-50 overflow-y-auto">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Ajouter une nouvelle tâche</DialogTitle>
           <DialogDescription>
@@ -294,7 +299,7 @@ export function AddTaskDialog({
           Nouveau tâche
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="bg-slate-50 overflow-y-auto">
+      <DrawerContent className=" overflow-y-auto">
         <DrawerHeader>
           <DrawerTitle>Ajouter une nouvelle tâche</DrawerTitle>
           <DrawerDescription>

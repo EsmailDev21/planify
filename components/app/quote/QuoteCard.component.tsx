@@ -50,96 +50,96 @@ const QuoteCard: React.FC<QuoteCardProps> = ({
   onTouchEnd,
 }) => {
   return (
+    <Card
+    data-id={quote.id}
+    draggable
+    onDragStart={onDragStart}
+    onDragEnd={onDragEnd}
+    onTouchStart={onTouchStart}
+    onTouchEnd={onTouchEnd}
+    className="shadow-sm rounded-lg border border-slate-200 dark:border-slate-700 cursor-grab"
+  >
+    <CardHeader className="flex items-center justify-between space-x-4">
+      <div className="flex items-center space-x-3">
+        <Avatar className="h-7 rounded-full w-7">
+          <AvatarImage
+            src={quote.sender.profilePhoto}
+            alt={quote.sender.fullName}
+            className="w-10 h-10 rounded-full"
+          />
+          <AvatarFallback>{quote.sender.fullName[0]}</AvatarFallback>
+        </Avatar>
+        <div>
+          <CardTitle className="text-lg font-semibold">
+            {quote.sender.fullName}
+          </CardTitle>
+          <CardDescription className="text-sm text-slate-500">
+            {quote.sender.email}
+          </CardDescription>
+        </div>
+      </div>
+      <Badge
+        className={`px-2 py-1 rounded ${statusColorMap[quote.status]}`}
+      >
+        {QuoteStatus[quote.status] === "PENDING"
+          ? "En Attente"
+          : QuoteStatus[quote.status] === "ACCEPTED"
+          ? "Accepté"
+          : "Rejeté"}
+      </Badge>
+    </CardHeader>
+
+    <CardContent className="space-y-4">
+      <div className="flex items-center space-x-2">
+        <Avatar className="h-7 rounded-full w-7">
+          <AvatarImage
+            src={quote.client.profilePhoto}
+            alt={quote.client.fullName}
+            className="w-8 h-8 rounded-full"
+          />
+          <AvatarFallback>{quote.client.fullName?.[0]}</AvatarFallback>
+        </Avatar>
+        <div className="flex flex-col">
+          <span className="text-sm font-medium">
+            {quote.client.fullName}
+          </span>
+          <span className="text-xs text-slate-500">
+            {quote.client.phoneNumber}
+          </span>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium">
+          <PiCurrencyDollarLight size={18} className="text-slate-600" />
+        </span>
+        <span className="text-lg font-semibold text-blue-600 dark:text-blue-400">
+          {quote.amount.toFixed(2)} €
+        </span>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium">
+          <PiCalendarPlusLight size={18} className="text-slate-600" />
+        </span>
+        <span className="text-sm text-slate-500">
+          {formatDate(quote.createdAt)}
+        </span>
+      </div>
+      
     <HoverCard>
       <HoverCardTrigger>
-        <Card
-          data-id={quote.id}
-          draggable
-          onDragStart={onDragStart}
-          onDragEnd={onDragEnd}
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
-          className="shadow-sm rounded-lg border border-slate-200 dark:border-slate-700 cursor-grab"
+      
+      <Link href={`/app/quotes/${quote.id}`}>
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-sm flex items-center space-x-2 hover:bg-primary-100 dark:hover:bg-primary-700 focus:ring focus:ring-primary-200 dark:focus:ring-primary-700"
         >
-          <CardHeader className="flex items-center justify-between space-x-4">
-            <div className="flex items-center space-x-3">
-              <Avatar className="h-7 rounded-full w-7">
-                <AvatarImage
-                  src={quote.sender.profilePhoto}
-                  alt={quote.sender.fullName}
-                  className="w-10 h-10 rounded-full"
-                />
-                <AvatarFallback>{quote.sender.fullName[0]}</AvatarFallback>
-              </Avatar>
-              <div>
-                <CardTitle className="text-lg font-semibold">
-                  {quote.sender.fullName}
-                </CardTitle>
-                <CardDescription className="text-sm text-slate-500">
-                  {quote.sender.email}
-                </CardDescription>
-              </div>
-            </div>
-            <Badge
-              className={`px-2 py-1 rounded ${statusColorMap[quote.status]}`}
-            >
-              {QuoteStatus[quote.status] === "PENDING"
-                ? "En Attente"
-                : QuoteStatus[quote.status] === "ACCEPTED"
-                ? "Accepté"
-                : "Rejeté"}
-            </Badge>
-          </CardHeader>
-
-          <CardContent className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Avatar className="h-7 rounded-full w-7">
-                <AvatarImage
-                  src={quote.client.profilePhoto}
-                  alt={quote.client.fullName}
-                  className="w-8 h-8 rounded-full"
-                />
-                <AvatarFallback>{quote.client.fullName?.[0]}</AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <span className="text-sm font-medium">
-                  {quote.client.fullName}
-                </span>
-                <span className="text-xs text-slate-500">
-                  {quote.client.phoneNumber}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">
-                <PiCurrencyDollarLight size={18} className="text-slate-600" />
-              </span>
-              <span className="text-lg font-semibold text-blue-600 dark:text-blue-400">
-                {quote.amount.toFixed(2)} €
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">
-                <PiCalendarPlusLight size={18} className="text-slate-600" />
-              </span>
-              <span className="text-sm text-slate-500">
-                {formatDate(quote.createdAt)}
-              </span>
-            </div>
-            <Link href={`/app/quotes/${quote.id}`}>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-sm flex items-center space-x-2 hover:bg-primary-100 dark:hover:bg-primary-700 focus:ring focus:ring-primary-200 dark:focus:ring-primary-700"
-              >
-                <PiEyeLight className="w-4 h-4" />
-                <span>Voir Détails</span>
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
+          <PiEyeLight className="w-4 h-4" />
+          <span>Voir Détails</span>
+        </Button>
+      </Link>
       </HoverCardTrigger>
       <HoverCardContent className="space-y-4 p-4 w-96 -ml-72 -mt-96">
         <div className="flex items-center space-x-4">
@@ -209,7 +209,9 @@ const QuoteCard: React.FC<QuoteCardProps> = ({
         )}
       </HoverCardContent>
     </HoverCard>
-  );
+
+    </CardContent>
+  </Card>  );
 };
 
 export default QuoteCard;

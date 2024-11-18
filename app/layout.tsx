@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
-import { Inter, Montserrat, Poppins, Roboto } from "next/font/google";
+import {
+  Inter,
+  Montserrat,
+  Poppins,
+  Roboto,
+  Tilt_Neon,
+} from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme";
-const font = Montserrat({
+const font = Tilt_Neon({
   subsets: ["latin"],
-  weight: "300",
+  weight: "400",
 });
 
 export const metadata: Metadata = {

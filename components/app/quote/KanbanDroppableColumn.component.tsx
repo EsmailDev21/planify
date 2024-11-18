@@ -32,8 +32,8 @@ export const DroppableColumn: React.FC<DroppableColumnProps> = ({
     <div
       data-id={id}
       className={`p-4 rounded-lg ${
-        isActive ? "border-2 border-primary" : "border border-gray-300"
-      } bg-gray-100`}
+        isActive ? "border-2 border-primary" : "border border-muted"
+      } `}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}

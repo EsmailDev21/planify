@@ -21,12 +21,21 @@ import { CiSearch } from "react-icons/ci";
 import {
   PiCalendarLight,
   PiCheckCircleFill,
+  PiPlusLight,
   PiTagLight,
   PiWarningCircleLight,
   PiXLight,
 } from "react-icons/pi";
 import { Priority, Status } from "@/lib/types/models";
 import { ProjectAddCard } from "./AddProjectDialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 // Icons for visual effect
 
 type ProjectFiltersProps = {
@@ -42,6 +51,7 @@ type Filters = {
 };
 
 const ProjectFilters: React.FC<ProjectFiltersProps> = ({ onFilterChange }) => {
+  const router = useRouter();
   const [filters, setFilters] = useState<Filters>({
     status: null,
     priority: null,
@@ -56,10 +66,22 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ onFilterChange }) => {
     onFilterChange(updatedFilters);
   };
 
+  const handleNavigateNewProject = () => {
+    router.push("/app/projects/new");
+  };
+
   return (
-    <div className="flex flex-wrap w-full items-center gap-4 p-4 bg-white dark:bg-slate-800 rounded-lg shadow-md mb-4">
+    <div className="flex flex-wrap w-full items-center gap-4 p-4 border border-muted  rounded-lg shadow-md mb-4">
       {/* Search Filter */}
-      <ProjectAddCard />
+      <Button
+        onClick={handleNavigateNewProject}
+        className={cn(
+          " bg-primary text-white hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
+        )}
+      >
+        <PiPlusLight className="mr-2" />
+        Ajouter un projet
+      </Button>
       <div className="relative flex items-center w-full max-w-xs">
         <Input
           placeholder="Rechercher..."
@@ -73,8 +95,16 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ onFilterChange }) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="flex items-center space-x-2">
-            <PiCheckCircleFill className="text-slate-500 dark:text-slate-400" />
-            <span>{filters.status || "Statut"}</span>
+            <TooltipProvider>
+              <Tooltip key={"status"}>
+                <TooltipTrigger asChild>
+                  <PiCheckCircleFill className="text-slate-500 dark:text-slate-400" />
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  {filters.status || "Statut"}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -103,8 +133,16 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ onFilterChange }) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="flex items-center space-x-2">
-            <PiWarningCircleLight className="text-slate-500 dark:text-slate-400" />
-            <span>{filters.priority || "Priorité"}</span>
+            <TooltipProvider>
+              <Tooltip key={"status"}>
+                <TooltipTrigger asChild>
+                  <PiWarningCircleLight className="text-slate-500 dark:text-slate-400" />
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  {filters.priority || "Priorité"}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -188,7 +226,7 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ onFilterChange }) => {
         className="ml-auto flex items-center space-x-2"
       >
         <PiXLight className="mr-2" />
-        <span>Réinitialiser</span>
+        <span>Réinit</span>
       </Button>
     </div>
   );

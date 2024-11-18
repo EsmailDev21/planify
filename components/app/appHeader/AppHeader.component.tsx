@@ -1,71 +1,168 @@
 "use client";
-
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { CiSearch } from "react-icons/ci";
-import { PiBellRingingLight } from "react-icons/pi";
+  Home,
+  LineChart,
+  Package,
+  Package2,
+  PanelLeft,
+  Search,
+  Settings,
+  ShoppingCart,
+  User,
+  Users2,
+} from "lucide-react";
+
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { usePathname, useRouter } from "next/navigation";
+import ColorModeSwitcher from "@/components/shared/ColorModeSwitcher";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useSidebar } from "@/hooks/use-sidebar";
-import MobileDrawer from "../sidebar/MobileDrawer";
-import { useMediaQuery } from "@/hooks/use-media-query";
 
-export default function Header() {
-  const isMobile = useMediaQuery("(max-width: 768px)");
+const AppHeader = () => {
+  const path = usePathname();
+  const router = useRouter();
+  const breadcrumbs = path.split("/").filter((item) => item); // Filter out any empty strings from the split
+  /*const logout = async () => {
+    await signOut({
+      redirectUrl: "/",
+    });
+  };*/
   return (
-    <header className="sticky top-4 z-50 backdrop-blur-md bg-opacity-70 transition-all duration-300 flex flex-col-reverse shadow-lg sm:flex-row items-center justify-between p-3 sm:p-4 mt-3 sm:ml-14 rounded-xl bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-      {/* Left Side: Search Bar */}
-      {isMobile && <MobileDrawer />}
-      <div className="flex w-full max-w-full sm:max-w-sm items-center space-x-2 mb-2 sm:mb-0">
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button size="icon" variant="outline" className="sm:hidden">
+            <PanelLeft className="h-5 w-5" />
+            <span className="sr-only">Toggle Menu</span>
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="sm:max-w-xs">
+          <nav className="grid gap-6 text-lg font-medium">
+            <Link
+              href="#"
+              className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
+            >
+              <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
+              <span className="sr-only">Pathlens Inc</span>
+            </Link>
+            <Link
+              href="/platform/dashboard"
+              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+            >
+              <Home className="h-5 w-5" />
+              Dashboard
+            </Link>
+            <Link
+              href="/platform/dashboard"
+              className="flex items-center gap-4 px-2.5 text-foreground"
+            >
+              <ShoppingCart className="h-5 w-5" />
+              My Orders
+            </Link>
+            <Link
+              href="/platform/profile"
+              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+            >
+              <User className="h-5 w-5" />
+              My Profile
+            </Link>
+            <Link
+              href="#"
+              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+            >
+              <Package className="h-5 w-5" />
+              My Services
+            </Link>
+            <Link
+              href="#"
+              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+            >
+              <Users2 className="h-5 w-5" />
+              Clients
+            </Link>
+            <Link
+              href="#"
+              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+            >
+              <LineChart className="h-5 w-5" />
+              Analytics
+            </Link>
+            <Link
+              href="#"
+              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+            >
+              <Settings className="h-5 w-5" />
+              Settings
+            </Link>
+          </nav>
+        </SheetContent>
+      </Sheet>
+      <Breadcrumb className="hidden md:flex">
+        <BreadcrumbList>
+          {breadcrumbs.map((item, index) => (
+            <React.Fragment key={index}>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href={`/platform/${item}`}>{item}</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
+            </React.Fragment>
+          ))}
+        </BreadcrumbList>
+      </Breadcrumb>
+      <div className="relative ml-auto flex-1 md:grow-0">
+        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
-          type="text"
-          placeholder="Rechercher..."
-          className="w-full text-sm sm:text-base"
+          type="search"
+          placeholder="Search..."
+          className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
         />
-        <Button type="submit" className="text-lg p-2">
-          <CiSearch size={18} />
-        </Button>
       </div>
-
-      {/* Center: Notifications and User Profile */}
-      <div className="flex md:items-center items-start justify-items-center space-x-3 sm:space-x-4">
-        {/* Notifications */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <Button
-                variant="ghost"
-                className="p-2 text-slate-500 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300"
-              >
-                <PiBellRingingLight size={18} />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Notifications</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-
-        {/* User Profile Avatar */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <Link href="/profile">
-                <Avatar className="w-8 h-8 sm:w-10 sm:h-10">
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>EK</AvatarFallback>
-                </Avatar>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent>Profil</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
+      <ColorModeSwitcher />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon"
+            className="overflow-hidden rounded-full"
+          >
+            <Avatar>
+              <AvatarImage src={""} alt={"@"} />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>Settings</DropdownMenuItem>
+          <DropdownMenuItem>Support</DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => null}>Logout</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </header>
   );
-}
+};
+
+export default AppHeader;

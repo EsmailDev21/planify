@@ -203,7 +203,7 @@ const GanttChart: React.FC<GanttChartProps> = ({
     <div className="max-w-xl">
       <div
         ref={headerRef}
-        className="whitespace-nowrap border-b border-gray-300  w-full bg-gray-50"
+        className="whitespace-nowrap border-b border-muted  w-full"
       >
         <div
           className="grid grid-cols-auto"
@@ -214,7 +214,7 @@ const GanttChart: React.FC<GanttChartProps> = ({
           {topRow.map((item, index) => (
             <AnimatedDiv
               key={index}
-              className="text-center border-r border-gray-300 text-gray-600 font-semibold bg-gray-50"
+              className="text-center border-r border-muted  font-semibold "
               style={{ width: `${item.width}px` }}
             >
               {item.label}
@@ -228,7 +228,7 @@ const GanttChart: React.FC<GanttChartProps> = ({
           {bottomRow.map((item, index) => (
             <AnimatedDiv
               key={index}
-              className="text-center bg-white text-gray-700 border-r border-gray-300 text-xs"
+              className="text-center   border-r border-muted text-xs"
               style={{ width: `${item.width}px` }}
             >
               {item.label}
@@ -271,8 +271,8 @@ const GanttChart: React.FC<GanttChartProps> = ({
                   onPointerEnter={() => handleMouseEnterGridItem(colIndex + 1)}
                   onMouseEnter={() => handleMouseEnterGridItem(colIndex + 1)}
                   key={`${rowIndex}-${colIndex}`}
-                  className={`border-r-[1px] border-b-[1px] text-xs p-1 border-slate-300 ${
-                    isOver === colIndex + 1 && "bg-slate-200"
+                  className={`border-r-[1px] border-b-[1px] text-xs  border-muted ${
+                    isOver === colIndex + 1 && "bg-muted"
                   }`}
                   style={{
                     gridColumn: colIndex + 1,
@@ -307,16 +307,20 @@ const GanttChart: React.FC<GanttChartProps> = ({
                 id={task.id}
                 title={task.title}
                 gridRow={index + 1}
-                onDragEnd={(e: any, info: PanInfo, task: GanttTaskProps) => onDragEnd(e, info, task)}
+                onDragEnd={(e: any, info: PanInfo, task: GanttTaskProps) =>
+                  onDragEnd(e, info, task)
+                }
                 gridColStart={gridDayColStart}
                 gridColEnd={gridDayColEnd}
                 priority={task.priority}
                 tags={task.tags}
                 status={task.status}
                 progress={task.progress}
-                color={task.color} onResize={function (dir: string, task: any): void {
+                color={task.color}
+                onResize={function (dir: string, task: any): void {
                   throw new Error("Function not implemented.");
-                } }              />
+                }}
+              />
             );
           })}
         </div>

@@ -52,6 +52,7 @@ import { Form } from "@/components/ui/form";
 import { addImage } from "@/lib/redux/slices/imageGallerySlice";
 import Image from "next/image";
 import { transFormPriority, transFormStatus } from "./ProjectCard.component";
+import { useRouter } from "next/navigation";
 
 export function ProjectAddCard() {
   const [open, setOpen] = React.useState(false);
@@ -70,6 +71,7 @@ export function ProjectAddCard() {
     { fullName: string; profilePhoto?: string }[]
   >([]);
   const [thumbnail, setThumbnail] = React.useState("");
+  const router = useRouter();
   const [thumbnailPreview, setThumbnailPreview] = React.useState(null);
   const [address, setAddress] = React.useState(""); // New state for address
   // State to hold preview URL
@@ -99,10 +101,12 @@ export function ProjectAddCard() {
         createdAt: new Date(),
       })
     );
-    setOpen(false); // Close dialog or drawer after adding the project
+    //setOpen(false);
+    router.push("/app/projects"); // Close dialog or drawer after adding the project
   };
 
-  const handleAddTag = () => {
+  const handleAddTag = (event: React.MouseEvent) => {
+    event.stopPropagation();
     if (newTag.trim()) {
       setTags([...tags, newTag.trim()]);
       setNewTag("");
@@ -154,225 +158,215 @@ export function ProjectAddCard() {
   };
 
   const content = (
-    <div className="space-y-2 ">
-      {/* Title and Priority */}
-      <div className="flex justify-between items-center mb-2">
-        <Input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="text-sm mr-2 font-semibold text-slate-900 dark:text-white"
-          placeholder="Titre du projet"
-        />
-        {/* Priority Dropdown Menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="default" className="capitalize">
-              {transFormPriority(priority)}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Priorité</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => setPriority(Priority.HIGH)}>
-              Haute
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setPriority(Priority.MEDIUM)}>
-              Moyenne
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setPriority(Priority.LOW)}>
-              Basse
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="w-full capitalize">
-            {transFormStatus(status)}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>Statut</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setStatus(Status.IN_PROGRESS)}>
-            En cours
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setStatus(Status.DONE)}>
-            Terminé
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          Client
-        </label>
-        <div className="flex justify-between space-x-2 items-center">
+    <div className="container mx-auto p-4 h-full overflow-y-auto">
+      <h1 className="text-xl font-bold mb-4">Add Project</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Title */}
+        <div className="flex flex-col space-y-2">
+          <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+            Project Title
+          </label>
           <Input
-            value={client.fullName}
-            onChange={(e) => setClient({ ...client, fullName: e.target.value })}
-            placeholder="Nom du client"
-          />
-          <Input
-            type="number"
-            value={client.phoneNumber}
-            onChange={(e) =>
-              setClient({ ...client, phoneNumber: e.target.value })
-            }
-            placeholder="Numéro de téléphone"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Project Title"
           />
         </div>
 
-        <Input
-          type="file"
-          onChange={handleClientPhotoChange}
-          accept="image/*"
-        />
-        {client.profilePhoto && (
-          <Image
-            width={500}
-            height={300}
-            src={client.profilePhoto}
-            alt="Client Profile Preview"
-            className="w-16 h-16 rounded-full mt-2"
-          />
-        )}
-      </div>
-      {/* Address Input */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          Adresse
-        </label>
-        <Input
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          placeholder="Adresse du projet"
-        />
-      </div>
-      {/* Status Dropdown Menu */}
+        {/* Priority */}
+        <div className="flex flex-row space-x-2">
+          <div className="flex flex-col space-y-2">
+            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+              Priority
+            </label>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="default" className="capitalize">
+                  {transFormPriority(priority)}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Priority</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setPriority(Priority.HIGH)}>
+                  High
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setPriority(Priority.MEDIUM)}>
+                  Medium
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setPriority(Priority.LOW)}>
+                  Low
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
 
-      {/* Thumbnail Upload */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          Télécharger une vignette
-        </label>
-        <Input type="file" accept="image/*" onChange={handleThumbnailChange} />
-        {thumbnail.length > 0 && (
-          <Image
-            width={500}
-            height={300}
-            src={thumbnail}
-            alt="Vignette"
-            className="w-16 h-16 rounded-full mt-2"
-          />
-        )}
-      </div>
-      {/* Description */}
-      <Textarea
-        placeholder="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      {/* Due Date */}
-      <DatePicker date={format(dueDate, "yyyy-MM-dd")} setDate={setDueDate} />
-      {/* Progress */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          Progression
-        </label>
-        <Input
-          value={progress}
-          type="number"
-          min={0}
-          max={100}
-          onChange={(e) => setProgress(Number(e.target.value))}
-          placeholder="Progrés"
-        />
-        <Progress value={progress} className="w-full" />
-      </div>
-      {/* Team Members */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          Membres de l&apos;équipe
-        </label>
-        {teamMembers.map((member, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-between border p-2 rounded-md"
-          >
-            <Input
-              value={member.fullName}
-              onChange={(e) => handleUpdateTeamMember(index, e.target.value)}
-              className="mr-2"
+          {/* Status */}
+          <div className="flex flex-col space-y-2">
+            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+              Status
+            </label>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="default" className="capitalize">
+                  {transFormStatus(status)}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Status</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setStatus(Status.IN_PROGRESS)}>
+                  In Progress
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatus(Status.DONE)}>
+                  Done
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* Due Date */}
+          <div className="flex flex-col space-y-2">
+            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+              Due Date
+            </label>
+            <DatePicker
+              date={format(dueDate, "yyyy-MM-dd")}
+              setDate={setDueDate}
             />
-            <Button
-              onClick={() => handleRemoveTeamMember(index)}
-              variant="outline"
-              className="ml-2"
-            >
-              Supprimer
+          </div>
+        </div>
+
+        {/* Description */}
+        <div className="flex flex-col space-y-2">
+          <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+            Description
+          </label>
+          <Textarea
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+
+        {/* Thumbnail */}
+        <div className="flex flex-col space-y-2">
+          <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+            Thumbnail
+          </label>
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={handleThumbnailChange}
+          />
+          {thumbnail && (
+            <Image
+              width={500}
+              height={300}
+              src={thumbnail}
+              alt="Thumbnail Preview"
+              className="w-16 h-16 rounded-full mt-2"
+            />
+          )}
+        </div>
+
+        {/* Client Info */}
+        <div className="flex flex-col space-y-2">
+          <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+            Client Information
+          </label>
+          <div className="flex space-x-2">
+            <Input
+              value={client.fullName}
+              onChange={(e) =>
+                setClient({ ...client, fullName: e.target.value })
+              }
+              placeholder="Client Name"
+            />
+            <Input
+              type="number"
+              value={client.phoneNumber}
+              onChange={(e) =>
+                setClient({ ...client, phoneNumber: e.target.value })
+              }
+              placeholder="Phone Number"
+            />
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleClientPhotoChange}
+            />
+          </div>
+        </div>
+
+        {/* Tags */}
+        <div className="flex flex-col space-y-2">
+          <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+            Tags
+          </label>
+          <div className="flex items-center space-x-2">
+            <Input
+              value={newTag}
+              onChange={(e) => setNewTag(e.target.value)}
+              placeholder="Add a tag"
+            />
+            <Button type="button" onClick={handleAddTag}>
+              Add
             </Button>
           </div>
-        ))}
-        <Button onClick={handleAddTeamMember} variant="outline">
-          Ajouter un membre
-        </Button>
-      </div>
+          <div className="flex flex-wrap space-x-1 mt-2">
+            {tags.map((tag, index) => (
+              <Badge
+                key={index}
+                onClick={() => handleRemoveTag(index)}
+                className="cursor-pointer"
+              >
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
+        {/* Team Members */}
+        <div className="flex flex-row space-x-2 w-1/4 items-end">
+          <div className="flex flex-col space-y-2">
+            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+              Team Members
+            </label>
+            {teamMembers.map((member, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                <Input
+                  value={member.fullName}
+                  onChange={(e) =>
+                    handleUpdateTeamMember(index, e.target.value)
+                  }
+                  placeholder="Team Member Name"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={() => handleRemoveTeamMember(index)}
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant={"outline"}
+              onClick={handleAddTeamMember}
+            >
+              Add Team Member
+            </Button>
+          </div>
+
+          {/* Submit Button */}
+          <Button type="submit" className="w-full mt-4">
+            Save Project
+          </Button>
+        </div>
+      </form>
     </div>
   );
-
-  return isDesktop ? (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          className={cn(
-            " bg-primary text-white hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
-          )}
-        >
-          <PiPlusLight className="mr-2" />
-          Ajouter un projet
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-slate-50 h-screen overflow-y-scroll">
-        <DialogHeader>
-          <DialogTitle>Ajouter un projet</DialogTitle>
-          <DialogDescription>
-            Ajouter un nouveau projet dans votre liste de projets.
-          </DialogDescription>
-        </DialogHeader>
-        {content}
-        <DialogFooter>
-          <Button type="submit" onClick={handleSubmit}>
-            Enregistrer
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  ) : (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        <Button
-          className={cn(
-            " bg-primary text-white hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
-          )}
-        >
-          <PiPlusLight className="mr-2" />
-          Ajouter un projet
-        </Button>
-      </DrawerTrigger>
-      <DrawerContent className="sm:max-w-[425px] bg-slate-50 overflow-y-scroll">
-        <DrawerHeader>
-          <DrawerTitle>Ajouter un projet</DrawerTitle>
-          <DrawerDescription>
-            Ajouter un nouveau projet dans votre liste de projets.
-          </DrawerDescription>
-        </DrawerHeader>
-        {content}
-        <DrawerFooter>
-          <Button type="submit" onClick={handleSubmit}>
-            Enregistrer
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-  );
+  return <>{content}</>;
 }

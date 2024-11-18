@@ -47,14 +47,14 @@ const BoardTask: React.FC<BoardTaskProps> = ({
           draggable
           onDragStart={onDragStart}
           onDragEnd={onDragEnd}
-          className={`p-4 bg-white shadow-md rounded-lg mb-4 cursor-pointer border-l-4`}
+          className={`p-4  shadow-md rounded-lg mb-4 cursor-pointer border-l-4`}
           style={{ borderLeftColor: color }}
         >
           <div className="flex justify-between items-start mb-2">
             <span className="font-semibold">{title}</span>
             <Badge
               variant="default"
-              className={`text-xs flex items-center text-white font-medium capitalize ${
+              className={`text-xs flex items-center  font-medium capitalize ${
                 priority === Priority.HIGH
                   ? "bg-red-600 dark:text-red-400"
                   : priority === Priority.MEDIUM

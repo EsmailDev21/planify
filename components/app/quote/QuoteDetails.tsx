@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -18,11 +18,21 @@ import {
   PiPencilSimpleLight,
 } from "react-icons/pi";
 import { QuoteModel, QuoteStatus } from "@/lib/types/models";
-import { formatDate } from "date-fns";
-import QuotePDFDownload from "./QuotePdfDocument";
+import { format } from "date-fns";
 import { updateQuote } from "@/lib/redux/slices/quoteSlice";
 import { Input } from "@/components/ui/input";
 import { useDispatch } from "react-redux";
+import QuotePDFDownload from "./QuotePdfDocument";
+import { DatePicker } from "@/components/ui/date-picker";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 type QuoteDetailsProps = {
   quote: QuoteModel;
@@ -43,231 +53,282 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
 }) => {
   const dispatch = useDispatch();
   const [isUpdating, setIsUpdating] = React.useState(false);
-  const [updatedItems, setUpdatedItems] = React.useState(quote.items);
+
+  const [updatedQuote, setUpdatedQuote] = React.useState({
+    client: quote.client,
+    amount: quote.amount,
+    dueDate: quote.dueDate,
+    address: quote.address,
+    items: quote.items,
+  });
+
+  const handleUpdateField = (field: string, value: any) => {
+    setUpdatedQuote((prevQuote) => ({ ...prevQuote, [field]: value }));
+  };
 
   const handleUpdateItem = (index: number, field: string, value: any) => {
-    setUpdatedItems((prevItems) =>
-      prevItems.map((item, idx) =>
+    setUpdatedQuote((prevQuote) => ({
+      ...prevQuote,
+      items: prevQuote.items.map((item, idx) =>
         idx === index ? { ...item, [field]: value } : item
-      )
-    );
+      ),
+    }));
   };
 
   const handleSaveUpdates = () => {
-    dispatch(updateQuote({ ...quote, items: updatedItems }));
+    dispatch(updateQuote({ ...quote, ...updatedQuote }));
     setIsUpdating(false);
   };
 
   return (
     <ScrollArea className="p-6 space-y-6">
-      {/* Quote Header Section */}
-      <Card className="border shadow-sm rounded-lg p-4">
-        <CardHeader className="flex justify-between items-center">
-          <div className="flex items-center space-x-3">
-            <Avatar className="h-10 w-10">
-              <AvatarImage
-                src={quote.sender.profilePhoto}
-                alt={quote.sender.fullName}
-              />
-              <AvatarFallback>{quote.sender.fullName[0]}</AvatarFallback>
-            </Avatar>
-            <div>
-              <CardTitle>{quote.sender.fullName}</CardTitle>
-              <CardDescription className="text-sm text-slate-500">
-                {quote.sender.email}
-              </CardDescription>
-            </div>
-          </div>
-          <Badge className={`px-2 py-1 ${statusColorMap[quote.status]}`}>
-            {quote.status === QuoteStatus.PENDING
-              ? "En Attente"
-              : quote.status === QuoteStatus.ACCEPTED
-              ? "Accepté"
-              : "Rejeté"}
-          </Badge>
-        </CardHeader>
-      </Card>
-
-      {/* Quote Info Section */}
-      <Card className="border shadow-sm rounded-lg p-4 space-y-4">
-        <div className="flex justify-between">
-          <div className="text-sm text-slate-500">Client</div>
-          <div className="flex items-center space-x-2">
-            <Avatar className="h-7 w-7">
-              <AvatarImage
-                src={quote.client.profilePhoto}
-                alt={quote.client.fullName}
-              />
-              <AvatarFallback>{quote.client.fullName?.[0]}</AvatarFallback>
-            </Avatar>
-            <div className="text-sm">{quote.client.fullName}</div>
-          </div>
-        </div>
-
-        <Separator />
-
-        <div className="flex justify-between">
-          <div className="text-sm text-slate-500">Montant</div>
-          <div className="text-lg font-semibold text-blue-600">
-            {quote.amount.toFixed(2)} €
-          </div>
-        </div>
-
-        <Separator />
-
-        <div className="flex justify-between">
-          <div className="text-sm text-slate-500">Date de création</div>
-          <div className="text-sm">
-            {formatDate(quote.createdAt, "yyyy-MM-dd")}
-          </div>
-        </div>
-
-        {quote.dueDate && (
-          <>
-            <Separator />
-            <div className="flex justify-between">
-              <div className="text-sm text-slate-500">Date d&apos;échéance</div>
-              <div className="text-sm">
-                {formatDate(quote.dueDate, "yyyy-MM-dd")}
+      {/* Grid Layout for better design */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Quote Header Section */}
+        <Card className="border border-muted shadow-sm rounded-lg p-4">
+          <CardHeader className="flex justify-between items-center">
+            <div className="flex items-center space-x-3">
+              <Avatar className="h-10 w-10">
+                <AvatarImage
+                  src={quote.sender.profilePhoto}
+                  alt={quote.sender.fullName}
+                />
+                <AvatarFallback>{quote.sender.fullName[0]}</AvatarFallback>
+              </Avatar>
+              <div>
+                <CardTitle>{quote.sender.fullName}</CardTitle>
+                <CardDescription className="text-sm text-slate-500">
+                  {quote.sender.email}
+                </CardDescription>
               </div>
             </div>
-          </>
-        )}
+            <Badge className={`px-2 py-1 ${statusColorMap[quote.status]}`}>
+              {quote.status === QuoteStatus.PENDING
+                ? "En Attente"
+                : quote.status === QuoteStatus.ACCEPTED
+                ? "Accepté"
+                : "Rejeté"}
+            </Badge>
+          </CardHeader>
+        </Card>
 
-        {quote.address && (
-          <>
-            <Separator />
-            <div className="flex justify-between">
-              <div className="text-sm text-slate-500">Adresse</div>
-              <div className="text-sm">{quote.address}</div>
+        {/* Client Info Section */}
+        <Card className="border border-muted shadow-sm rounded-lg p-4 space-y-4">
+          <div className="flex justify-between items-center">
+            <div className="text-lg font-semibold ">Client</div>
+            <div className="flex items-center space-x-2">
+              <Avatar className="h-10 w-10">
+                <AvatarImage
+                  src={quote.client.profilePhoto}
+                  alt={quote.client.fullName}
+                />
+                <AvatarFallback>{quote.client.fullName?.[0]}</AvatarFallback>
+              </Avatar>
+              <div>
+                {isUpdating ? (
+                  <Input
+                    value={updatedQuote.client.fullName}
+                    onChange={(e) =>
+                      handleUpdateField("client", {
+                        ...updatedQuote.client,
+                        fullName: e.target.value,
+                      })
+                    }
+                  />
+                ) : (
+                  <div className="text-lg font-semibold">
+                    {quote.client.fullName}
+                  </div>
+                )}
+              </div>
             </div>
-          </>
-        )}
-      </Card>
+          </div>
 
-      {/* Quote Items Section */}
-      <Card className="border shadow-sm rounded-lg p-4">
+          <Separator />
+
+          <div className="flex justify-between">
+            <div className="text-sm text-slate-500">Montant</div>
+            <div className="text-lg font-bold text-blue-600">
+              {isUpdating ? (
+                <Input
+                  type="number"
+                  value={updatedQuote.amount}
+                  onChange={(e) =>
+                    handleUpdateField("amount", Number(e.target.value))
+                  }
+                />
+              ) : (
+                `${quote.amount.toFixed(2)} €`
+              )}
+            </div>
+          </div>
+
+          <Separator />
+
+          <div className="flex justify-between">
+            <div className="text-sm text-slate-500">Date de création</div>
+            <div className="text-sm">
+              {format(new Date(quote.createdAt), "yyyy-MM-dd")}
+            </div>
+          </div>
+
+          {quote.dueDate && (
+            <>
+              <Separator />
+              <div className="flex justify-between">
+                <div className="text-sm text-slate-500">
+                  Date d&apos;échéance
+                </div>
+                <div className="text-sm">
+                  {isUpdating ? (
+                    <DatePicker
+                      date={format(
+                        new Date(updatedQuote.dueDate),
+                        "yyyy-MM-dd"
+                      )}
+                      setDate={(date: Date) =>
+                        handleUpdateField("dueDate", date)
+                      }
+                    />
+                  ) : (
+                    format(new Date(quote.dueDate), "yyyy-MM-dd")
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
+          {quote.address && (
+            <>
+              <Separator />
+              <div className="flex justify-between">
+                <div className="text-sm text-slate-500">Adresse</div>
+                <div className="text-sm">
+                  {isUpdating ? (
+                    <Input
+                      value={updatedQuote.address}
+                      onChange={(e) =>
+                        handleUpdateField("address", e.target.value)
+                      }
+                    />
+                  ) : (
+                    quote.address
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+        </Card>
+      </div>
+
+      {/* Thumbnail Section (reduced size and better layout) */}
+
+      {/* Quote Items Section (Using Shadcn Table) */}
+      <Card className="border border-muted shadow-sm mt-2 rounded-lg p-4">
         <CardHeader>
           <CardTitle>Articles</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {updatedItems.map((item, index) => (
-            <div key={item.id} className="flex flex-col space-y-2">
-              <div className="flex justify-between">
-                <div className="text-sm text-slate-500">
-                  {isUpdating ? (
-                    <Input
-                      value={item.description}
-                      onChange={(e) =>
-                        handleUpdateItem(index, "description", e.target.value)
-                      }
-                    />
-                  ) : (
-                    item.description || `Item ${index + 1}`
-                  )}
-                </div>
-                <div className="text-sm font-semibold">
-                  {isUpdating ? (
-                    <Input
-                      type="number"
-                      value={item.totalPrice}
-                      onChange={(e) =>
-                        handleUpdateItem(
-                          index,
-                          "totalPrice",
-                          Number(e.target.value)
-                        )
-                      }
-                    />
-                  ) : (
-                    item.totalPrice.toFixed(2)
-                  )}{" "}
-                  €
-                </div>
-              </div>
-
-              <div className="grid grid-cols-4 gap-4 text-sm text-slate-600">
-                <div>
-                  <span className="font-semibold">Type: </span>
-                  {item.task
-                    ? "Tâche à faire"
-                    : item.equipment
-                    ? "Équipement à utiliser"
-                    : "Produit à utiliser"}
-                </div>
-                <div>
-                  <span className="font-semibold">Prix Unitaire: </span>
-                  {isUpdating ? (
-                    <Input
-                      type="number"
-                      value={item.unitPrice}
-                      onChange={(e) =>
-                        handleUpdateItem(
-                          index,
-                          "unitPrice",
-                          Number(e.target.value)
-                        )
-                      }
-                    />
-                  ) : (
-                    item.unitPrice.toFixed(2)
-                  )}{" "}
-                  €
-                </div>
-                <div>
-                  <span className="font-semibold">Quantité: </span>
-                  {isUpdating ? (
-                    <Input
-                      type="number"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        handleUpdateItem(
-                          index,
-                          "quantity",
-                          Number(e.target.value)
-                        )
-                      }
-                    />
-                  ) : (
-                    item.quantity
-                  )}
-                </div>
-                <div>
-                  <span className="font-semibold">TVA: </span>
-                  {isUpdating ? (
-                    <Input
-                      type="number"
-                      value={item.tva}
-                      onChange={(e) =>
-                        handleUpdateItem(index, "tva", Number(e.target.value))
-                      }
-                    />
-                  ) : (
-                    item.tva.toFixed(2)
-                  )}{" "}
-                  %
-                </div>
-              </div>
-            </div>
-          ))}
+        <CardContent>
+          <Table>
+            <TableCaption>Liste des articles de la dévis.</TableCaption>
+            <TableHeader>
+              <TableRow className="border-muted">
+                <TableHead>Description</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead className="text-right">Prix Unitaire</TableHead>
+                <TableHead className="text-right">Quantité</TableHead>
+                <TableHead className="text-right">Total</TableHead>
+                <TableHead className="text-right">Taxe</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {updatedQuote.items.map((item, index) => (
+                <TableRow className="border-muted" key={item.id}>
+                  <TableCell className="font-medium">
+                    {item.task
+                      ? item.task.title
+                      : item.equipment
+                      ? item.equipment.label
+                      : item.product?.label || `Item ${index + 1}`}
+                  </TableCell>
+                  <TableCell>
+                    {item.task
+                      ? "Tâche à faire"
+                      : item.equipment
+                      ? "Équipement à utiliser"
+                      : "Produit à utiliser"}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {isUpdating ? (
+                      <Input
+                        type="number"
+                        value={item.unitPrice}
+                        onChange={(e) =>
+                          handleUpdateItem(
+                            index,
+                            "unitPrice",
+                            Number(e.target.value)
+                          )
+                        }
+                      />
+                    ) : (
+                      `${item.unitPrice.toFixed(2)} €`
+                    )}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {isUpdating ? (
+                      <Input
+                        type="number"
+                        value={item.quantity}
+                        onChange={(e) =>
+                          handleUpdateItem(
+                            index,
+                            "quantity",
+                            Number(e.target.value)
+                          )
+                        }
+                      />
+                    ) : (
+                      item.quantity
+                    )}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {(item.unitPrice * item.quantity).toFixed(2)} €
+                  </TableCell>
+                  <TableCell className="text-right">{item.tva}%</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
 
-      {/* Action Buttons */}
-      <div className="flex justify-end space-x-4">
-        <Button
-          onClick={() =>
-            isUpdating ? handleSaveUpdates() : setIsUpdating(true)
-          }
-          variant="secondary"
-        >
-          <PiPencilSimpleLight size={18} className="mr-2" />
-          {isUpdating ? "Valider" : "Modifier"}
-        </Button>
-        <Button onClick={onDownloadClick} variant="default">
-          <PiDownloadLight size={18} className="mr-2" />
-          <QuotePDFDownload quote={quote} />
-        </Button>
+      <div className="flex justify-end space-x-3">
+        {isUpdating ? (
+          <Button onClick={handleSaveUpdates}>Sauvegarder</Button>
+        ) : (
+          <>
+            <Button
+              variant="outline"
+              onClick={() => setIsUpdating(true)}
+              className="flex items-center"
+            >
+              <PiPencilSimpleLight className="mr-2" />
+              Modifier
+            </Button>
+            <Button variant="outline" className="flex items-center">
+              <PiDownloadLight className="mr-2" />
+
+              <QuotePDFDownload quote={quote} />
+            </Button>
+            {isUpdating && (
+              <Button onClick={onUpdateClick} className="flex items-center">
+                <PiCalendarPlusLight className="mr-2" />
+                Mettre à jour
+              </Button>
+            )}
+          </>
+        )}
       </div>
     </ScrollArea>
   );

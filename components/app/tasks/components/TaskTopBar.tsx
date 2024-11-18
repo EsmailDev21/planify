@@ -56,7 +56,7 @@ const TaskTopBar = ({
   };
 
   return (
-    <div className="flex items-center justify-between gap-4 p-4 bg-white dark:bg-slate-800 rounded-lg shadow-md mb-4">
+    <div className="flex items-center justify-between gap-4 p-4 border border-muted rounded-lg shadow-md mb-4">
       {/* Search Filter */}
       <div className="flex items-center  w-[40%]">
         <Input
@@ -66,17 +66,20 @@ const TaskTopBar = ({
           className="pr-10 mr-2"
         />
         <Button variant={"outline"}>
-          <CiSearch size={18} className=" text-slate-500 dark:text-slate-400" />
+          <CiSearch
+            size={18}
+            className=" text-foreground dark:text-foreground-muted"
+          />
         </Button>
       </div>
 
       {/* View Badges */}
-      <div className="flex flex-row space-x-2">
+      <div className="flex flex-row p-2 space-x-2">
         <Badge
           key={"GANTT"}
           onClick={() => setView("GANTT")}
           variant={"outline"}
-          className="text-slate-900 text-sm hover:bg-slate-100 flex flex-row space-x-2 cursor-pointer"
+          className="text-sm flex flex-row space-x-2 cursor-pointer "
         >
           <PiAlignLeftLight size={14} />
           <span>Gantt</span>
@@ -85,7 +88,7 @@ const TaskTopBar = ({
           key={"BOARD"}
           onClick={() => setView("BOARD")}
           variant={"outline"}
-          className="text-slate-900 text-sm hover:bg-slate-100 flex flex-row space-x-2 cursor-pointer"
+          className="text-sm flex flex-row space-x-2 cursor-pointer"
         >
           <PiColumnsLight size={14} />
           <span>Board</span>
@@ -94,7 +97,7 @@ const TaskTopBar = ({
           key={"LIST"}
           onClick={() => setView("LIST")}
           variant={"outline"}
-          className="text-slate-900 text-sm hover:bg-slate-100 flex flex-row space-x-2 cursor-pointer"
+          className="text-sm flex flex-row space-x-2 cursor-pointer"
         >
           <PiListChecksLight size={14} />
           <span>List</span>
@@ -110,10 +113,10 @@ const TaskTopBar = ({
         >
           <DrawerTrigger asChild>
             <Button variant="outline">
-              <CiFilter className="text-slate-500 dark:text-slate-400" />
+              <CiFilter className="text-foreground dark:text-foreground-muted" />
             </Button>
           </DrawerTrigger>
-          <DrawerContent className="p-4 h-screen w-64 bg-white">
+          <DrawerContent className="p-4 h-screen w-64 ">
             <div className="flex flex-col gap-4">
               {/* Status Filter */}
               <Button
@@ -121,7 +124,7 @@ const TaskTopBar = ({
                 onClick={() => handleFilterChange("status", "")}
                 className="flex items-center space-x-2"
               >
-                <PiCheckCircleFill className="text-slate-500 dark:text-slate-400" />
+                <PiCheckCircleFill className="text-foreground dark:text-foreground-muted" />
                 <span>{filters.status || "Statut"}</span>
               </Button>
 
@@ -131,7 +134,7 @@ const TaskTopBar = ({
                 onClick={() => handleFilterChange("priority", "")}
                 className="flex items-center space-x-2"
               >
-                <PiWarningCircleLight className="text-slate-500 dark:text-slate-400" />
+                <PiWarningCircleLight className="text-foreground dark:text-foreground-muted" />
                 <span>{filters.priority || "Priorité"}</span>
               </Button>
 
@@ -153,7 +156,7 @@ const TaskTopBar = ({
                 className="flex items-center space-x-2"
                 onClick={() => handleFilterChange("startDate", new Date())}
               >
-                <PiCalendarLight className="text-slate-500 dark:text-slate-400" />
+                <PiCalendarLight className="text-foreground dark:text-foreground-muted" />
                 <span>
                   {filters.startDate
                     ? `Début: ${format(filters.startDate, "dd MMM yyyy")}`

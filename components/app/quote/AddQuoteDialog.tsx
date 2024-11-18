@@ -286,7 +286,9 @@ const AddQuoteItem = ({
   const tasks = useSelector(selectTasks);
   const [title, setTitle] = React.useState("");
   const [type, setType] = React.useState(QuoteItemType.TASK);
-  const handleSubmit = () => {
+  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
     if (title.length > 0) {
       switch (type) {
         case QuoteItemType.TASK:
