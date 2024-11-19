@@ -8,6 +8,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme";
+import { Toaster } from "@/components/ui/toaster";
 const font = Tilt_Neon({
   subsets: ["latin"],
   weight: "400",
@@ -34,6 +35,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

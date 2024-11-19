@@ -39,7 +39,7 @@ const Sidebar = () => {
     { href: "/app/tasks", label: "Tâches", icon: PiListChecksDuotone },
 
     {
-      href: "#file-manager",
+      href: "/app/file-system",
       label: "Fichiers et documents",
       icon: PiFilesDuotone,
     },

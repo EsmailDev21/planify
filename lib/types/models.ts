@@ -65,24 +65,24 @@ export type ClientModel = Partial<
 export type QuoteModel = {
   id: string;
   projectId: string; // Reference to the ProjectModel
-  title:string;
+  title: string;
   sender: AutoEntrepreneur | BusinessOwner; // The person who sends the quote
   client: ClientModel; // The recipient of the quote
   amount: number; // Quoted price
   description: string; // Description of the quote
   status: QuoteStatus; // Status of the quote (e.g., PENDING, ACCEPTED, REJECTED)
   createdAt: Date;
-  dueDate:Date;
+  dueDate: Date;
   updatedAt?: Date;
-  thumbnail:string;
-  address:string
+  thumbnail: string;
+  address: string;
   items: QuoteItemModel[];
 };
 
 export enum QuoteItemType {
   TASK,
   EQUIPMENT,
-  PRODUCT
+  PRODUCT,
 }
 export type QuoteItemModel = {
   id: string; // Unique identifier for the quote item
@@ -98,14 +98,14 @@ export type QuoteItemModel = {
 };
 
 export type ProductModel = {
-  id:string,
-  label:string,
-}
+  id: string;
+  label: string;
+};
 
 export type EquipmentModel = {
-  id:string,
-  label:string,
-}
+  id: string;
+  label: string;
+};
 
 export enum QuoteStatus {
   PENDING,
@@ -127,3 +127,27 @@ export type BusinessOwner = Pick<
 > & {
   role: UserRole.BUSINESS_OWNER;
 };
+
+// file  system types
+export type FileType = {
+  id: string; // Unique identifier
+  name: string; // File name
+  extension: string; // File extension (e.g., 'jpg', 'pdf', etc.)
+  size: number; // File size in bytes
+  type: "file"; // Distinguishes files from folders
+  createdAt: Date; // Date created
+  modifiedAt: Date; // Last modified date
+  parentFolderId: string | null; // ID of parent folder (null if in root)
+};
+
+export type FolderType = {
+  id: string; // Unique identifier
+  name: string; // Folder name
+  type: "folder"; // Distinguishes folders from files
+  children: string[]; // Array of IDs for files/folders inside this folder
+  createdAt: Date; // Date created
+  modifiedAt: Date; // Last modified date
+  parentFolderId: string | null; // ID of parent folder (null if root)
+};
+
+export type FileSystemEntity = FileType | FolderType;
