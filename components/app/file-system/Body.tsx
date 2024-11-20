@@ -31,6 +31,14 @@ import {
 import { RootState } from "@/lib/redux/store";
 import { FolderType } from "@/lib/types/models";
 import { PiEmptyLight } from "react-icons/pi";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 export function FileSystemBody() {
   const { toast } = useToast();
@@ -112,15 +120,18 @@ export function FileSystemBody() {
 
   const handleCut = (itemId: string) => {
     setCutItem(itemId);
+    console.log({ cutted: itemId });
     setCopiedItem(null); // Clear copied item when cutting
   };
 
   const handleCopy = (itemId: string) => {
     setCopiedItem(itemId);
+    console.log({ copied: itemId });
     setCutItem(null); // Clear cut item when copying
   };
-
   const handlePaste = (targetId: string) => {
+    console.log({ target: targetId, cutted: cutItem, copied: copiedItem });
+
     if (cutItem) {
       dispatch(moveEntity({ id: cutItem, newParentFolderId: targetId }));
       setCutItem(null); // Clear cut item after pasting
@@ -131,119 +142,165 @@ export function FileSystemBody() {
       });
     } else if (copiedItem) {
       const copiedEntity = entities[copiedItem];
-      copiedEntity.type === "file"
-        ? dispatch(
-            createFile({
-              ...copiedEntity,
-              parentFolderId: targetId,
-            })
-          )
-        : dispatch(
-            createFolder({
-              ...copiedEntity,
-              parentFolderId: targetId,
-            })
-          );
+
+      // Check for existing items with the same name in the target folder
+      const existingNames = Object.values(entities)
+        .map((entity) => entity.name)
+        .filter((name) => name.startsWith(copiedEntity.name));
+
+      let newName = copiedEntity.name;
+      if (existingNames.includes(newName)) {
+        let suffix = 1;
+        while (existingNames.includes(`${copiedEntity.name} (${suffix})`)) {
+          suffix++;
+        }
+        newName = `${copiedEntity.name} (${suffix})`;
+      }
+      console.log(newName);
+      // Dispatch the copy action
+      if (copiedEntity.type === "file") {
+        dispatch(
+          createFile({
+            ...copiedEntity,
+            id: `${copiedEntity.name}-${new Date().toISOString()}`, // Unique ID
+            name: newName,
+            parentFolderId: targetId,
+          })
+        );
+      } else {
+        dispatch(
+          createFolder({
+            ...copiedEntity,
+            id: `${copiedEntity.name}-${new Date().toISOString()}`, // Unique ID
+            name: newName,
+            parentFolderId: targetId,
+          })
+        );
+      }
+
       setCopiedItem(null); // Clear copied item after pasting
       toast({
         title: "Item Copied",
-        description: "The item has been copied successfully!",
+        description: `The item "${newName}" has been copied successfully!`,
         variant: "default",
       });
     }
   };
 
   return (
-    <div className="flex h-screen p-4">
-      <div className="mx-auto flex w-full flex-col items-center justify-center text-center">
-        {shuffledFilesAndFolders.length === 0 ? (
-          <div className="flex h-full items-start justify-center rounded-md border border-dashed">
-            <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center text-center">
-              <PiEmptyLight className="h-20 w-20 rounded-full text-muted" />
-              <h3 className="mt-4 text-lg font-semibold">
-                No files or folders found
-              </h3>
-              <p className="mb-4 mt-2 text-sm text-muted-foreground">
-                You have not added any files or folders. Add one below.
-              </p>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button size="sm" className="relative">
-                    Add File/Folder
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add File/Folder</DialogTitle>
-                    <DialogDescription>
-                      Upload your file or create a folder below.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="file">File/Folder Upload</Label>
-                      <Input id="file" type="file" />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button
-                      onClick={() =>
-                        toast({
-                          title: "File/Folder Uploaded",
-                          description:
-                            "Your file/folder was uploaded successfully!",
-                          variant: "default",
-                        })
-                      }
-                    >
-                      Upload
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-4 gap-4 w-full h-full">
-            {shuffledFilesAndFolders.map((entity) =>
-              entity.type === "folder" ? (
-                <FolderComponent
-                  key={entity.id}
-                  folder={entity as FolderType}
-                  onClick={handleFolderClick}
-                  onDelete={handleDelete}
-                  onRename={handleRename}
-                  onDrop={handleDrop}
-                  onDragStart={() => handleDragStart(entity.id, "folder")}
-                  onCut={handleCut}
-                  onCopy={handleCopy}
-                  onPaste={handlePaste}
-                />
-              ) : (
-                <FileComponent
-                  key={entity.id}
-                  file={entity}
-                  onDelete={handleDelete}
-                  onRename={handleRename}
-                  onDragStart={() => handleDragStart(entity.id, "file")}
-                  onCut={handleCut}
-                  onCopy={handleCopy}
-                  onPaste={handlePaste}
-                  onDrag={function (fileId: string): void {
-                    throw new Error("Function not implemented.");
-                  }}
-                  onDrop={function (
-                    targetId: string,
-                    draggedItemId: string
-                  ): void {
-                    throw new Error("Function not implemented.");
-                  }}
-                />
-              )
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
+        <div className="flex h-screen ">
+          <div className="mx-auto flex w-full flex-col items-center  text-center">
+            {shuffledFilesAndFolders.length === 0 ? (
+              <div className="flex h-full items-start justify-center rounded-md border border-dashed">
+                <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center text-center">
+                  <PiEmptyLight className="h-20 w-20 rounded-full text-muted" />
+                  <h3 className="mt-4 text-lg font-semibold">
+                    No files or folders found
+                  </h3>
+                  <p className="mb-4 mt-2 text-sm text-muted-foreground">
+                    You have not added any files or folders. Add one below.
+                  </p>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button size="sm" className="relative">
+                        Add File/Folder
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Add File/Folder</DialogTitle>
+                        <DialogDescription>
+                          Upload your file or create a folder below.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid gap-2">
+                          <Label htmlFor="file">File/Folder Upload</Label>
+                          <Input id="file" type="file" />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button
+                          onClick={() =>
+                            toast({
+                              title: "File/Folder Uploaded",
+                              description:
+                                "Your file/folder was uploaded successfully!",
+                              variant: "default",
+                            })
+                          }
+                        >
+                          Upload
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-4 gap-4 w-full max-h-[500px] overflow-auto">
+                {shuffledFilesAndFolders.map((entity) =>
+                  entity.type === "folder" ? (
+                    <FolderComponent
+                      isPasteDisabled={copiedItem === null && cutItem === null}
+                      isCopied={copiedItem === entity.id}
+                      isCutted={cutItem === entity.id}
+                      key={entity.id}
+                      folder={entity as FolderType}
+                      onClick={handleFolderClick}
+                      onDelete={handleDelete}
+                      onRename={handleRename}
+                      onDrop={handleDrop}
+                      onDragStart={() => handleDragStart(entity.id, "folder")}
+                      onCut={handleCut}
+                      onCopy={handleCopy}
+                      onPaste={handlePaste}
+                    />
+                  ) : (
+                    <FileComponent
+                      isCopied={copiedItem === entity.id}
+                      isCutted={cutItem === entity.id}
+                      key={entity.id}
+                      file={entity}
+                      onDelete={handleDelete}
+                      onRename={handleRename}
+                      onDragStart={() => handleDragStart(entity.id, "file")}
+                      onCut={handleCut}
+                      onCopy={handleCopy}
+                      onPaste={handlePaste}
+                      onDrag={function (fileId: string): void {
+                        throw new Error("Function not implemented.");
+                      }}
+                      onDrop={function (
+                        targetId: string,
+                        draggedItemId: string
+                      ): void {
+                        throw new Error("Function not implemented.");
+                      }}
+                    />
+                  )
+                )}
+              </div>
             )}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      </ContextMenuTrigger>
+      <ContextMenuContent className="w-64">
+        <ContextMenuLabel>Folder Options</ContextMenuLabel>
+
+        <ContextMenuItem
+          disabled={cutItem === null && copiedItem === null}
+          onClick={() => {
+            if (currentFolderId === null) return null;
+            else return handlePaste(currentFolderId);
+          }}
+        >
+          Paste
+        </ContextMenuItem>
+        <ContextMenuSeparator />
+      </ContextMenuContent>
+    </ContextMenu>
   );
 }

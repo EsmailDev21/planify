@@ -24,6 +24,7 @@ export const generateWeeksForMonth = (
 ) => {
   const startOfMonthDate = startOfMonth(currentMonth);
   const endOfMonthDate = endOfMonth(currentMonth);
+  console.log({ startOfMonthDate, endOfMonthDate });
   const daysInMonth = differenceInDays(endOfMonthDate, startOfMonthDate) + 1;
 
   // Calculate number of weeks by checking the day of the week of the start and end of the month

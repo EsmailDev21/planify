@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { PiFolderDuotone } from "react-icons/pi";
+import { PiFolderDuotone, PiFolderLight } from "react-icons/pi";
 import {
   HoverCard,
   HoverCardContent,
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/context-menu";
 import { FolderType } from "@/lib/types/models";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 interface FolderProps {
   folder: FolderType;
@@ -27,7 +28,10 @@ interface FolderProps {
   onDragStart: (event: React.DragEvent, entityId: string) => void;
   onCut: (folderId: string) => void;
   onCopy: (folderId: string) => void;
-  onPaste: (folderId: string) => void; // Added to handle drag start
+  onPaste: (folderId: string) => void;
+  isCopied: boolean;
+  isCutted: boolean;
+  isPasteDisabled: boolean; // Added to handle drag start
 }
 
 export function FolderComponent({
@@ -39,7 +43,10 @@ export function FolderComponent({
   onDragStart,
   onCut,
   onCopy,
-  onPaste, // Received the new prop
+  onPaste,
+  isCopied,
+  isCutted,
+  isPasteDisabled, // Received the new prop
 }: FolderProps) {
   const [isRenaming, setIsRenaming] = useState(false);
   const [newName, setNewName] = useState(folder.name);
@@ -87,11 +94,22 @@ export function FolderComponent({
           onDragLeave={handleDragLeave} // Reset state when drag leaves
           onDragStart={handleDragStart} // Attach onDragStart
           draggable // Make it draggable
-          className={`flex flex-col items-center p-2 border rounded-lg cursor-pointer ${
-            isDraggingOver ? "border-blue-500 bg-blue-100" : "border-muted"
+          className={`flex flex-col h-52 items-center p-2 border rounded-lg cursor-pointer ${
+            isDraggingOver ? "border-blue-500" : "border-muted"
+          } ${isCutted && "border-dashed border-green-400 border-2"} ${
+            isCopied && "border-opacity-70 border-2 border-indigo-500"
           }`} // Change styles when dragging over
         >
-          <PiFolderDuotone className="h-16 w-16 text-blue-500" />
+          {isCopied ? (
+            <PiFolderDuotone className={"h-16 w-16 text-blue-500"} />
+          ) : (
+            <PiFolderDuotone
+              className={cn(
+                `h-16 w-16 text-blue-500`,
+                (isCutted || isCopied) && "text-opacity-70"
+              )}
+            />
+          )}
           {isRenaming ? (
             <Input
               ref={ref}
@@ -118,7 +136,10 @@ export function FolderComponent({
         <ContextMenuItem onClick={() => onCopy(folder.id)}>
           Copy
         </ContextMenuItem>
-        <ContextMenuItem onClick={() => onCopy(folder.id)}>
+        <ContextMenuItem
+          disabled={isPasteDisabled}
+          onClick={() => onPaste(folder.id)}
+        >
           Paste
         </ContextMenuItem>
         <ContextMenuSeparator />

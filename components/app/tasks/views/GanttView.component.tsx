@@ -10,6 +10,7 @@ import {
   isBefore,
   differenceInHours,
   differenceInWeeks,
+  startOfMonth
 } from "date-fns";
 import { BiMove } from "react-icons/bi";
 import { Button } from "@/components/ui/button"; // Adjust if using different Shadcn components
@@ -104,7 +105,7 @@ const GanttChart: React.FC<GanttChartProps> = ({
   }, [isDragging, scrollStartX]);
 
   //gantt params
-  const startDate = addDays(new Date(), -3);
+  const startDate = startOfMonth(new Date()) //addDays(new Date(), -3);
   const totalDays = 100;
   const dayColumnWidth = zoomLevel * 10;
   const topRow: any[] = [];

@@ -71,6 +71,7 @@ const FileManagerHeader: React.FC = () => {
       name: string;
       extension: string;
       size: number;
+      content: string;
     }[]
   >([]);
 
@@ -108,17 +109,37 @@ const FileManagerHeader: React.FC = () => {
     setIsCreateFolderOpen(false);
     setFolderName("");
   };
-
   const handleUploadFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     setSelectedFiles(files);
-    setFileMetadata(
-      files.map((file) => ({
-        name: file.name,
-        extension: file.name.split(".").pop() || "",
-        size: file.size,
-      }))
-    );
+
+    // Read content of text files
+    const fileMetadataWithContent = files.map((file) => {
+      const reader = new FileReader();
+
+      return new Promise<FileType>((resolve) => {
+        reader.onload = () => {
+          const content = reader.result as string;
+          resolve({
+            id: `file-${Date.now()}-${file.name}`,
+            name: file.name,
+            extension: file.name.split(".").pop() || "",
+            size: file.size,
+            type: "file",
+            createdAt: new Date(),
+            modifiedAt: new Date(),
+            parentFolderId: currentFolderId,
+            content, // Store the file content as a string
+          });
+        };
+
+        reader.readAsText(file); // For text-based files, you can use readAsText
+      });
+    });
+
+    Promise.all(fileMetadataWithContent).then((filesWithContent) => {
+      setFileMetadata(filesWithContent);
+    });
   };
 
   const handleUpload = () => {
@@ -129,6 +150,7 @@ const FileManagerHeader: React.FC = () => {
         size: fileMetadata[index].size,
         file,
         folderId: currentFolderId,
+        content: fileMetadata[index].content,
       };
       dispatch(
         createFile({
@@ -145,7 +167,7 @@ const FileManagerHeader: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-start flex-wrap w-full gap-2 p-2 rounded-lg mb-4">
+    <div className="flex flex-col bg-inherit  items-start flex-wrap w-full gap-2 p-2 rounded-lg mb-4">
       {/* Breadcrumb */}
       <Breadcrumb currentFolderId={currentFolderId} entities={entities} />
 
@@ -260,7 +282,7 @@ const FileManagerHeader: React.FC = () => {
         <DialogOverlay />
         <DialogContent className="h-4/5 overflow-y-auto">
           <DialogTitle>Upload Files</DialogTitle>
-          <input
+          <Input
             type="file"
             onChange={handleUploadFileChange}
             multiple
