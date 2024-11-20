@@ -43,7 +43,7 @@ const Sidebar = () => {
       label: "Fichiers et documents",
       icon: PiFilesDuotone,
     },
-    { href: "#teams", label: "Team manager", icon: PiUsersThreeDuotone },
+    { href: "/app/teams", label: "Team manager", icon: PiUsersThreeDuotone },
   ];
   console.log({ pathname });
   const isActive = (route: any) => {
