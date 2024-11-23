@@ -5,9 +5,18 @@ import Image from "next/image";
 
 const VideoGrid = ({ participants }: { participants: UserModel[] }) => {
   return (
-    <div className="grid grid-cols-3 gap-4 p-4">
+    <div
+      className={
+        "h-full grid gap-4 p-4" +
+        (participants.length > 6 && participants.length <= 8
+          ? " grid-cols-4"
+          : participants.length > 8
+          ? " grid-cols-5"
+          : " grid-cols-3")
+      }
+    >
       {participants.map((participant) => (
-        <Card key={participant.id} className="relative border-muted h-48">
+        <Card key={participant.id} className="relative border-muted h-[90%]">
           <CardContent className="relative  h-full p-0">
             <video
               autoPlay

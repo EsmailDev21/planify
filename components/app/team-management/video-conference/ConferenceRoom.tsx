@@ -6,6 +6,7 @@ import ScreenShareButton from "./ScreenShareButton";
 import VideoGrid from "./VideoGrid";
 import { UserModel, UserRole } from "@/lib/types/models";
 import { generateRandomAvatar } from "../../tasks/views/GanttTask.component";
+import { useToast } from "@/components/ui/use-toast";
 
 const ConferenceRoom = () => {
   const [participants, setParticipants] = useState<UserModel[]>([
@@ -41,28 +42,67 @@ const ConferenceRoom = () => {
       role: UserRole.CUSTOMER,
       profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
     },
+    {
+      email: "carla@example.com",
+      fullName: "Carla Davis",
+      id: "6",
+      phoneNumber: "+543 210 9876",
+      role: UserRole.CUSTOMER,
+      profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
+    },
+    {
+      email: "carla@example.com",
+      fullName: "Carla Davis",
+      id: "5",
+      phoneNumber: "+543 210 9876",
+      role: UserRole.CUSTOMER,
+      profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
+    },
+    {
+      email: "carla@example.com",
+      fullName: "Carla Davis",
+      id: "7",
+      phoneNumber: "+543 210 9876",
+      role: UserRole.CUSTOMER,
+      profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
+    },
   ]);
 
+  const { toast } = useToast();
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
-
+  const [isSharing, setIsSharing] = useState(false);
   const toggleMute = () => setIsMuted(!isMuted);
   const toggleVideo = () => setIsVideoOn(!isVideoOn);
   const endCall = () => alert("Call ended!");
-  const startScreenShare = () => alert("Screen sharing started!");
+  const toggleScreenShare = () => {
+    setIsSharing(!isSharing);
+    isSharing == true
+      ? toast({
+          title: "Sharing Started",
+          description: "Screen sharing has started successfully!",
+          variant: "default",
+        })
+      : toast({
+          title: "Sharing Ended",
+          description: "Screen sharing has ended!",
+          variant: "default",
+        });
+  };
 
   return (
-    <div className="flex items-center">
-      <div className="flex-1 bg-background flex flex-col">
+    <div className="flex items-stretch w-full ">
+      <div className="flex-1 min-h-[90vh] bg-background flex flex-col justify-between">
         <VideoGrid participants={participants} />
         <Controls
+          isSharing={isSharing}
+          toggleScreenShare={toggleScreenShare}
           isMuted={isMuted}
           isVideoOn={isVideoOn}
           toggleMute={toggleMute}
           toggleVideo={toggleVideo}
           endCall={endCall}
         />
-        <ScreenShareButton startScreenShare={startScreenShare} />
       </div>
       <ChatPanel />
     </div>

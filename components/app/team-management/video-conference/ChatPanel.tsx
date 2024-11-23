@@ -15,8 +15,8 @@ const ChatPanel = () => {
   };
 
   return (
-    <div className="flex flex-col w-1/3">
-      <ScrollArea className="flex-1 p-4 space-y-2">
+    <div className="flex flex-col w-1/3 h-[90vh]">
+      <ScrollArea className="flex-1 h-full max-h-full p-4 space-y-2">
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -26,7 +26,7 @@ const ChatPanel = () => {
           </div>
         ))}
       </ScrollArea>
-      <div className="flex p-4 ">
+      <div className="flex items-center p-4 ">
         <Input
           type="text"
           className="flex-1"
@@ -34,7 +34,12 @@ const ChatPanel = () => {
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="Type a message..."
         />
-        <Button variant="default" className="ml-2" onClick={sendMessage}>
+        <Button
+          variant="default"
+          className="ml-2"
+          onClick={sendMessage}
+          disabled={!newMessage.trim()}
+        >
           <Send />
         </Button>
       </div>

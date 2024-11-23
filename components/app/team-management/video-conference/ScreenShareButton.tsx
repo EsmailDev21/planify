@@ -1,22 +1,18 @@
 "use client";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ScreenShare } from "lucide-react";
+import { ScreenShare, ScreenShareOff } from "lucide-react";
 
 const ScreenShareButton = ({
-  startScreenShare,
+  toggleScreenShare,
+  isSharing,
 }: {
-  startScreenShare: () => void;
+  toggleScreenShare: () => void;
+  isSharing: boolean;
 }) => {
   return (
-    <Button
-      variant="default"
-      size="sm"
-      onClick={startScreenShare}
-      className="mt-4"
-    >
-      <ScreenShare size={20} className="mr-2" />
-      Share Screen
+    <Button variant="outline" size="icon" onClick={toggleScreenShare}>
+      {isSharing ? <ScreenShare size={20} /> : <ScreenShareOff size={20} />}
     </Button>
   );
 };
