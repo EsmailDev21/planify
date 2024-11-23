@@ -202,44 +202,43 @@ const GanttChart: React.FC<GanttChartProps> = ({
   }, [tasksUpdated]);
 
   return (
-    <ScrollArea className="flex-1 h-full max-h-full p-4 space-y-2">
-      <div className="max-w-xl">
+    <div className="max-w-xl">
+      <div
+        ref={headerRef}
+        className="whitespace-nowrap border-b border-muted  w-full"
+      >
         <div
-          ref={headerRef}
-          className="whitespace-nowrap border-b border-muted  w-full"
+          className="grid grid-cols-auto"
+          style={{
+            gridTemplateColumns: `repeat(${topRow.length}, auto)`,
+          }}
         >
-          <div
-            className="grid grid-cols-auto"
-            style={{
-              gridTemplateColumns: `repeat(${topRow.length}, auto)`,
-            }}
-          >
-            {topRow.map((item, index) => (
-              <AnimatedDiv
-                key={index}
-                className="text-center border-r border-muted  font-semibold "
-                style={{ width: `${item.width}px` }}
-              >
-                {item.label}
-              </AnimatedDiv>
-            ))}
-          </div>
-          <div
-            className="grid grid-cols-auto"
-            style={{ gridTemplateColumns: `repeat(${bottomRow.length}, auto)` }}
-          >
-            {bottomRow.map((item, index) => (
-              <AnimatedDiv
-                key={index}
-                className="text-center   border-r border-muted text-xs"
-                style={{ width: `${item.width}px` }}
-              >
-                {item.label}
-              </AnimatedDiv>
-            ))}
-          </div>
+          {topRow.map((item, index) => (
+            <AnimatedDiv
+              key={index}
+              className="text-center border-r border-muted  font-semibold "
+              style={{ width: `${item.width}px` }}
+            >
+              {item.label}
+            </AnimatedDiv>
+          ))}
         </div>
-
+        <div
+          className="grid grid-cols-auto"
+          style={{ gridTemplateColumns: `repeat(${bottomRow.length}, auto)` }}
+        >
+          {bottomRow.map((item, index) => (
+            <AnimatedDiv
+              key={index}
+              className="text-center   border-r border-muted text-xs"
+              style={{ width: `${item.width}px` }}
+            >
+              {item.label}
+            </AnimatedDiv>
+          ))}
+        </div>
+      </div>
+      <ScrollArea className="flex-1 h-full max-h-full p-4 space-y-2">
         <div
           ref={bodyRef}
           className="overflow-x-visible  overflow-y-visible scroll-smooth whitespace-nowrap w-full"
@@ -330,8 +329,8 @@ const GanttChart: React.FC<GanttChartProps> = ({
             })}
           </div>
         </div>
-      </div>
-    </ScrollArea>
+      </ScrollArea>
+    </div>
   );
 };
 
