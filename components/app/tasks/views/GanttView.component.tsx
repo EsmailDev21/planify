@@ -238,7 +238,10 @@ const GanttChart: React.FC<GanttChartProps> = ({
           ))}
         </div>
       </div>
-      <ScrollArea className="flex-1 h-full max-h-full">
+      <ScrollArea
+        style={{ marginTop: headerRef.current?.style.height }}
+        className="flex-1  h-full max-h-full"
+      >
         <div
           ref={bodyRef}
           className="overflow-x-visible  overflow-y-visible scroll-smooth whitespace-nowrap w-full"
