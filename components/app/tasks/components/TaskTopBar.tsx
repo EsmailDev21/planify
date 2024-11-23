@@ -56,7 +56,7 @@ const TaskTopBar = ({
   };
 
   return (
-    <div className="flex items-center justify-between gap-4 p-4 border border-muted rounded-lg shadow-md mb-4">
+    <div className="flex items-center justify-between gap-4 rounded-lg shadow-md mb-4">
       {/* Search Filter */}
       <div className="flex items-center  w-[40%]">
         <Input
@@ -78,7 +78,7 @@ const TaskTopBar = ({
         <Badge
           key={"GANTT"}
           onClick={() => setView("GANTT")}
-          variant={"outline"}
+          variant={view === "GANTT" ? "default" : "secondary"}
           className="text-sm flex flex-row space-x-2 cursor-pointer "
         >
           <PiAlignLeftLight size={14} />
@@ -87,7 +87,7 @@ const TaskTopBar = ({
         <Badge
           key={"BOARD"}
           onClick={() => setView("BOARD")}
-          variant={"outline"}
+          variant={view === "BOARD" ? "default" : "secondary"}
           className="text-sm flex flex-row space-x-2 cursor-pointer"
         >
           <PiColumnsLight size={14} />
@@ -96,14 +96,16 @@ const TaskTopBar = ({
         <Badge
           key={"LIST"}
           onClick={() => setView("LIST")}
-          variant={"outline"}
+          variant={view === "LIST" ? "default" : "secondary"}
           className="text-sm flex flex-row space-x-2 cursor-pointer"
         >
           <PiListChecksLight size={14} />
           <span>List</span>
         </Badge>
       </div>
-      {view === "GANTT" && <VerticalZoomSlider onZoomChange={onZoomChange} />}
+      <div className={`${view != "GANTT" && "invisible"}`}>
+        <VerticalZoomSlider onZoomChange={onZoomChange} />
+      </div>
       {/* Filter Button */}
       <div className="flex space-x-2">
         <Drawer

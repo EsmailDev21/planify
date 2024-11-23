@@ -107,8 +107,8 @@ const GanttChart: React.FC<GanttChartProps> = ({
 
   //gantt params
   const startDate = startOfMonth(new Date()); //addDays(new Date(), -3);
-  const totalDays = 100;
-  const dayColumnWidth = zoomLevel * 10;
+  const totalDays = 120;
+  const dayColumnWidth = zoomLevel * 7;
   const topRow: any[] = [];
   const bottomRow: { label: string; width: number; date: Date }[] = [];
   const gridTemplateRows = `repeat(${30}, auto)`;
@@ -202,13 +202,14 @@ const GanttChart: React.FC<GanttChartProps> = ({
   }, [tasksUpdated]);
 
   return (
-    <div className="max-w-xl">
+    <div className="max-w-fit">
       <div
         ref={headerRef}
-        className="whitespace-nowrap fixed border-b border-muted  w-full"
+        className=" w-full sticky top-0 z-50 bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-muted whitespace-nowrap"
       >
+        {/* Top Row */}
         <div
-          className="grid grid-cols-auto"
+          className="grid"
           style={{
             gridTemplateColumns: `repeat(${topRow.length}, auto)`,
           }}
@@ -216,48 +217,54 @@ const GanttChart: React.FC<GanttChartProps> = ({
           {topRow.map((item, index) => (
             <AnimatedDiv
               key={index}
-              className="text-center border-r border-muted  font-semibold "
+              className="text-center border-r  text-sm border-slate-200 dark:border-muted font-semibold"
               style={{ width: `${item.width}px` }}
             >
               {item.label}
             </AnimatedDiv>
           ))}
         </div>
+
+        {/* Bottom Row */}
         <div
-          className="grid grid-cols-auto"
-          style={{ gridTemplateColumns: `repeat(${bottomRow.length}, auto)` }}
+          className="grid"
+          style={{
+            gridTemplateColumns: `repeat(${bottomRow.length}, auto)`,
+          }}
         >
           {bottomRow.map((item, index) => (
             <AnimatedDiv
               key={index}
-              className="text-center   border-r border-muted text-xs"
-              style={{ width: `${item.width}px` }}
+              className="text-center border-r  border-slate-200 dark:border-muted "
+              style={{
+                width: `${item.width}px`,
+                fontSize: "10px",
+                lineHeight: "14px",
+              }}
             >
               {item.label}
             </AnimatedDiv>
           ))}
         </div>
       </div>
-      <ScrollArea
-        style={{ marginTop: headerRef.current?.getBoundingClientRect().height }}
-        className="flex-1  h-full max-h-full"
-      >
+
+      {/* Scrollable Area */}
+      <ScrollArea className="flex-1 h-full max-h-fit">
         <div
           ref={bodyRef}
-          className="overflow-x-visible  overflow-y-visible scroll-smooth whitespace-nowrap w-full"
+          className="w-full overflow-x-visible overflow-y-visible scroll-smooth whitespace-nowrap"
           onMouseDown={handleMouseDown}
-          style={{ cursor: isDragging ? "grabbing" : "grab" }}
         >
           <div
-            className="grid h-screen"
+            className="grid h-fit"
             style={{
               gridTemplateRows: gridTemplateRows,
               gridTemplateColumns: `repeat(${
                 zoomLevel > 5 ? bottomRow.length : bottomRow.length * 7
               }, auto)`,
-              // Add border for debugging
             }}
           >
+            {/* Grid Columns */}
             {bottomRow.map((i, index) => (
               <div
                 key={index}
@@ -268,40 +275,35 @@ const GanttChart: React.FC<GanttChartProps> = ({
                 }}
               ></div>
             ))}
-            {Array(30)
-              .fill("1")
-              .map((i, rowIndex) =>
-                bottomRow.map((_, colIndex) => (
-                  <div
-                    onPointerEnter={() =>
-                      handleMouseEnterGridItem(colIndex + 1)
-                    }
-                    onMouseEnter={() => handleMouseEnterGridItem(colIndex + 1)}
-                    key={`${rowIndex}-${colIndex}`}
-                    className={`border-r-[1px] border-b-[1px] text-xs  border-muted ${
-                      isOver === colIndex + 1 && "bg-muted"
-                    }`}
-                    style={{
-                      gridColumn: colIndex + 1,
-                      gridRow: rowIndex + 1,
-                      height: "50px",
-                    }}
-                  ></div>
-                ))
-              )}
 
+            {/* Grid Rows */}
+            {Array.from({ length: 13 }).map((_, rowIndex) =>
+              bottomRow.map((_, colIndex) => (
+                <div
+                  key={`${rowIndex}-${colIndex}`}
+                  className={`border-r border-b border-slate-200 dark:border-muted text-xs transition-all duration-300 ${
+                    isOver === colIndex + 1
+                      ? "bg-slate-200/70 dark:bg-muted/70"
+                      : ""
+                  }`}
+                  style={{
+                    gridColumn: colIndex + 1,
+                    gridRow: rowIndex + 1,
+                    height: `${dayColumnWidth}px`,
+                  }}
+                  onPointerEnter={() => handleMouseEnterGridItem(colIndex + 1)}
+                  onMouseEnter={() => handleMouseEnterGridItem(colIndex + 1)}
+                ></div>
+              ))
+            )}
+
+            {/* Gantt Tasks */}
             {tasks.map((task, index) => {
               const gridDayColStart =
-                // Math.trunc(differenceInHours(task.startDate, startDate)/24)
-                differenceInDays(task.startDate, bottomRow[0].date) + 2;
+                differenceInDays(task.startDate, bottomRow[0].date) + 1;
               const gridDayColEnd =
-                differenceInDays(task.endDate, bottomRow[0].date) + 3;
+                differenceInDays(task.endDate, bottomRow[0].date) + 2;
 
-              const gridWeekColStart =
-                // Math.trunc(differenceInHours(task.startDate, startDate)/24)
-                differenceInWeeks(task.startDate, bottomRow[0].date) + 2;
-              const gridWeekColEnd =
-                differenceInWeeks(task.endDate, bottomRow[0].date) + 3;
               return (
                 <GanttTask
                   onDrag={() => null}

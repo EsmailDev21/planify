@@ -163,7 +163,7 @@ const GanttTask: React.FC<
               color,
             })
           }
-          className={`rounded-full p-2 mb-1 h-12 text-white cursor-pointer flex items-center justify-between relative `}
+          className={`rounded-full p-2 mb-1 h-10 text-white cursor-pointer flex items-center justify-between relative `}
           style={{
             gridRow: gridRow,
             gridColumnStart: gridColStart,
