@@ -239,7 +239,7 @@ const GanttChart: React.FC<GanttChartProps> = ({
         </div>
       </div>
       <ScrollArea
-        style={{ marginTop: headerRef.current?.style.height }}
+        style={{ marginTop: headerRef.current?.getBoundingClientRect().height }}
         className="flex-1  h-full max-h-full"
       >
         <div
