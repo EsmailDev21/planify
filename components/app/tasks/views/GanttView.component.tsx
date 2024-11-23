@@ -264,7 +264,7 @@ const GanttChart: React.FC<GanttChartProps> = ({
               }}
             ></div>
           ))}
-          {Array(tasks.length + 1)
+          {Array(30)
             .fill("1")
             .map((i, rowIndex) =>
               bottomRow.map((_, colIndex) => (
