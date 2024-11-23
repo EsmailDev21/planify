@@ -146,8 +146,8 @@ interface FileViewerProps {
     name: string;
     size: number;
     extension: string;
-    previewUrl: string; // This could be a URL for previewable files
-    content: string; // Content for code files (could be a string with code)
+    previewUrl: string | ArrayBuffer | null; // This could be a URL for previewable files
+    content: string | ArrayBuffer | null; // Content for code files (could be a string with code)
   };
 }
 
@@ -544,13 +544,13 @@ const FileViewer: React.FC<FileViewerProps> = ({ file }) => {
             <Image
               height={700}
               width={1000}
-              src={previewUrl}
+              src={previewUrl as string}
               alt="File preview"
               className="w-full h-auto rounded-lg"
             />
           ) : extension === "pdf" ? (
             <iframe
-              src={previewUrl}
+              src={previewUrl as string}
               className="w-full h-screen rounded-lg"
               title="PDF Preview"
             />
@@ -562,12 +562,12 @@ const FileViewer: React.FC<FileViewerProps> = ({ file }) => {
               className="w-full h-auto rounded-lg"
               onError={() => console.error("Video loading error!")}
             >
-              <source src={previewUrl} type={`video/${extension}`} />
+              <source src={previewUrl as string} type={`video/${extension}`} />
               Your browser does not support the video tag.
             </video>
           ) : extension === "mp3" || extension === "wav" ? (
             <audio controls className="w-full">
-              <source src={previewUrl} type={`audio/${extension}`} />
+              <source src={previewUrl as string} type={`audio/${extension}`} />
               Your browser does not support the audio element.
             </audio>
           ) : textExtensions.find((e) => e === extension) ? (
@@ -580,7 +580,7 @@ const FileViewer: React.FC<FileViewerProps> = ({ file }) => {
                 language={codeLanguage}
                 style={theme.theme === "light" ? materialLight : nightOwl}
               >
-                {content}
+                {content as string}
               </SyntaxHighlighter>
             </div>
           ) : (
