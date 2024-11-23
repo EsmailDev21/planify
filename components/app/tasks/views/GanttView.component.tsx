@@ -205,7 +205,7 @@ const GanttChart: React.FC<GanttChartProps> = ({
     <div className="max-w-xl">
       <div
         ref={headerRef}
-        className="whitespace-nowrap border-b border-muted  w-full"
+        className="whitespace-nowrap fixed border-b border-muted  w-full"
       >
         <div
           className="grid grid-cols-auto"
@@ -238,7 +238,7 @@ const GanttChart: React.FC<GanttChartProps> = ({
           ))}
         </div>
       </div>
-      <ScrollArea className="flex-1 h-full max-h-full p-4 space-y-2">
+      <ScrollArea className="flex-1 h-full max-h-full">
         <div
           ref={bodyRef}
           className="overflow-x-visible  overflow-y-visible scroll-smooth whitespace-nowrap w-full"
