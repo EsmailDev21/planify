@@ -264,7 +264,7 @@ const GanttChart: React.FC<GanttChartProps> = ({
               }}
             ></div>
           ))}
-          {Array(7)
+          {Array(gridTemplateRows)
             .fill("1")
             .map((i, rowIndex) =>
               bottomRow.map((_, colIndex) => (
