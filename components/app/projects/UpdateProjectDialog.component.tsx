@@ -304,7 +304,7 @@ export function ProjectUpdateCard({
             <span>Mise à jour</span>
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-2xl w-full h-full overflow-scroll my-2 bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg">
+        <DialogContent className="max-w-2xl w-full border-muted h-full overflow-scroll my-2 p-6 rounded-lg shadow-lg">
           <form onSubmit={handleSubmit}>
             <DialogHeader>
               <DialogTitle>Mettre à jour le projet</DialogTitle>
@@ -345,7 +345,7 @@ export function ProjectUpdateCard({
           <span>Mise à jour</span>
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="max-w-lg w-full h-full overflow-y-scroll bg-white dark:bg-slate-800 p-4 rounded-lg  shadow-lg">
+      <DrawerContent className="max-w-lg w-full h-full overflow-y-scroll p-4 rounded-lg  shadow-lg">
         <form onSubmit={handleSubmit}>
           <DrawerHeader>
             <DrawerTitle>Mettre à jour le projet</DrawerTitle>
