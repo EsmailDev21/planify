@@ -2,48 +2,14 @@
 
 import React, { useState } from "react";
 import {
-  PiFileTextDuotone,
-  PiFileJsDuotone,
-  PiFileHtmlDuotone,
-  PiFileCssDuotone,
-  PiFilePdfDuotone,
-  PiFileImageDuotone,
-  PiFileCodeDuotone,
-  PiFileVideoDuotone,
-  PiFileAudioDuotone,
-  PiFileZipDuotone,
-  PiFileDocDuotone,
-  PiFileXDuotone,
-  PiFilePptDuotone,
   PiFileDuotone,
-  PiFileTextLight,
   PiFileLight,
-  PiFilePptLight,
-  PiFileXLight,
-  PiFileDocLight,
-  PiFileZipLight,
-  PiFileAudioLight,
-  PiFileVideoLight,
-  PiFileJsLight,
-  PiFileHtmlLight,
-  PiFileCssLight,
-  PiFilePdfLight,
-  PiFileImageLight,
-  PiFileCodeLight,
-  PiFileTsLight,
-  PiFileTsDuotone,
-  PiFileTsxLight,
-  PiFileTsxDuotone,
-  PiFileCsvLight,
-  PiFileCsvDuotone,
-  PiFileJpgLight,
-  PiFileJpgDuotone,
-  PiFilePngLight,
-  PiFilePngDuotone,
-  PiFileXlsLight,
-  PiFileXlsDuotone,
-  PiFileJsxLight,
-  PiFileJsxDuotone,
+  PiPenDuotone,
+  PiScissorsDuotone,
+  PiInfoDuotone,
+  PiCopyDuotone,
+  PiXCircleDuotone,
+  PiBookOpenDuotone,
 } from "react-icons/pi";
 import {
   ContextMenu,
@@ -55,6 +21,12 @@ import {
 } from "@/components/ui/context-menu";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useDispatch } from "react-redux";
+import { toggleSelectEntity } from "@/lib/redux/slices/fileSystemSlice";
+import { useRouter } from "next/navigation";
+import { fileIcons } from "@/lib/mock/fileIcons";
 
 interface FileProps {
   file: {
@@ -70,6 +42,7 @@ interface FileProps {
   onDrag: (fileId: string) => void; // Drag event handler
   onDrop: (targetId: string, draggedItemId: string) => void; // Drop event handler
   onDragStart: (fileId: string) => void;
+  onInfo: (fileId: string) => void;
   isCopied: boolean;
   isCutted: boolean; // Handle drag start
 }
@@ -86,155 +59,31 @@ export function FileComponent({
   onDragStart,
   isCopied,
   isCutted,
+  onInfo,
 }: FileProps) {
   const [isRenaming, setIsRenaming] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [newName, setNewName] = useState(file.name);
-  const getFileIcon = () => {
-    const getClassNames = (baseColor: string) =>
-      cn(`h-16 w-16 ${baseColor}`, isCutted && "text-opacity-70");
+  const [isSelected, setIsSelected] = useState(false);
+  const getFileIcon = (
+    extension: string,
+    isCopied: boolean,
+    isCutted: boolean
+  ) => {
+    const fileType = fileIcons[extension as keyof typeof fileIcons] || {
+      duotone: PiFileDuotone,
+      light: PiFileLight,
+      color: "text-gray-500",
+    };
 
-    switch (file.extension) {
-      case "txt":
-        return isCopied ? (
-          <PiFileTextLight className="h-16 w-16 text-green-500" />
-        ) : (
-          <PiFileTextDuotone className={getClassNames("text-green-500")} />
-        );
-      case "js":
-        return isCopied ? (
-          <PiFileJsLight className="h-16 w-16 text-yellow-500" />
-        ) : (
-          <PiFileJsDuotone className={getClassNames("text-yellow-500")} />
-        );
-      case "jsx":
-        return isCopied ? (
-          <PiFileJsxLight className="h-16 w-16 text-yellow-500" />
-        ) : (
-          <PiFileJsxDuotone className={getClassNames("text-yellow-500")} />
-        );
-      case "html":
-        return isCopied ? (
-          <PiFileHtmlLight className="h-16 w-16 text-orange-500" />
-        ) : (
-          <PiFileHtmlDuotone className={getClassNames("text-orange-500")} />
-        );
-      case "css":
-        return isCopied ? (
-          <PiFileCssLight className="h-16 w-16 text-blue-500" />
-        ) : (
-          <PiFileCssDuotone className={getClassNames("text-blue-500")} />
-        );
-      case "pdf":
-        return isCopied ? (
-          <PiFilePdfLight className="h-16 w-16 text-red-500" />
-        ) : (
-          <PiFilePdfDuotone className={getClassNames("text-red-500")} />
-        );
-      case "jpg":
-      case "jpeg":
-        return isCopied ? (
-          <PiFileJpgLight className="h-16 w-16 text-purple-500" />
-        ) : (
-          <PiFileJpgDuotone className={getClassNames("text-purple-500")} />
-        );
-      case "png":
-        return isCopied ? (
-          <PiFilePngLight className="h-16 w-16 text-purple-500" />
-        ) : (
-          <PiFilePngDuotone className={getClassNames("text-purple-500")} />
-        );
-      case "gif":
-      case "bmp":
-      case "svg":
-        return isCopied ? (
-          <PiFileImageLight className="h-16 w-16 text-purple-500" />
-        ) : (
-          <PiFileImageDuotone className={getClassNames("text-purple-500")} />
-        );
-      case "json":
-      case "xml":
-        return isCopied ? (
-          <PiFileCodeLight className="h-16 w-16 text-cyan-500" />
-        ) : (
-          <PiFileCodeDuotone className={getClassNames("text-cyan-500")} />
-        );
-      case "mp4":
-      case "avi":
-      case "mov":
-      case "mkv":
-        return isCopied ? (
-          <PiFileVideoLight className="h-16 w-16 text-teal-500" />
-        ) : (
-          <PiFileVideoDuotone className={getClassNames("text-teal-500")} />
-        );
-      case "mp3":
-      case "wav":
-      case "aac":
-        return isCopied ? (
-          <PiFileAudioLight className="h-16 w-16 text-indigo-500" />
-        ) : (
-          <PiFileAudioDuotone className={getClassNames("text-indigo-500")} />
-        );
-      case "zip":
+    const Icon = isCopied ? fileType.light : fileType.duotone;
+    const classNames = cn(
+      "h-16 w-16",
+      fileType.color,
+      isCutted && "text-opacity-70"
+    );
 
-      case "rar":
-      case "7z":
-        return isCopied ? (
-          <PiFileZipLight className="h-16 w-16 text-gray-500" />
-        ) : (
-          <PiFileZipDuotone className={getClassNames("text-gray-500")} />
-        );
-      case "doc":
-      case "docx":
-        return isCopied ? (
-          <PiFileDocLight className="h-16 w-16 text-blue-600" />
-        ) : (
-          <PiFileDocDuotone className={getClassNames("text-blue-600")} />
-        );
-      case "xls":
-        return isCopied ? (
-          <PiFileXLight className="h-16 w-16 text-green-600" />
-        ) : (
-          <PiFileXDuotone className={getClassNames("text-green-600")} />
-        );
-      case "xlsx":
-        return isCopied ? (
-          <PiFileXlsLight className="h-16 w-16 text-green-600" />
-        ) : (
-          <PiFileXlsDuotone className={getClassNames("text-green-600")} />
-        );
-      case "ppt":
-      case "pptx":
-        return isCopied ? (
-          <PiFilePptLight className="h-16 w-16 text-red-600" />
-        ) : (
-          <PiFilePptDuotone className={getClassNames("text-red-600")} />
-        );
-      case "ts":
-        return isCopied ? (
-          <PiFileTsLight className="h-16 w-16 text-blue-600" />
-        ) : (
-          <PiFileTsDuotone className={getClassNames("text-blue-600")} />
-        );
-      case "tsx":
-        return isCopied ? (
-          <PiFileTsxLight className="h-16 w-16 text-blue-600" />
-        ) : (
-          <PiFileTsxDuotone className={getClassNames("text-blue-600")} />
-        );
-      case "csv":
-        return isCopied ? (
-          <PiFileCsvLight className="h-16 w-16 text-emerald-600" />
-        ) : (
-          <PiFileCsvDuotone className={getClassNames("text-emerald-600")} />
-        );
-      default:
-        return isCopied ? (
-          <PiFileLight className="h-16 w-16 text-gray-500" />
-        ) : (
-          <PiFileDuotone className={getClassNames("text-gray-500")} />
-        );
-    }
+    return <Icon className={classNames} />;
   };
 
   const handleRename = () => {
@@ -243,6 +92,8 @@ export function FileComponent({
     }
     setIsRenaming(!isRenaming);
   };
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   const handleDragStart = (event: React.DragEvent) => {
     event.dataTransfer.setData("text", file.id); // Storing the file ID for drag-and-drop
@@ -254,6 +105,10 @@ export function FileComponent({
     const draggedItemId = event.dataTransfer.getData("text");
     onDrop(file.id, draggedItemId); // Pass the dropped file and the dragged file ID
   };
+  const handleOpen = () => {
+    dispatch(toggleSelectEntity(file.id));
+    router.push("/app/file-system/file/" + file.id);
+  };
 
   const handleDragOver = (event: React.DragEvent) => {
     event.preventDefault(); // Allow the drop
@@ -261,15 +116,53 @@ export function FileComponent({
 
   return (
     <ContextMenu>
-      <ContextMenuTrigger draggable onDragStart={handleDragStart} asChild>
+      <ContextMenuTrigger
+        draggable
+        onDragStart={(e) => {
+          setIsDragging(true);
+          handleDragStart(e);
+        }}
+        asChild
+        onDragEnd={(e) => setIsDragging(false)}
+      >
         <div
-          className={`flex flex-col h-52 items-center p-2 border border-muted rounded-lg cursor-pointer  ${
+          className={`flex flex-col h-52 items-center p-2 border  rounded-lg cursor-pointer  ${
             isCutted && "border-dashed border-green-400 border-2"
-          } ${isCopied && "border-opacity-70 border-2 border-indigo-500"}`}
+          } ${isCopied && "border-opacity-70 border-2 border-indigo-500"} ${
+            !isCutted && !isCopied && "border-muted"
+          } ${isDragging && "scale-105 transition-all duration-300"}`}
           onDragOver={handleDragOver} // Allow dragging over the file component
-          onDrop={handleDrop} // Handle the drop event
+          onDrop={(e) => {
+            setIsDragging(false);
+            handleDrop(e);
+          }} // Handle the drop event
         >
-          {getFileIcon()}
+          <div className="flex w-full justify-between items-center flex-row ">
+            <Checkbox
+              onClick={() => setIsSelected(!isSelected)}
+              checked={isSelected}
+              className="self-start"
+            />
+            <div className="flex flex-col space-y-1">
+              {isCutted && (
+                <Badge className="self-end bg-green-400">File Cut!</Badge>
+              )}
+              {isCopied && (
+                <Badge className="self-end bg-indigo-500">File Copied!</Badge>
+              )}
+              {isRenaming && (
+                <Badge className="self-end bg-blue-500">Renaming...</Badge>
+              )}
+              {isDragging && (
+                <Badge className="self-end bg-teal-500">Moving...</Badge>
+              )}
+              {isSelected && (
+                <Badge className="self-end bg-cyan-500">File Selected!</Badge>
+              )}
+            </div>
+          </div>
+
+          {getFileIcon(file.extension, isCopied, isCutted)}
           {isRenaming ? (
             <Input
               type="text"
@@ -285,17 +178,45 @@ export function FileComponent({
           )}
         </div>
       </ContextMenuTrigger>
-      <ContextMenuContent className="w-64">
+      <ContextMenuContent className="w-64 border-muted">
         <ContextMenuLabel>File Options</ContextMenuLabel>
-        <ContextMenuItem onClick={() => onDelete(file.id)}>
-          Delete
+        <ContextMenuItem
+          className="flex text-sm  text-muted-foreground flex-row space-x-2 items-center"
+          onClick={handleOpen}
+        >
+          <PiBookOpenDuotone className="" /> <span>Open</span>
         </ContextMenuItem>
-        <ContextMenuItem onClick={() => onCopy(file.id)}>Copy</ContextMenuItem>
-        <ContextMenuItem onClick={() => onCut(file.id)}>Cut</ContextMenuItem>
-        <ContextMenuItem onClick={handleRename}>
-          {isRenaming ? "Save" : "Rename"}
+        <ContextMenuItem
+          className="flex text-sm  text-muted-foreground flex-row space-x-2 items-center"
+          onClick={() => onCopy(file.id)}
+        >
+          <PiCopyDuotone /> <span>Copy</span>
+        </ContextMenuItem>
+        <ContextMenuItem
+          className="flex text-sm  text-muted-foreground flex-row space-x-2 items-center"
+          onClick={() => onCut(file.id)}
+        >
+          <PiScissorsDuotone /> <span>Cut</span>
+        </ContextMenuItem>
+        <ContextMenuItem
+          className="flex text-sm  text-muted-foreground flex-row space-x-2 items-center"
+          onClick={handleRename}
+        >
+          <PiPenDuotone /> <span>{isRenaming ? "Save" : "Rename"}</span>
         </ContextMenuItem>
         <ContextMenuSeparator />
+        <ContextMenuItem
+          className="flex text-sm  text-muted-foreground flex-row space-x-2 items-center"
+          onClick={() => onInfo(file.id)}
+        >
+          <PiInfoDuotone /> <span>Properties</span>
+        </ContextMenuItem>
+        <ContextMenuItem
+          className="flex text-sm  text-muted-foreground flex-row space-x-2 items-center"
+          onClick={() => onDelete(file.id)}
+        >
+          <PiXCircleDuotone className="" /> <span>Delete</span>
+        </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
   );

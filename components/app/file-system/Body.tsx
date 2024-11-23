@@ -29,7 +29,7 @@ import {
   createFolder, // For copy action
 } from "@/lib/redux/slices/fileSystemSlice";
 import { RootState } from "@/lib/redux/store";
-import { FolderType } from "@/lib/types/models";
+import { FileType, FolderType } from "@/lib/types/models";
 import { PiEmptyLight } from "react-icons/pi";
 import {
   ContextMenu,
@@ -39,6 +39,21 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export function FileSystemBody() {
   const { toast } = useToast();
@@ -70,6 +85,19 @@ export function FileSystemBody() {
   const [draggedItemType, setDraggedItemType] = useState<string | null>(null);
   const [cutItem, setCutItem] = useState<string | null>(null); // To store the cut item
   const [copiedItem, setCopiedItem] = useState<string | null>(null); // To store the copied item
+  const [selectedEntity, setSelectedEntity] = useState<FolderType | FileType>(
+    currentFolder
+  );
+
+  const handleEntityInfo = (entity: string) => {
+    setSelectedEntity(
+      shuffledFilesAndFolders.find((i) => i.id === entity) != undefined
+        ? (shuffledFilesAndFolders.find((i) => i.id === entity) as
+            | FileType
+            | FolderType)
+        : currentFolder
+    );
+  };
 
   useEffect(() => {
     if (statusMessage) {
@@ -204,7 +232,7 @@ export function FileSystemBody() {
                   </p>
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button size="sm" className="relative">
+                      <Button disabled size="sm" className="relative">
                         Add File/Folder
                       </Button>
                     </DialogTrigger>
@@ -223,6 +251,7 @@ export function FileSystemBody() {
                       </div>
                       <DialogFooter>
                         <Button
+                          disabled
                           onClick={() =>
                             toast({
                               title: "File/Folder Uploaded",
@@ -240,46 +269,64 @@ export function FileSystemBody() {
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-4 gap-4 w-full max-h-[500px] overflow-auto">
+              <div className="grid grid-cols-4 p-4 gap-4 w-full max-h-[500px] overflow-auto">
                 {shuffledFilesAndFolders.map((entity) =>
                   entity.type === "folder" ? (
-                    <FolderComponent
-                      isPasteDisabled={copiedItem === null && cutItem === null}
-                      isCopied={copiedItem === entity.id}
-                      isCutted={cutItem === entity.id}
-                      key={entity.id}
-                      folder={entity as FolderType}
-                      onClick={handleFolderClick}
-                      onDelete={handleDelete}
-                      onRename={handleRename}
-                      onDrop={handleDrop}
-                      onDragStart={() => handleDragStart(entity.id, "folder")}
-                      onCut={handleCut}
-                      onCopy={handleCopy}
-                      onPaste={handlePaste}
-                    />
+                    <Tooltip key={entity.id}>
+                      <TooltipTrigger>
+                        <FolderComponent
+                          onInfo={handleEntityInfo}
+                          isPasteDisabled={
+                            copiedItem === null && cutItem === null
+                          }
+                          isCopied={copiedItem === entity.id}
+                          isCutted={cutItem === entity.id}
+                          folder={entity as FolderType}
+                          onClick={handleFolderClick}
+                          onDelete={handleDelete}
+                          onRename={handleRename}
+                          onDrop={handleDrop}
+                          onDragStart={() =>
+                            handleDragStart(entity.id, "folder")
+                          }
+                          onCut={handleCut}
+                          onCopy={handleCopy}
+                          onPaste={handlePaste}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Drag to move, right-click for options</p>
+                      </TooltipContent>
+                    </Tooltip>
                   ) : (
-                    <FileComponent
-                      isCopied={copiedItem === entity.id}
-                      isCutted={cutItem === entity.id}
-                      key={entity.id}
-                      file={entity}
-                      onDelete={handleDelete}
-                      onRename={handleRename}
-                      onDragStart={() => handleDragStart(entity.id, "file")}
-                      onCut={handleCut}
-                      onCopy={handleCopy}
-                      onPaste={handlePaste}
-                      onDrag={function (fileId: string): void {
-                        throw new Error("Function not implemented.");
-                      }}
-                      onDrop={function (
-                        targetId: string,
-                        draggedItemId: string
-                      ): void {
-                        throw new Error("Function not implemented.");
-                      }}
-                    />
+                    <Tooltip key={entity.id}>
+                      <TooltipTrigger>
+                        <FileComponent
+                          onInfo={handleEntityInfo}
+                          isCopied={copiedItem === entity.id}
+                          isCutted={cutItem === entity.id}
+                          file={entity}
+                          onDelete={handleDelete}
+                          onRename={handleRename}
+                          onDragStart={() => handleDragStart(entity.id, "file")}
+                          onCut={handleCut}
+                          onCopy={handleCopy}
+                          onPaste={handlePaste}
+                          onDrag={function (fileId: string): void {
+                            throw new Error("Function not implemented.");
+                          }}
+                          onDrop={function (
+                            targetId: string,
+                            draggedItemId: string
+                          ): void {
+                            throw new Error("Function not implemented.");
+                          }}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Drag to move, right-click for options</p>
+                      </TooltipContent>
+                    </Tooltip>
                   )
                 )}
               </div>
@@ -301,6 +348,52 @@ export function FileSystemBody() {
         </ContextMenuItem>
         <ContextMenuSeparator />
       </ContextMenuContent>
+
+      <Sheet
+        open={!!selectedEntity}
+        onOpenChange={() => setSelectedEntity(currentFolder)}
+      >
+        <SheetTrigger asChild />
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>{selectedEntity?.name}</SheetTitle>
+            <SheetDescription>
+              {selectedEntity?.type === "file"
+                ? "File Details"
+                : "Folder Details"}
+            </SheetDescription>
+          </SheetHeader>
+          <div className="grid gap-4 py-4">
+            <div>
+              <p>Type: {selectedEntity?.type}</p>
+              <p>
+                Last Modified:{" "}
+                {selectedEntity?.modifiedAt.toLocaleDateString() || "Unknown"}
+              </p>
+              {selectedEntity?.type === "file" && (
+                <>
+                  <p>
+                    size:{" "}
+                    {selectedEntity?.size <= 1024
+                      ? `${selectedEntity.size} Bytes`
+                      : selectedEntity.size <= 1024 * 1024
+                      ? `${(selectedEntity.size / 1024).toFixed(2)} KB`
+                      : `${(selectedEntity.size / (1024 * 1024)).toFixed(
+                          2
+                        )} MB`}
+                  </p>
+                  <p>extension: {selectedEntity?.extension}</p>
+                </>
+              )}
+            </div>
+          </div>
+          <SheetFooter>
+            <SheetClose asChild>
+              <Button>Close</Button>
+            </SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
     </ContextMenu>
   );
 }

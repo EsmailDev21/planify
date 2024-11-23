@@ -9,6 +9,7 @@ import {
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme";
 import { Toaster } from "@/components/ui/toaster";
+import { Tooltip, TooltipProvider } from "@/components/ui/tooltip";
 const font = Tilt_Neon({
   subsets: ["latin"],
   weight: "400",
@@ -34,7 +35,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <TooltipProvider>{children}</TooltipProvider>
           <Toaster />
         </ThemeProvider>
       </body>

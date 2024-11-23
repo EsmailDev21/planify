@@ -138,7 +138,7 @@ export type FileType = {
   createdAt: Date; // Date created
   modifiedAt: Date; // Last modified date
   parentFolderId: string | null;
-  content: string; // ID of parent folder (null if in root)
+  content: string | ArrayBuffer | null; // ID of parent folder (null if in root)
 };
 
 export type FolderType = {
