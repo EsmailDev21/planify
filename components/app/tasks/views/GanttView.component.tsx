@@ -23,6 +23,7 @@ import {
   generateMonths,
   generateWeeks,
 } from "@/lib/utils";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 
 interface GanttChartProps {
   zoomLevel: number;
@@ -201,132 +202,136 @@ const GanttChart: React.FC<GanttChartProps> = ({
   }, [tasksUpdated]);
 
   return (
-    <div className="max-w-xl">
-      <div
-        ref={headerRef}
-        className="whitespace-nowrap border-b border-muted  w-full"
-      >
+    <ScrollArea className="flex-1 h-full max-h-full p-4 space-y-2">
+      <div className="max-w-xl">
         <div
-          className="grid grid-cols-auto"
-          style={{
-            gridTemplateColumns: `repeat(${topRow.length}, auto)`,
-          }}
+          ref={headerRef}
+          className="whitespace-nowrap border-b border-muted  w-full"
         >
-          {topRow.map((item, index) => (
-            <AnimatedDiv
-              key={index}
-              className="text-center border-r border-muted  font-semibold "
-              style={{ width: `${item.width}px` }}
-            >
-              {item.label}
-            </AnimatedDiv>
-          ))}
+          <div
+            className="grid grid-cols-auto"
+            style={{
+              gridTemplateColumns: `repeat(${topRow.length}, auto)`,
+            }}
+          >
+            {topRow.map((item, index) => (
+              <AnimatedDiv
+                key={index}
+                className="text-center border-r border-muted  font-semibold "
+                style={{ width: `${item.width}px` }}
+              >
+                {item.label}
+              </AnimatedDiv>
+            ))}
+          </div>
+          <div
+            className="grid grid-cols-auto"
+            style={{ gridTemplateColumns: `repeat(${bottomRow.length}, auto)` }}
+          >
+            {bottomRow.map((item, index) => (
+              <AnimatedDiv
+                key={index}
+                className="text-center   border-r border-muted text-xs"
+                style={{ width: `${item.width}px` }}
+              >
+                {item.label}
+              </AnimatedDiv>
+            ))}
+          </div>
         </div>
+
         <div
-          className="grid grid-cols-auto"
-          style={{ gridTemplateColumns: `repeat(${bottomRow.length}, auto)` }}
+          ref={bodyRef}
+          className="overflow-x-visible  overflow-y-visible scroll-smooth whitespace-nowrap w-full"
+          onMouseDown={handleMouseDown}
+          style={{ cursor: isDragging ? "grabbing" : "grab" }}
         >
-          {bottomRow.map((item, index) => (
-            <AnimatedDiv
-              key={index}
-              className="text-center   border-r border-muted text-xs"
-              style={{ width: `${item.width}px` }}
-            >
-              {item.label}
-            </AnimatedDiv>
-          ))}
-        </div>
-      </div>
-
-      <div
-        ref={bodyRef}
-        className="overflow-x-visible  overflow-y-visible scroll-smooth whitespace-nowrap w-full"
-        onMouseDown={handleMouseDown}
-        style={{ cursor: isDragging ? "grabbing" : "grab" }}
-      >
-        <div
-          className="grid h-screen"
-          style={{
-            gridTemplateRows: gridTemplateRows,
-            gridTemplateColumns: `repeat(${
-              zoomLevel > 5 ? bottomRow.length : bottomRow.length * 7
-            }, auto)`,
-            // Add border for debugging
-          }}
-        >
-          {bottomRow.map((i, index) => (
-            <div
-              key={index}
-              style={{
-                gridRow: index,
-                gridColumn: index,
-                width: `${i.width}px`,
-              }}
-            ></div>
-          ))}
-          {Array(30)
-            .fill("1")
-            .map((i, rowIndex) =>
-              bottomRow.map((_, colIndex) => (
-                <div
-                  onPointerEnter={() => handleMouseEnterGridItem(colIndex + 1)}
-                  onMouseEnter={() => handleMouseEnterGridItem(colIndex + 1)}
-                  key={`${rowIndex}-${colIndex}`}
-                  className={`border-r-[1px] border-b-[1px] text-xs  border-muted ${
-                    isOver === colIndex + 1 && "bg-muted"
-                  }`}
-                  style={{
-                    gridColumn: colIndex + 1,
-                    gridRow: rowIndex + 1,
-                    height: "50px",
-                  }}
-                ></div>
-              ))
-            )}
-
-          {tasks.map((task, index) => {
-            const gridDayColStart =
-              // Math.trunc(differenceInHours(task.startDate, startDate)/24)
-              differenceInDays(task.startDate, bottomRow[0].date) + 2;
-            const gridDayColEnd =
-              differenceInDays(task.endDate, bottomRow[0].date) + 3;
-
-            const gridWeekColStart =
-              // Math.trunc(differenceInHours(task.startDate, startDate)/24)
-              differenceInWeeks(task.startDate, bottomRow[0].date) + 2;
-            const gridWeekColEnd =
-              differenceInWeeks(task.endDate, bottomRow[0].date) + 3;
-            return (
-              <GanttTask
-                onDrag={() => null}
-                onDragStart={onDragStart}
-                key={task.id}
-                teamMembers={task.teamMembers}
-                description={task.description}
-                endDate={task.endDate}
-                startDate={task.startDate}
-                id={task.id}
-                title={task.title}
-                gridRow={index + 1}
-                onDragEnd={(e: any, info: PanInfo, task: GanttTaskProps) =>
-                  onDragEnd(e, info, task)
-                }
-                gridColStart={gridDayColStart}
-                gridColEnd={gridDayColEnd}
-                priority={task.priority}
-                tags={task.tags}
-                status={task.status}
-                progress={task.progress}
-                color={task.color}
-                onResize={function (dir: string, task: any): void {
-                  throw new Error("Function not implemented.");
+          <div
+            className="grid h-screen"
+            style={{
+              gridTemplateRows: gridTemplateRows,
+              gridTemplateColumns: `repeat(${
+                zoomLevel > 5 ? bottomRow.length : bottomRow.length * 7
+              }, auto)`,
+              // Add border for debugging
+            }}
+          >
+            {bottomRow.map((i, index) => (
+              <div
+                key={index}
+                style={{
+                  gridRow: index,
+                  gridColumn: index,
+                  width: `${i.width}px`,
                 }}
-              />
-            );
-          })}
+              ></div>
+            ))}
+            {Array(30)
+              .fill("1")
+              .map((i, rowIndex) =>
+                bottomRow.map((_, colIndex) => (
+                  <div
+                    onPointerEnter={() =>
+                      handleMouseEnterGridItem(colIndex + 1)
+                    }
+                    onMouseEnter={() => handleMouseEnterGridItem(colIndex + 1)}
+                    key={`${rowIndex}-${colIndex}`}
+                    className={`border-r-[1px] border-b-[1px] text-xs  border-muted ${
+                      isOver === colIndex + 1 && "bg-muted"
+                    }`}
+                    style={{
+                      gridColumn: colIndex + 1,
+                      gridRow: rowIndex + 1,
+                      height: "50px",
+                    }}
+                  ></div>
+                ))
+              )}
+
+            {tasks.map((task, index) => {
+              const gridDayColStart =
+                // Math.trunc(differenceInHours(task.startDate, startDate)/24)
+                differenceInDays(task.startDate, bottomRow[0].date) + 2;
+              const gridDayColEnd =
+                differenceInDays(task.endDate, bottomRow[0].date) + 3;
+
+              const gridWeekColStart =
+                // Math.trunc(differenceInHours(task.startDate, startDate)/24)
+                differenceInWeeks(task.startDate, bottomRow[0].date) + 2;
+              const gridWeekColEnd =
+                differenceInWeeks(task.endDate, bottomRow[0].date) + 3;
+              return (
+                <GanttTask
+                  onDrag={() => null}
+                  onDragStart={onDragStart}
+                  key={task.id}
+                  teamMembers={task.teamMembers}
+                  description={task.description}
+                  endDate={task.endDate}
+                  startDate={task.startDate}
+                  id={task.id}
+                  title={task.title}
+                  gridRow={index + 1}
+                  onDragEnd={(e: any, info: PanInfo, task: GanttTaskProps) =>
+                    onDragEnd(e, info, task)
+                  }
+                  gridColStart={gridDayColStart}
+                  gridColEnd={gridDayColEnd}
+                  priority={task.priority}
+                  tags={task.tags}
+                  status={task.status}
+                  progress={task.progress}
+                  color={task.color}
+                  onResize={function (dir: string, task: any): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
+    </ScrollArea>
   );
 };
 
