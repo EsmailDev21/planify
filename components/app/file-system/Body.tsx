@@ -85,8 +85,8 @@ export function FileSystemBody() {
   const [draggedItemType, setDraggedItemType] = useState<string | null>(null);
   const [cutItem, setCutItem] = useState<string | null>(null); // To store the cut item
   const [copiedItem, setCopiedItem] = useState<string | null>(null); // To store the copied item
-  const [selectedEntity, setSelectedEntity] = useState<FolderType | FileType>(
-    currentFolder
+  const [selectedEntity, setSelectedEntity] = useState<FolderType | FileType | null>(
+    null
   );
 
   const handleEntityInfo = (entity: string) => {
