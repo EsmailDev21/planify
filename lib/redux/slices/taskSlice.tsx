@@ -35,14 +35,38 @@ const taskSlice = createSlice({
     addTask(state, action: PayloadAction<TaskModel>) {
       state.tasks = [...state.tasks, action.payload];
     },
-    updateTask(state, action: PayloadAction<TaskModel>) {
-      const index = state.tasks.findIndex(
-        (task) => task.id === action.payload.id
-      );
-      if (index !== -1) {
-        state.tasks[index] = action.payload;
+    updateTask(
+      state,
+      action: PayloadAction<{ id: string; updates: Partial<TaskModel> }>
+    ) {
+      const { id, updates } = action.payload;
+
+      // Find the task by ID
+      const taskIndex = state.tasks.findIndex((task) => task.id === id);
+
+      if (taskIndex !== -1) {
+        // Update the task directly if found
+        state.tasks[taskIndex] = { ...state.tasks[taskIndex], ...updates };
+      } else {
+        // If the task is not found, check subtasks
+        state.tasks.forEach((task) => {
+          if (task.subtasks) {
+            // Ensure subtasks exist before proceeding
+            const subtaskIndex = task.subtasks.findIndex(
+              (subtask) => subtask.id === id
+            );
+            if (subtaskIndex !== -1) {
+              // Update the specific subtask
+              task.subtasks[subtaskIndex] = {
+                ...task.subtasks[subtaskIndex],
+                ...updates,
+              };
+            }
+          }
+        });
       }
     },
+
     deleteTask(state, action: PayloadAction<string>) {
       state.tasks = state.tasks.filter((task) => task.id !== action.payload);
     },

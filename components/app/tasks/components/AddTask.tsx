@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@/lib/utils";
+import { cn, generateRandomAvatar, generateRandomColor } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,10 +38,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DatePicker } from "@/components/ui/date-picker";
 import { format } from "date-fns";
-import {
-  generateRandomAvatar,
-  generateRandomColor,
-} from "../views/GanttTask.component";
 import { TaskModel, Priority, Status } from "@/lib/types/models";
 type AddTaskDialogProps = {
   isOpen: boolean;

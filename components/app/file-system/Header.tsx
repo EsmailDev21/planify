@@ -10,11 +10,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -23,7 +18,6 @@ import {
 import {
   PiSortAscendingDuotone,
   PiFolderPlusDuotone,
-  PiFilePlusDuotone,
   PiUploadDuotone,
   PiXLight,
   PiTrashDuotone,
@@ -39,13 +33,6 @@ import {
 } from "@/lib/redux/slices/fileSystemSlice";
 import { FileType, FolderType } from "@/lib/types/models";
 import Breadcrumb from "./Breadcrumb";
-import { generateRandomColor } from "../tasks/views/GanttTask.component";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { textExtensions } from "@/lib/mock/extensions";
 import { Progress } from "@/components/ui/progress";
 import { fileIcons } from "@/lib/mock/fileIcons";

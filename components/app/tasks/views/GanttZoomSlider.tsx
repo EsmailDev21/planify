@@ -10,7 +10,7 @@ type VerticalZoomSliderProps = {
 const VerticalZoomSlider: React.FC<VerticalZoomSliderProps> = ({
   onZoomChange,
 }) => {
-  const [zoomLevel, setZoomLevel] = useState(6); // Default zoom level
+  const [zoomLevel, setZoomLevel] = useState(1); // Default zoom level
 
   const handleZoomChange = (value: number[]) => {
     const newZoomLevel = value[0]; // Get the zoom level from slider value
@@ -24,12 +24,12 @@ const VerticalZoomSlider: React.FC<VerticalZoomSliderProps> = ({
       <Slider
         value={[zoomLevel]}
         onValueChange={handleZoomChange}
-        min={6}
-        max={10}
+        min={1}
+        max={3}
         step={1}
         className="w-48" // Adjust the height as needed
       />
-      <span className="text-sm ">{zoomLevel - 5}</span>
+      <span className="text-sm ">{zoomLevel}</span>
     </div>
   );
 };

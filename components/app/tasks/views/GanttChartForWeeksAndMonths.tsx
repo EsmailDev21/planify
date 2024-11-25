@@ -10,6 +10,7 @@ import {
   isBefore,
   differenceInHours,
   startOfMonth,
+  differenceInWeeks,
 } from "date-fns";
 import GanttTask, { GanttTaskProps } from "./GanttTask.component"; // Adjust the import path if necessary
 import { useDispatch } from "react-redux";
@@ -21,6 +22,8 @@ import {
   generateWeeks,
   calculateGridRow,
   generateTimelineForMonthsAndDays,
+  generateDaysAndHours,
+  generateWeeksAndMonths,
 } from "@/lib/utils";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import GanttSubTask from "./GanttSubTask.component";
@@ -29,7 +32,7 @@ import { useDragToScroll } from "@/lib/hooks/use-drag-scroll";
 import { useToggle } from "@/lib/hooks/use-toggle";
 import { useDragAndDrop } from "@/lib/hooks/use-drag-n-drop";
 
-interface GanttChartProps {
+interface GanttChartForWeeksAndMonthsProps {
   zoomLevel: number;
   tasks: GanttTaskProps[];
   onForceRerender: () => void;
@@ -37,11 +40,9 @@ interface GanttChartProps {
 
 const AnimatedDiv = motion.div;
 
-const GanttChart: React.FC<GanttChartProps> = ({
-  zoomLevel,
-  tasks,
-  onForceRerender,
-}) => {
+const GanttChartForWeeksAndMonths: React.FC<
+  GanttChartForWeeksAndMonthsProps
+> = ({ zoomLevel, tasks, onForceRerender }) => {
   const { headerRef, bodyRef } = useScrollSync();
   const { handleMouseDown } = useDragToScroll(bodyRef);
   const { isExpanded, toggle } = useToggle();
@@ -50,13 +51,13 @@ const GanttChart: React.FC<GanttChartProps> = ({
   const { draggedTask, onDragStart, onDragEnd } = useDragAndDrop(
     zoomLevel,
     dispatch,
-    dayColumnWidth,
+    dayColumnWidth * 7,
     onForceRerender
   );
   const startDate = startOfMonth(new Date()); //addDays(new Date(), -3);
-  const { topRow, bottomRow } = generateTimelineForMonthsAndDays(
+  const { topRow, bottomRow } = generateWeeksAndMonths(
     startDate,
-    120,
+    tasks,
     dayColumnWidth
   ); // Example function to generate month headers
   // Example function to generate day headers
@@ -130,12 +131,30 @@ const GanttChart: React.FC<GanttChartProps> = ({
         >
           {bottomRow.map(
             (
-              item,
+              item: {
+                width: any;
+                label:
+                  | string
+                  | number
+                  | bigint
+                  | boolean
+                  | React.ReactElement<
+                      any,
+                      string | React.JSXElementConstructor<any>
+                    >
+                  | Iterable<React.ReactNode>
+                  | React.ReactPortal
+                  | Promise<React.AwaitedReactNode>
+                  | MotionValue<number>
+                  | MotionValue<string>
+                  | null
+                  | undefined;
+              },
               index: React.Key | null | undefined
             ) => (
               <AnimatedDiv
                 key={index}
-                className= {`"text-center border-r border-slate-200 dark:border-muted" ${(new Date().toDateString()===item.date.toDateString()) && "rounded-r-sm bg-lime-400 font-semibold text-white dark:text-slate-950"}`}
+                className="text-center border-r border-slate-200 dark:border-muted"
                 style={{
                   width: `${item.width}px`,
                   fontSize: "10px",
@@ -179,17 +198,13 @@ const GanttChart: React.FC<GanttChartProps> = ({
 
             {/* Grid Rows */}
             {Array.from({ length: 13 }).map((_, rowIndex) =>
-              bottomRow.map((i, colIndex: number) => (
+              bottomRow.map((_: any, colIndex: number) => (
                 <div
                   key={`${rowIndex}-${colIndex}`}
-                  className={`border-r border-b text-xs transition-all duration-300 ${
+                  className={`border-r border-b border-slate-200 dark:border-muted text-xs transition-all duration-300 ${
                     isOver === colIndex + 1
                       ? "bg-slate-200/70 dark:bg-muted/70"
                       : ""
-                  } ${
-                    i.date.toDateString() === new Date().toDateString()
-                      ? "border-l-4 border-l-lime-400 dark:border-l-lime-400"
-                      : "border-slate-200 dark:border-muted"
                   }`}
                   style={{
                     gridColumn: colIndex + 1,
@@ -203,10 +218,14 @@ const GanttChart: React.FC<GanttChartProps> = ({
 
             {/* Gantt Tasks */}
             {tasks.map((task, index) => {
-              const gridDayColStart =
-                differenceInDays(task.startDate, bottomRow[0].date) + 1;
-              const gridDayColEnd =
-                differenceInDays(task.endDate, bottomRow[0].date) + 2;
+              const gridDayColStart = differenceInWeeks(
+                task.startDate,
+                bottomRow[0].date
+              );
+              const gridDayColEnd = differenceInWeeks(
+                task.endDate,
+                bottomRow[0].date
+              );
 
               return (
                 <div
@@ -306,4 +325,4 @@ const GanttChart: React.FC<GanttChartProps> = ({
   );
 };
 
-export default GanttChart;
+export default GanttChartForWeeksAndMonths;

@@ -18,7 +18,7 @@ import {
 } from "@/lib/types/models";
 import { Form } from "@/components/ui/form";
 
-import { cn } from "@/lib/utils";
+import { cn, generateRandomAvatar, generateRandomColor } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
   Dialog,
@@ -59,10 +59,6 @@ import {
   PiStarLight,
   PiUserPlusLight,
 } from "react-icons/pi";
-import {
-  generateRandomAvatar,
-  generateRandomColor,
-} from "../tasks/views/GanttTask.component";
 import Image from "next/image";
 import { addImage } from "@/lib/redux/slices/imageGallerySlice";
 import { Button } from "@/components/ui/button";

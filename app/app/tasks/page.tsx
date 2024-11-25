@@ -2,8 +2,10 @@
 import TaskTopBar from "@/components/app/tasks/components/TaskTopBar";
 import BoardTask from "@/components/app/tasks/views/board/BoardTask.component";
 import BoardView from "@/components/app/tasks/views/board/BoardView.component";
+import GanttChartForWeeksAndMonths from "@/components/app/tasks/views/GanttChartForWeeksAndMonths";
 import { GanttTaskProps } from "@/components/app/tasks/views/GanttTask.component";
 import GanttView from "@/components/app/tasks/views/GanttView.component";
+import GanttChartForDaysAndHours from "@/components/app/tasks/views/GanttViewForDaysHours";
 import VerticalZoomSlider from "@/components/app/tasks/views/GanttZoomSlider";
 import { Badge } from "@/components/ui/badge";
 import { selectTasks } from "@/lib/redux/slices/taskSlice";
@@ -57,7 +59,7 @@ const TasksIndex = () => {
       );
     });
   };
-  const [zoomLevel, setZoomLevel] = useState(6); // Initial zoom level
+  const [zoomLevel, setZoomLevel] = useState(1); // Initial zoom level
 
   const handleZoomChange = (newZoomLevel: number) => {
     setZoomLevel(newZoomLevel);
@@ -72,12 +74,28 @@ const TasksIndex = () => {
       {view === "GANTT" ? (
         <>
           <div className="overflow-x-auto flex-grow flex">
-            <GanttView
-              onForceRerender={forceRerender}
-              key={rerenderFlag}
-              tasks={filteredTasks(tasks, filters)}
-              zoomLevel={zoomLevel}
-            />
+            {zoomLevel === 2 ? (
+              <GanttView
+                onForceRerender={forceRerender}
+                key={rerenderFlag}
+                tasks={filteredTasks(tasks, filters)}
+                zoomLevel={zoomLevel}
+              />
+            ) : zoomLevel === 3 ? (
+              <GanttChartForDaysAndHours
+                onForceRerender={forceRerender}
+                key={rerenderFlag}
+                tasks={filteredTasks(tasks, filters)}
+                zoomLevel={zoomLevel}
+              />
+            ) : (
+              <GanttChartForWeeksAndMonths
+                onForceRerender={forceRerender}
+                key={rerenderFlag}
+                tasks={filteredTasks(tasks, filters)}
+                zoomLevel={zoomLevel}
+              />
+            )}
           </div>
         </>
       ) : view === "BOARD" ? (

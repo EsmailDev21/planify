@@ -36,10 +36,6 @@ import {
 import { DatePicker } from "@/components/ui/date-picker";
 import { format } from "date-fns";
 import {
-  generateRandomAvatar,
-  generateRandomColor,
-} from "../views/GanttTask.component";
-import {
   TaskModel,
   Priority,
   Status,

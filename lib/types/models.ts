@@ -26,18 +26,35 @@ export type ProjectModel = {
   teamMembers: TeamMember[];
 };
 export type TaskModel = {
-  id: string;
-  title: string;
-  description?: string;
-  tags: string[];
-  priority: Priority;
-  status: Status;
-  startDate: Date;
-  endDate: Date;
-  progress: number;
-  color: string;
-  teamMembers: TeamMember[];
+  id: string; // Unique identifier for the task
+  title: string; // Task title
+  description?: string; // Optional detailed description
+  tags: string[]; // Labels or tags for categorization
+  priority: Priority; // Task priority (e.g., Low, Medium, High)
+  status: Status; // Current status of the task
+  startDate: Date; // Task start date
+  endDate: Date; // Task end date
+  progress: number; // Progress percentage (0-100)
+  color: string; // Color code for visual distinction
+  teamMembers: TeamMember[]; // Team members assigned to the task
+
+  // New Properties
+  dependencies?: string[]; // Array of task IDs this task depends on
+  comments?: CommentModel[]; // Array of comments associated with the task
+  subtasks?: SubtaskModel[]; // Array of subtasks
 };
+
+// Subtask model definition
+export type SubtaskModel = TaskModel;
+
+// Comment model definition
+export type CommentModel = {
+  id: string; // Unique identifier for the comment
+  author: TeamMember; // Reference to the team member who made the comment
+  content: string; // The comment text
+  timestamp: Date; // Time when the comment was made
+};
+
 export type UserModel = {
   id: string;
   fullName: string;

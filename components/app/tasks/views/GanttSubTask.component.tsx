@@ -24,7 +24,7 @@ export type GanttTaskProps = TaskModel & {
 };
 
 // GanttTask component
-const GanttTask: React.FC<
+const GanttSubTask: React.FC<
   GanttTaskProps & {
     onDragEnd: (event: any, info: PanInfo, task: GanttTaskProps) => void;
     onDragStart: (event: any, info: PanInfo, task: GanttTaskProps) => void;
@@ -57,9 +57,7 @@ const GanttTask: React.FC<
   isExpanded,
 }) => {
   const progressStyle = {
-    background: `linear-gradient(to right, ${color} ${progress}%, ${getLighterColor(
-      color
-    )} ${progress}%)`,
+    borderColor: color,
   };
 
   return (
@@ -113,7 +111,7 @@ const GanttTask: React.FC<
               color,
             })
           }
-          className={`rounded-full content-center mt-[2px] p-2 mb-1 h-9 text-white cursor-pointer flex items-center justify-between relative `}
+          className={`rounded-full  border-[3px] bg-white dark:bg-slate-950  p-2  h-9 cursor-pointer flex items-center justify-between relative `}
           style={{
             gridRow: gridRow,
             gridColumnStart: gridColStart,
@@ -153,7 +151,7 @@ const GanttTask: React.FC<
               })
             }
           />
-          <div className="flex -space-x-1 flex-row ">
+          <div className="flex -space-x-2 flex-row ">
             {teamMembers.map((member: TeamMember, index: number) => (
               <Avatar key={index} className="w-7 h-7">
                 {member.profilePhoto ? (
@@ -261,4 +259,4 @@ const GanttTask: React.FC<
   );
 };
 
-export default GanttTask;
+export default GanttSubTask;

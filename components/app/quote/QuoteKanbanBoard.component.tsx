@@ -15,8 +15,8 @@ import {
   deleteProject,
   selectProjects,
 } from "@/lib/redux/slices/projectSlice";
-import { generateRandomAvatar } from "../tasks/views/GanttTask.component";
 import { addTask, selectTasks } from "@/lib/redux/slices/taskSlice";
+import { generateRandomAvatar } from "@/lib/utils";
 
 // Define status labels for the Kanban columns
 const statusLabels: Record<QuoteStatus, string> = {

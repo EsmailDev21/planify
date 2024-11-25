@@ -1,8 +1,4 @@
 import {
-  generateRandomAvatar,
-  generateRandomColor,
-} from "@/components/app/tasks/views/GanttTask.component";
-import {
   ClientModel,
   AutoEntrepreneur,
   UserRole,
@@ -14,6 +10,7 @@ import {
   Status,
 } from "../types/models";
 import { addDays } from "date-fns";
+import { generateRandomColor, generateRandomAvatar } from "../utils";
 
 // Sample client
 const client: ClientModel = {
@@ -188,6 +185,48 @@ const quotes: QuoteModel[] = [
           title: "Travaux de Fondation",
           description:
             "Réalisations des travaux de fondation, y compris excavation, pose des fondations et préparation du sol pour la construction.",
+          subtasks: [
+            {
+              id: "subtask11",
+              color: generateRandomColor(),
+              endDate: addDays(new Date(), 5),
+              priority: Priority.HIGH,
+              progress: 0,
+              startDate: new Date(),
+              status: Status.TODO,
+              tags: [],
+              teamMembers: [
+                {
+                  fullName: "Michael Brown",
+                  profilePhoto:
+                    "/assets/images/avatars/" + generateRandomAvatar() + ".png",
+                },
+              ],
+              title: "Travaux de Fondation - part 1",
+              description:
+                "Réalisations des travaux de fondation, y compris excavation, pose des fondations et préparation du sol pour la construction.",
+            },
+            {
+              id: "subtask12",
+              color: generateRandomColor(),
+              endDate: addDays(new Date(), 10),
+              priority: Priority.HIGH,
+              progress: 0,
+              startDate: addDays(new Date(), 5),
+              status: Status.TODO,
+              tags: [],
+              teamMembers: [
+                {
+                  fullName: "Michael Brown",
+                  profilePhoto:
+                    "/assets/images/avatars/" + generateRandomAvatar() + ".png",
+                },
+              ],
+              title: "Travaux de Fondation - part 2",
+              description:
+                "Réalisations des travaux de fondation, y compris excavation, pose des fondations et préparation du sol pour la construction.",
+            },
+          ],
         },
       },
       {
@@ -203,7 +242,7 @@ const quotes: QuoteModel[] = [
           endDate: addDays(new Date(), 20),
           priority: Priority.MEDIUM,
           progress: 0,
-          startDate: new Date(),
+          startDate: addDays(new Date(), 0),
           status: Status.TODO,
           tags: [],
           teamMembers: [
@@ -216,6 +255,48 @@ const quotes: QuoteModel[] = [
           title: "Câblage Électrique",
           description:
             "Installation du câblage électrique, y compris la pose des câbles, des prises et des interrupteurs pour le bâtiment.",
+          subtasks: [
+            {
+              id: "subtask11",
+              color: generateRandomColor(),
+              endDate: addDays(new Date(), 10),
+              priority: Priority.HIGH,
+              progress: 0,
+              startDate: new Date(),
+              status: Status.TODO,
+              tags: [],
+              teamMembers: [
+                {
+                  fullName: "Michael Brown",
+                  profilePhoto:
+                    "/assets/images/avatars/" + generateRandomAvatar() + ".png",
+                },
+              ],
+              title: "Travaux de Fondation - part 1",
+              description:
+                "Réalisations des travaux de fondation, y compris excavation, pose des fondations et préparation du sol pour la construction.",
+            },
+            {
+              id: "subtask12",
+              color: generateRandomColor(),
+              endDate: addDays(new Date(), 20),
+              priority: Priority.HIGH,
+              progress: 0,
+              startDate: addDays(new Date(), 10),
+              status: Status.TODO,
+              tags: [],
+              teamMembers: [
+                {
+                  fullName: "Michael Brown",
+                  profilePhoto:
+                    "/assets/images/avatars/" + generateRandomAvatar() + ".png",
+                },
+              ],
+              title: "Travaux de Fondation - part 2",
+              description:
+                "Réalisations des travaux de fondation, y compris excavation, pose des fondations et préparation du sol pour la construction.",
+            },
+          ],
         },
       },
       {
