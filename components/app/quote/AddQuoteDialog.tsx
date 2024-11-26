@@ -443,7 +443,7 @@ const RenderItem = ({
   const dispatch = useDispatch();
   const handleSubmit = () => {
     if (item.task !== undefined) {
-      dispatch(updateTask(item.task));
+      dispatch(updateTask({ id: item.task.id, updates: item.task }));
     }
     if (item.product === undefined) {
       return;
