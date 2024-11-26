@@ -8,6 +8,7 @@ import {
   QuoteItemType,
   Priority,
   Status,
+  DependencyType,
 } from "../types/models";
 import { addDays } from "date-fns";
 import { generateRandomColor, generateRandomAvatar } from "../utils";
@@ -174,37 +175,61 @@ const quotes: QuoteModel[] = [
           progress: 0,
           startDate: new Date(),
           status: Status.TODO,
-          tags: [],
+          tags: ["foundation", "construction"],
           teamMembers: [
             {
               fullName: "Michael Brown",
-              profilePhoto:
-                "/assets/images/avatars/" + generateRandomAvatar() + ".png",
+              profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
+            },
+            {
+              fullName: "Sophia Johnson",
+              profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
             },
           ],
           title: "Travaux de Fondation",
           description:
             "Réalisations des travaux de fondation, y compris excavation, pose des fondations et préparation du sol pour la construction.",
+          dependencies: [],
+          comments: [
+            {
+              id: "comment1",
+              author: {
+                fullName: "Michael Brown",
+                profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
+              },
+              content:
+                "Ensure excavation is completed by the end of this week.",
+              timestamp: new Date(),
+            },
+          ],
+          dependencyLog: [
+            {
+              dependencyId: "log1",
+              action: "UPDATED",
+              performedBy: "Sofia Johnson",
+              timestamp: addDays(new Date(), -1),
+            },
+          ],
           subtasks: [
             {
               id: "subtask11",
               color: generateRandomColor(),
               endDate: addDays(new Date(), 5),
               priority: Priority.HIGH,
-              progress: 0,
+              progress: 20,
               startDate: new Date(),
-              status: Status.TODO,
-              tags: [],
+              status: Status.IN_PROGRESS,
+              tags: ["excavation"],
               teamMembers: [
                 {
                   fullName: "Michael Brown",
-                  profilePhoto:
-                    "/assets/images/avatars/" + generateRandomAvatar() + ".png",
+                  profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
                 },
               ],
               title: "Travaux de Fondation - part 1",
-              description:
-                "Réalisations des travaux de fondation, y compris excavation, pose des fondations et préparation du sol pour la construction.",
+              description: "Excavation et préparation initiale du site.",
+              dependencies: [],
+              comments: [],
             },
             {
               id: "subtask12",
@@ -214,17 +239,35 @@ const quotes: QuoteModel[] = [
               progress: 0,
               startDate: addDays(new Date(), 5),
               status: Status.TODO,
-              tags: [],
+              tags: ["foundation"],
               teamMembers: [
                 {
-                  fullName: "Michael Brown",
-                  profilePhoto:
-                    "/assets/images/avatars/" + generateRandomAvatar() + ".png",
+                  fullName: "Sophia Johnson",
+                  profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
                 },
               ],
               title: "Travaux de Fondation - part 2",
-              description:
-                "Réalisations des travaux de fondation, y compris excavation, pose des fondations et préparation du sol pour la construction.",
+              description: "Pose des fondations principales.",
+              dependencies: [
+                {
+                  taskId: "subtask11",
+                  createdBy: "Sophia Johnson",
+                  lag: 2,
+                  type: DependencyType.START_FINISH,
+                },
+              ],
+              comments: [
+                {
+                  id: "comment2",
+                  author: {
+                    fullName: "Sophia Johnson",
+                    profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
+                  },
+                  content:
+                    "This subtask cannot proceed until part 1 is completed.",
+                  timestamp: new Date(),
+                },
+              ],
             },
           ],
         },
@@ -242,59 +285,115 @@ const quotes: QuoteModel[] = [
           endDate: addDays(new Date(), 20),
           priority: Priority.MEDIUM,
           progress: 0,
-          startDate: addDays(new Date(), 0),
+          startDate: new Date(),
           status: Status.TODO,
-          tags: [],
+          tags: ["electrical", "installation"],
           teamMembers: [
             {
               fullName: "Laura Wilson",
-              profilePhoto:
-                "/assets/images/avatars/" + generateRandomAvatar() + ".png",
+              profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
             },
           ],
           title: "Câblage Électrique",
           description:
             "Installation du câblage électrique, y compris la pose des câbles, des prises et des interrupteurs pour le bâtiment.",
+          dependencies: [
+            {
+              taskId: "task11",
+              createdBy: "Sophia Johnson",
+              lag: 2,
+              type: DependencyType.START_FINISH,
+            },
+            {
+              taskId: "task3",
+              createdBy: "Sophia Johnson",
+              lag: 2,
+              type: DependencyType.START_FINISH,
+            },
+          ],
+          comments: [
+            {
+              id: "comment3",
+              author: {
+                fullName: "Sophia Johnson",
+                profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
+              },
+              content: "Ensure wiring materials arrive by next Monday.",
+              timestamp: new Date(),
+            },
+          ],
+          dependencyLog: [
+            {
+              action: "ADDED",
+              dependencyId: "subtask31",
+              performedBy: "Sofia Johnson",
+              timestamp: new Date(),
+            },
+            {
+              action: "REMOVED",
+              dependencyId: "subtask21",
+              performedBy: "Sofia Johnson",
+              timestamp: new Date(),
+            },
+          ],
           subtasks: [
             {
-              id: "subtask11",
+              id: "subtask21",
               color: generateRandomColor(),
               endDate: addDays(new Date(), 10),
               priority: Priority.HIGH,
-              progress: 0,
+              progress: 50,
               startDate: new Date(),
-              status: Status.TODO,
-              tags: [],
+              status: Status.IN_PROGRESS,
+              tags: ["wiring"],
               teamMembers: [
                 {
                   fullName: "Michael Brown",
-                  profilePhoto:
-                    "/assets/images/avatars/" + generateRandomAvatar() + ".png",
+                  profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
                 },
               ],
-              title: "Travaux de Fondation - part 1",
-              description:
-                "Réalisations des travaux de fondation, y compris excavation, pose des fondations et préparation du sol pour la construction.",
+              title: "Pose des câbles",
+              description: "Installation initiale des câbles électriques.",
+              dependencies: [],
+              comments: [],
             },
             {
-              id: "subtask12",
+              id: "subtask22",
               color: generateRandomColor(),
               endDate: addDays(new Date(), 20),
-              priority: Priority.HIGH,
+              priority: Priority.MEDIUM,
               progress: 0,
               startDate: addDays(new Date(), 10),
               status: Status.TODO,
-              tags: [],
+              tags: ["switches"],
               teamMembers: [
                 {
-                  fullName: "Michael Brown",
-                  profilePhoto:
-                    "/assets/images/avatars/" + generateRandomAvatar() + ".png",
+                  fullName: "Sophia Johnson",
+                  profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
                 },
               ],
-              title: "Travaux de Fondation - part 2",
-              description:
-                "Réalisations des travaux de fondation, y compris excavation, pose des fondations et préparation du sol pour la construction.",
+              title: "Installation des interrupteurs",
+              description: "Fixation et configuration des interrupteurs.",
+              dependencies: [
+                {
+                  taskId: "subtask21",
+                  createdBy: "Sofia Johnson",
+                  type: DependencyType.START_FINISH,
+                  description: "desc.....",
+                },
+              ],
+              comments: [
+                {
+                  id: "comment4",
+                  author: {
+                    fullName: "Sophia Johnson",
+                    profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
+                  },
+                  content:
+                    "Switch installation to follow after cable work is done.",
+                  timestamp: new Date(),
+                },
+              ],
             },
           ],
         },
@@ -314,17 +413,102 @@ const quotes: QuoteModel[] = [
           progress: 0,
           startDate: new Date(),
           status: Status.TODO,
-          tags: [],
+          tags: ["plumbing", "construction"],
           teamMembers: [
             {
               fullName: "Emily Davis",
-              profilePhoto:
-                "/assets/images/avatars/" + generateRandomAvatar() + ".png",
+              profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
             },
           ],
           title: "Plomberie",
           description:
             "Installation des systèmes de plomberie, y compris les conduites d'eau, les évacuations et les équipements sanitaires.",
+          dependencies: [
+            {
+              taskId: "task11",
+              createdBy: "Sophia Johnson",
+              lag: 2,
+              type: DependencyType.START_FINISH,
+            },
+          ],
+          comments: [],
+          dependencyLog: [
+            {
+              action: "ADDED",
+              dependencyId: "subtask31",
+              performedBy: "Sofia Johnson",
+              timestamp: new Date(),
+            },
+            {
+              action: "UPDATED",
+              dependencyId: "subtask21",
+              performedBy: "Sofia Johnson",
+              timestamp: new Date(),
+            },
+          ],
+          subtasks: [
+            {
+              id: "subtask31",
+              color: generateRandomColor(),
+              endDate: addDays(new Date(), 15),
+              priority: Priority.MEDIUM,
+              progress: 0,
+              startDate: new Date(),
+              status: Status.TODO,
+              tags: ["pipes"],
+              teamMembers: [
+                {
+                  fullName: "Laura Wilson",
+                  profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
+                },
+              ],
+              title: "Pose des conduites d'eau",
+              description: "Installation des conduites principales.",
+              dependencies: [],
+              comments: [],
+            },
+            {
+              id: "subtask32",
+              color: generateRandomColor(),
+              endDate: addDays(new Date(), 30),
+              priority: Priority.MEDIUM,
+              progress: 0,
+              startDate: addDays(new Date(), 15),
+              status: Status.TODO,
+              tags: ["fixtures"],
+              teamMembers: [
+                {
+                  fullName: "Emily Davis",
+                  profilePhoto: `/assets/images/avatars/${generateRandomAvatar()}.png`,
+                },
+              ],
+              title: "Installation des équipements sanitaires",
+              description: "Fixation des lavabos et autres équipements.",
+              dependencies: [
+                {
+                  taskId: "subtask31",
+                  createdBy: "Sofia Johnson",
+                  type: DependencyType.START_FINISH,
+                  description: "desc.....",
+                },
+              ],
+              comments: [],
+              dependencyLog: [
+                {
+                  action: "ADDED",
+                  dependencyId: "subtask31",
+                  performedBy: "Sofia Johnson",
+                  timestamp: new Date(),
+                },
+                {
+                  action: "UPDATED",
+                  dependencyId: "subtask21",
+                  performedBy: "Sofia Johnson",
+                  timestamp: new Date(),
+                },
+              ],
+            },
+          ],
         },
       },
     ],

@@ -66,8 +66,11 @@ const BoardView = () => {
         console.log({ sourceStatus, destinationStatus });
         dispatch(
           updateTask({
-            ...task,
-            status: destinationStatus,
+            id: task.id,
+            updates: {
+              ...task,
+              status: destinationStatus,
+            },
           })
         );
       }

@@ -229,6 +229,7 @@ const GanttChartForDaysAndHours: React.FC<GanttChartForDaysAndHoursProps> = ({
 
               return (
                 <div
+                  key={index}
                   style={{
                     gridRow: calculateGridRow(index, tasks, isExpanded),
                     gridColumnStart: gridDayColStart,

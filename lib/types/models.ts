@@ -37,12 +37,44 @@ export type TaskModel = {
   progress: number; // Progress percentage (0-100)
   color: string; // Color code for visual distinction
   teamMembers: TeamMember[]; // Team members assigned to the task
-
+  isCritical?: boolean;
   // New Properties
-  dependencies?: string[]; // Array of task IDs this task depends on
+  dependencies?: DependencyModel[];
+  dependents?: DependencyModel[]; // Array of task IDs this task depends on
   comments?: CommentModel[]; // Array of comments associated with the task
-  subtasks?: SubtaskModel[]; // Array of subtasks
+  subtasks?: SubtaskModel[];
+  dependencyLog?: Array<DependencyLog>;
+  ddependencyStatus?: Record<string, DependencyMet>; // Map of dependency task IDs to statuses
+  lastUpdated?: Date;
+  dependencyNotification?: boolean;
 };
+
+export type DependencyModel = {
+  taskId: string; // ID of the dependent task
+  type?: DependencyType; // Dependency type (default to Finish-to-Start)
+  lag?: number; // Time offset (+/- days or hours)
+  description?: string; // Optional explanation for the dependency
+  createdBy?: string; // User ID who added this dependency
+};
+
+export type DependencyLog = {
+  timestamp: Date;
+  action: "ADDED" | "REMOVED" | "UPDATED";
+  dependencyId: string;
+  performedBy: string; // User ID of the person who performed the action
+};
+
+export enum DependencyType {
+  FINISH_START,
+  START_FINISH,
+  FINISH_FINISH,
+  START_START,
+}
+
+export enum DependencyMet {
+  BLOCKED,
+  MET,
+}
 
 // Subtask model definition
 export type SubtaskModel = TaskModel;

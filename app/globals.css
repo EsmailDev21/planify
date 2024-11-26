@@ -20,7 +20,25 @@ body {
   box-sizing: border-box;
 }
 
+.dependency-line {
+  color: #1e293b; /* slate-800 for light mode */
+}
 
+@media (prefers-color-scheme: dark) {
+  .dependency-line {
+    color: #d1d5db; /* gray for dark mode */
+  }
+}
+
+.dependency-line:hover {
+  stroke-width: 3.5;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+}
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
 @layer base {
   :root {
     --background: 0 0% 100%;

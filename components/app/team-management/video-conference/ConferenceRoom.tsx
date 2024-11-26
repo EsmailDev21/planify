@@ -5,8 +5,8 @@ import Controls from "./Controls";
 import ScreenShareButton from "./ScreenShareButton";
 import VideoGrid from "./VideoGrid";
 import { UserModel, UserRole } from "@/lib/types/models";
-import { generateRandomAvatar } from "../../tasks/views/GanttTask.component";
 import { useToast } from "@/components/ui/use-toast";
+import { generateRandomAvatar } from "@/lib/utils";
 
 const ConferenceRoom = () => {
   const [participants, setParticipants] = useState<UserModel[]>([

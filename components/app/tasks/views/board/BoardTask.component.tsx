@@ -38,6 +38,17 @@ const BoardTask: React.FC<BoardTaskProps> = ({
   tags,
   onDragEnd,
   onDragStart,
+  onTouchStart,
+  onTouchEnd,
+  comments,
+  ddependencyStatus,
+  dependencies,
+  dependencyLog,
+  dependencyNotification,
+  dependents,
+  isCritical,
+  lastUpdated,
+  subtasks,
 }) => {
   return (
     <HoverCard>

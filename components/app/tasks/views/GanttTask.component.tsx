@@ -8,7 +8,15 @@ import {
 } from "@/components/ui/hover-card";
 import { Badge } from "@/components/ui/badge";
 import { motion, PanInfo } from "framer-motion";
-import { PiFlagBannerLight, PiTagLight } from "react-icons/pi";
+import {
+  PiFlagBannerLight,
+  PiLinkDuotone,
+  PiListPlusDuotone,
+  PiPenDuotone,
+  PiTagLight,
+  PiTextAlignCenterDuotone,
+  PiTrashDuotone,
+} from "react-icons/pi";
 import { Priority, TaskModel, TeamMember } from "@/lib/types/models";
 import {
   transFormPriority,
@@ -23,7 +31,23 @@ export type GanttTaskProps = TaskModel & {
   gridRow?: number;
 };
 
-// GanttTask component
+{
+  /* Additional Imports */
+}
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { FiMessageSquare, FiLink } from "react-icons/fi"; // Icons for comments and dependencies
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuGroup,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+
 const GanttTask: React.FC<
   GanttTaskProps & {
     onDragEnd: (event: any, info: PanInfo, task: GanttTaskProps) => void;
@@ -45,7 +69,6 @@ const GanttTask: React.FC<
   onDragEnd,
   onDragStart,
   onDrag,
-  onResize,
   tags,
   priority,
   progress,
@@ -54,6 +77,7 @@ const GanttTask: React.FC<
   subtasks,
   comments,
   dependencies,
+  dependencyLog,
   isExpanded,
 }) => {
   const progressStyle = {
@@ -63,201 +87,214 @@ const GanttTask: React.FC<
   };
 
   return (
-    <HoverCard>
-      <HoverCardTrigger asChild>
-        <motion.div
-          drag="x"
-          dragMomentum={false}
-          onDrag={(event, info) =>
-            onDrag(event, info, {
-              teamMembers,
-              description,
-              id,
-              title,
-              endDate,
-              startDate,
-              priority,
-              tags,
-              status,
-              progress,
-              color,
-            })
-          }
-          onDragStart={(event, info) =>
-            onDragStart(event, info, {
-              teamMembers,
-              description,
-              id,
-              title,
-              endDate,
-              startDate,
-              priority,
-              tags,
-              status,
-              progress,
-              color,
-            })
-          }
-          onDragEnd={(event, info) =>
-            onDragEnd(event, info, {
-              teamMembers,
-              description,
-              id,
-              title,
-              endDate,
-              startDate,
-              priority,
-              tags,
-              status,
-              progress,
-              color,
-            })
-          }
-          className={`rounded-full content-center mt-[2px] p-2 mb-1 h-9 text-white cursor-pointer flex items-center justify-between relative `}
-          style={{
-            gridRow: gridRow,
-            gridColumnStart: gridColStart,
-            gridColumnEnd: gridColEnd,
-            ...progressStyle,
-          }}
-        >
-          <div
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 w-2 hover:rounded-full hover:h-2 hover:bg-blue-600 hover:border-2 hover:border-slate-200 cursor-ew-resize"
-            onMouseDown={() =>
-              onResize("left", {
-                id,
-                title,
-                startDate,
-                endDate,
-                priority,
-                status,
-                progress,
-                color,
-              })
-            }
-          />
-
-          {/* Right Resize Handle */}
-          <div
-            className="absolute right-0 top-1/2 transform  -translate-y-1/2 w-2 hover:rounded-full hover:h-2 hover:bg-blue-600 hover:border-2 hover:border-slate-200 cursor-ew-resize"
-            onMouseDown={() =>
-              onResize("right", {
-                id,
-                title,
-                startDate,
-                endDate,
-                priority,
-                status,
-                progress,
-                color,
-              })
-            }
-          />
-          <div className="flex -space-x-1 flex-row ">
-            {teamMembers.map((member: TeamMember, index: number) => (
-              <Avatar key={index} className="w-7 h-7">
-                {member.profilePhoto ? (
-                  <AvatarImage
-                    src={member.profilePhoto}
-                    alt={member.fullName}
-                  />
-                ) : (
-                  <AvatarFallback>{member.fullName[0]}</AvatarFallback>
-                )}
-              </Avatar>
-            ))}
-          </div>
-          <span>{title}</span>
-          <Badge
-            variant="default"
-            className={`text-xs flex space-x-2 justify-around items-center flex-row text-white font-medium capitalize ${
-              priority === Priority.HIGH
-                ? "bg-red-600 dark:text-red-400"
-                : priority === Priority.MEDIUM
-                ? "bg-amber-400 dark:text-yellow-400"
-                : "bg-green-600 dark:text-green-400"
-            }`}
-          >
-            <PiFlagBannerLight className="mr-2" />
-            {transFormPriority(priority)}
-          </Badge>
-          {isExpanded.indexOf(id) != -1 ? (
-            <ChevronUp className="w-4 h-4 text-gray-600 dark:text-gray-300" />
-          ) : (
-            <ChevronDown className="w-4 h-4 text-gray-600 dark:text-gray-300" />
-          )}
-        </motion.div>
-      </HoverCardTrigger>
-      <HoverCardContent className="w-96">
-        <div className="flex justify-between space-x-4">
-          <div className="flex -space-x-2 overflow-auto">
-            {teamMembers.map((member: TeamMember, index: number) => (
-              <Avatar
-                key={index}
-                className="w-8 h-8 hover:scale-110 transition-transform duration-200"
-              >
-                {member.profilePhoto ? (
-                  <AvatarImage
-                    src={member.profilePhoto}
-                    alt={member.fullName}
-                  />
-                ) : (
-                  <AvatarFallback>{member.fullName[0]}</AvatarFallback>
-                )}
-              </Avatar>
-            ))}
-          </div>
-          <div className="space-y-1">
-            <h4 className="text-sm font-semibold">{title}</h4>
-            <div className="text-sm max-w-32 text-muted-foreground truncate">
-              {description || ""}
-            </div>
-            <p className="  text-sm text-muted-foreground">
-              Tàche assigné à {teamMembers.map((i) => i.fullName).join(", ")}
-            </p>
-            <div className="flex items-center pt-2">
-              <CalendarDays className="mr-2 h-4 w-4 opacity-70" />
-              <span className="text-xs text-muted-foreground">
-                {`From ${startDate.toDateString()} to ${endDate.toDateString()}`}
-              </span>
-            </div>
-            {/* Priority and Status Badges */}
-            <div className="flex space-x-2 mt-2">
-              <Badge
-                variant="outline"
-                className={`text-xs font-medium capitalize ${
-                  priority === Priority.HIGH
-                    ? "text-red-600 dark:text-red-400"
-                    : priority === Priority.MEDIUM
-                    ? "text-yellow-600 dark:text-yellow-400"
-                    : "text-green-600 dark:text-green-400"
-                }`}
-              >
-                {transFormPriority(priority)}
-              </Badge>
-              <Badge
-                variant="outline"
-                className="text-xs font-medium capitalize"
-              >
-                {transFormStatus(status)}
-              </Badge>
-            </div>
-            {/* Tags */}
-            <div className="flex flex-wrap gap-1 mt-2">
-              {tags.map((tag, index) => (
-                <Badge
-                  key={index}
-                  variant="secondary"
-                  className="text-xs flex items-center space-x-1"
+    <Tooltip>
+      <TooltipTrigger className="w-full">
+        <HoverCard>
+          <HoverCardTrigger>
+            <ContextMenu>
+              <ContextMenuTrigger asChild>
+                <motion.div
+                  drag={true}
+                  whileDrag={{
+                    scale: 1.05,
+                    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
+                  }}
+                  // Replace with dynamic constraints if needed
+                  dragElastic={0.1} // Slight elasticity for a smoother feel
+                  dragMomentum={false}
+                  onDrag={(event, info) =>
+                    onDrag(event, info, {
+                      id,
+                      title,
+                      startDate,
+                      endDate,
+                      priority,
+                      progress,
+                      status,
+                      color,
+                      teamMembers,
+                      tags,
+                    })
+                  }
+                  onDragStart={(event, info) =>
+                    onDragStart(event, info, {
+                      id,
+                      title,
+                      startDate,
+                      endDate,
+                      priority,
+                      progress,
+                      status,
+                      color,
+                      teamMembers,
+                      tags,
+                    })
+                  }
+                  onDragEnd={(event, info) =>
+                    onDragEnd(event, info, {
+                      id,
+                      title,
+                      startDate,
+                      endDate,
+                      priority,
+                      progress,
+                      status,
+                      color,
+                      teamMembers,
+                      tags,
+                    })
+                  }
+                  className="rounded-full  mt-[2px] p-2 mb-1 h-9 text-white cursor-pointer flex items-center justify-between relative"
+                  style={{
+                    gridRow: gridRow,
+                    gridColumnStart: gridColStart,
+                    gridColumnEnd: gridColEnd,
+                    ...progressStyle,
+                  }}
                 >
-                  <PiTagLight className="w-3 h-3" /> <span>{tag}</span>
-                </Badge>
-              ))}
+                  {/* Team Members */}
+                  <div className="flex -space-x-1">
+                    {teamMembers.map((member: TeamMember, index: number) => (
+                      <Avatar key={index} className="w-7 h-7">
+                        {member.profilePhoto ? (
+                          <AvatarImage
+                            src={member.profilePhoto}
+                            alt={member.fullName}
+                          />
+                        ) : (
+                          <AvatarFallback>{member.fullName[0]}</AvatarFallback>
+                        )}
+                      </Avatar>
+                    ))}
+                  </div>
+
+                  {/* Task Title */}
+                  <span>{title}</span>
+
+                  {/* Priority Badge */}
+                  <Badge
+                    variant="default"
+                    className={`text-xs flex items-center capitalize ${
+                      priority === Priority.HIGH
+                        ? "bg-red-600"
+                        : priority === Priority.MEDIUM
+                        ? "bg-amber-400"
+                        : "bg-green-600"
+                    }`}
+                  >
+                    {transFormPriority(priority)}
+                  </Badge>
+
+                  {/* Expand/Collapse Icon */}
+                  {isExpanded.includes(id) ? (
+                    <ChevronUp className="w-4 h-4 " />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 " />
+                  )}
+                </motion.div>
+              </ContextMenuTrigger>
+              <ContextMenuContent>
+                <ContextMenuGroup>
+                  <ContextMenuItem className="flex flex-row space-x-2">
+                    <PiPenDuotone /> <div>Update</div>
+                  </ContextMenuItem>
+                  <ContextMenuItem className="flex flex-row space-x-2">
+                    <PiTrashDuotone /> <div>Delete</div>
+                  </ContextMenuItem>
+                </ContextMenuGroup>
+                <ContextMenuGroup>
+                  <ContextMenuItem className="flex flex-row space-x-2">
+                    <PiTextAlignCenterDuotone /> <div>Add Comment</div>
+                  </ContextMenuItem>
+                  <ContextMenuItem className="flex flex-row space-x-2">
+                    <PiLinkDuotone /> <div>Add dependancy</div>
+                  </ContextMenuItem>
+                  <ContextMenuItem className="flex flex-row space-x-2">
+                    <PiListPlusDuotone /> <div>Add Sub-tasks</div>
+                  </ContextMenuItem>
+                </ContextMenuGroup>
+              </ContextMenuContent>
+            </ContextMenu>
+          </HoverCardTrigger>
+
+          <HoverCardContent className="w-96">
+            <div className="space-y-4">
+              {/* Task Details */}
+              <div className="space-y-1">
+                <h4 className="text-sm font-semibold">{title}</h4>
+                <p className="text-xs text-muted-foreground truncate">
+                  {description}
+                </p>
+                <div className="flex items-center text-xs text-muted-foreground">
+                  <CalendarDays className="mr-2 h-4 w-4 opacity-70" />
+                  {`From ${startDate.toDateString()} to ${endDate.toDateString()}`}
+                </div>
+              </div>
+
+              {/* Subtasks */}
+              {subtasks && subtasks.length > 0 && (
+                <div>
+                  <h5 className="text-xs font-medium text-muted-foreground">
+                    Subtasks:
+                  </h5>
+                  <ul className="text-xs space-y-1">
+                    {subtasks.map((subtask, index) => (
+                      <li key={index} className="flex items-center space-x-2">
+                        <span
+                          className={`block w-2 h-2 rounded-full ${
+                            subtask.progress === 100
+                              ? "bg-green-500"
+                              : "bg-gray-300"
+                          }`}
+                        />
+                        {subtask.title}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Comments Section */}
+              {comments && comments.length > 0 && (
+                <div>
+                  <h5 className="text-xs font-medium text-muted-foreground">
+                    Comments:
+                  </h5>
+                  <ul className="text-xs space-y-1">
+                    {comments.slice(0, 3).map((comment, index) => (
+                      <li key={index} className="truncate">
+                        {comment.content}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Dependency Log */}
+              {dependencyLog && dependencyLog.length > 0 && (
+                <div>
+                  <h5 className="text-xs font-medium text-muted-foreground">
+                    Dependency Log:
+                  </h5>
+                  <ul className="text-xs space-y-1">
+                    {dependencyLog.map((log, index) => (
+                      <li key={index}>
+                        {`${log.action} - ${
+                          log.dependencyId
+                        } at ${log.timestamp.toLocaleString()}`}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
-          </div>
-        </div>
-      </HoverCardContent>
-    </HoverCard>
+          </HoverCardContent>
+        </HoverCard>
+      </TooltipTrigger>
+      <TooltipContent>
+        Drag to update dates, or right click for options
+      </TooltipContent>
+    </Tooltip>
   );
 };
 

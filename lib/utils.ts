@@ -30,7 +30,7 @@ export const generateWeeksForMonth = (
 ) => {
   const startOfMonthDate = startOfMonth(currentMonth);
   const endOfMonthDate = endOfMonth(currentMonth);
-  console.log({ startOfMonthDate, endOfMonthDate });
+  //console.log({ startOfMonthDate, endOfMonthDate });
   const daysInMonth = differenceInDays(endOfMonthDate, startOfMonthDate) + 1;
 
   // Calculate number of weeks by checking the day of the week of the start and end of the month
@@ -311,4 +311,33 @@ export const generateMonthsAndYears = (
   }
 
   return { topRow, bottomRow };
+};
+
+function checkCircularDependencies(
+  task: TaskModel,
+  allTasks: TaskModel[]
+): boolean {
+  const visited = new Set<string>();
+  const visit = (taskId: string): boolean => {
+    if (visited.has(taskId)) return false; // Circular reference
+    visited.add(taskId);
+    const dependentTask = allTasks.find((t) => t.id === taskId);
+    if (!dependentTask || !dependentTask.dependencies) return true;
+    return dependentTask.dependencies.every((dep) => visit(dep.taskId));
+  };
+  return task.dependencies?.every((dep) => visit(dep.taskId)) ?? true;
+}
+export const calculateTaskPosition = (
+  task: TaskModel,
+  bottomRow: Array<{ label: string; width: number; date: Date }>,
+  dayColumnWidth: number,
+  tasks: TaskModel[]
+) => {
+  const startX =
+    differenceInDays(task.startDate, bottomRow[0].date) * dayColumnWidth;
+  const endX =
+    (differenceInDays(task.endDate, bottomRow[0].date) + 1) * dayColumnWidth;
+  const y =
+    tasks.indexOf(task) * dayColumnWidth + dayColumnWidth + dayColumnWidth / 3;
+  return { startX, endX, y };
 };

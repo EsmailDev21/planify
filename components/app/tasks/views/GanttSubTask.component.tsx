@@ -111,7 +111,7 @@ const GanttSubTask: React.FC<
               color,
             })
           }
-          className={`rounded-full  border-[3px] bg-white dark:bg-slate-950  p-2  h-9 cursor-pointer flex items-center justify-between relative `}
+          className={`rounded-full  border-[2px] bg-slate-50 dark:bg-slate-900  p-2  h-9 cursor-pointer flex items-center justify-between relative `}
           style={{
             gridRow: gridRow,
             gridColumnStart: gridColStart,
@@ -153,7 +153,7 @@ const GanttSubTask: React.FC<
           />
           <div className="flex -space-x-2 flex-row ">
             {teamMembers.map((member: TeamMember, index: number) => (
-              <Avatar key={index} className="w-7 h-7">
+              <Avatar key={index} className="w-6 h-6">
                 {member.profilePhoto ? (
                   <AvatarImage
                     src={member.profilePhoto}
